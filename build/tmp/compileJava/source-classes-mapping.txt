@@ -1,0 +1,15 @@
+io/pravega/connecter/test.java
+ io.pravega.connecter.Task
+ io.pravega.connecter.test
+io/pravega/connecter/FileWriter.java
+ io.pravega.connecter.FileWriter
+io/pravega/connecter/utils/Utils.java
+ io.pravega.connecter.utils.Utils
+io/pravega/connecter/Source.java
+ io.pravega.connecter.Source
+io/pravega/connecter/WorkerFileSource.java
+ io.pravega.connecter.WorkerFileSource
+io/pravega/connecter/ConnectStandalone.java
+ io.pravega.connecter.ConnectStandalone
+io/pravega/connecter/FileSource.java
+ io.pravega.connecter.FileSource
