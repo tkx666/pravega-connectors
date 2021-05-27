@@ -1,4 +1,4 @@
-package io.pravega.connecter;
+package io.pravega.connecter.file.source;
 
 import io.pravega.connecter.utils.Utils;
 import org.slf4j.Logger;
@@ -17,17 +17,13 @@ public class ConnectStandalone {
         Map<String, String> pravegaMap = Utils.propsToMap(pravegaProps);
         Map<String, String> fileMap = Utils.propsToMap(fileProps);
 
-        FileWriter fileWriter= new FileWriter(pravegaMap);
+        PravegaWriter pravegaWriter = new PravegaWriter(pravegaMap);
         FileSource fileSource = new FileSource();
         fileSource.open(fileMap, pravegaMap);
 
-        WorkerFileSource workerFileSource= new WorkerFileSource(fileWriter, fileSource, pravegaMap);
+        WorkerFileSource workerFileSource= new WorkerFileSource(pravegaWriter, fileSource, pravegaMap);
         Thread worker = new Thread(workerFileSource);
         worker.start();
-
-
-
-
     }
 
 }

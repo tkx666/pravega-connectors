@@ -1,4 +1,4 @@
-package io.pravega.connecter;
+package io.pravega.connecter.file.source;
 
 import java.io.BufferedReader;
 import java.io.FileNotFoundException;
@@ -8,7 +8,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
-public class FileSource implements Source{
+public class FileSource implements Source {
     Map<String, String> fileProps;
     Map<String, String> pravegaProps;
     BufferedReader in;
@@ -19,7 +19,7 @@ public class FileSource implements Source{
         this.fileProps = fileProps;
         this.pravegaProps = pravegaProps;
         try {
-            this.in = new BufferedReader(new FileReader(fileProps.get("path")));
+            this.in = new BufferedReader(new FileReader(fileProps.get("readPath")));
         } catch (FileNotFoundException e) {
             e.printStackTrace();
         }
@@ -46,8 +46,4 @@ public class FileSource implements Source{
         return null;
     }
 
-    @Override
-    public void write() {
-
-    }
 }

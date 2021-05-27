@@ -1,4 +1,4 @@
-package io.pravega.connecter;
+package io.pravega.connecter.file.source;
 
 import io.pravega.client.ClientConfig;
 import io.pravega.client.EventStreamClientFactory;
@@ -13,12 +13,12 @@ import java.net.URI;
 import java.util.Map;
 import java.util.concurrent.CompletableFuture;
 
-public class FileWriter {
+public class PravegaWriter {
     public final String scope;
     public final String streamName;
     public final URI controllerURI;
 
-    public FileWriter(Map<String, String> pravegaProps){
+    public PravegaWriter(Map<String, String> pravegaProps){
         this.scope = pravegaProps.get("scope");
         this.streamName = pravegaProps.get("name");
         this.controllerURI = URI.create(pravegaProps.get("uri"));

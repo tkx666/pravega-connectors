@@ -1,4 +1,4 @@
-package io.pravega.connecter;
+package io.pravega.connecter.file.source;
 
 import java.util.List;
 import java.util.Map;
@@ -10,5 +10,4 @@ public interface Source {
 
     List<String> readNext();
 
-    void write();
 }

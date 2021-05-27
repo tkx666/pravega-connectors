@@ -1,15 +1,15 @@
-package io.pravega.connecter;
+package io.pravega.connecter.file.source;
 
 import java.util.List;
 import java.util.Map;
 
 public class WorkerFileSource implements Runnable{
     private FileSource fileSource;
-    private FileWriter fileWriter;
+    private PravegaWriter pravegaWriter;
     private Map<String, String> pravegaProps;
-    public WorkerFileSource(FileWriter fileWriter, FileSource fileSource, Map<String, String> pravegaProps){
+    public WorkerFileSource(PravegaWriter pravegaWriter, FileSource fileSource, Map<String, String> pravegaProps){
         this.fileSource = fileSource;
-        this.fileWriter = fileWriter;
+        this.pravegaWriter = pravegaWriter;
         this.pravegaProps = pravegaProps;
     }
     @Override
@@ -17,9 +17,12 @@ public class WorkerFileSource implements Runnable{
         List<String> line;
         while((line = fileSource.readNext()) != null){
             String str = line.get(0);
-            fileWriter.run(pravegaProps.get("routingKey"), str);
-
+            sendRecord(str);
         }
 
+    }
+
+    public void sendRecord(String str){
+        pravegaWriter.run(pravegaProps.get("routingKey"), str);
     }
 }

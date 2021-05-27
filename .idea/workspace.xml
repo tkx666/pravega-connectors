@@ -16,36 +16,47 @@
         <item name="GROUP_NODE:origin" type="e8cecc67:BranchNodeDescriptor" />
       </path>
     </expand>
-    <select />
+    <select>
+      <path>
+        <item name="ROOT" type="e8cecc67:BranchNodeDescriptor" />
+        <item name="LOCAL_ROOT" type="e8cecc67:BranchNodeDescriptor" />
+      </path>
+    </select>
   </component>
   <component name="ChangeListManager">
     <list default="true" id="c7770bdd-fd01-4eb7-87ed-524b089b763c" name="Default Changelist" comment="">
-      <change afterPath="$PROJECT_DIR$/.idea/compiler.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/.idea/jarRepositories.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/.idea/uiDesigner.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/pravega.properties" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/java/io/pravega/connecter/ConnectStandalone.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/java/io/pravega/connecter/FileSource.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/java/io/pravega/connecter/FileWriter.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/java/io/pravega/connecter/WorkerFileSource.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/java/io/pravega/connecter/test.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/java/io/pravega/connecter/utils/Utils.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/test.txt" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.gradle/5.2.1/executionHistory/executionHistory.bin" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/.gradle/5.2.1/executionHistory/executionHistory.lock" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/.gradle/5.2.1/fileChanges/last-build.bin" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/.gradle/5.2.1/fileHashes/fileHashes.bin" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/.gradle/5.2.1/fileHashes/fileHashes.lock" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/.gradle/5.2.1/gc.properties" beforeDir="false" afterPath="$PROJECT_DIR$/file.properties" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/main/java/io/pravega/connecter/file/sink/ConnectStandalone.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/main/java/io/pravega/connecter/file/sink/FileSink.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/main/java/io/pravega/connecter/file/sink/PravegaReader.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/main/java/io/pravega/connecter/file/sink/Sink.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/main/java/io/pravega/connecter/file/sink/WorkerFileSink.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/write.txt" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.gradle/6.5.1/executionHistory/executionHistory.bin" beforeDir="false" afterPath="$PROJECT_DIR$/.gradle/6.5.1/executionHistory/executionHistory.bin" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.gradle/6.5.1/executionHistory/executionHistory.lock" beforeDir="false" afterPath="$PROJECT_DIR$/.gradle/6.5.1/executionHistory/executionHistory.lock" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.gradle/6.5.1/fileHashes/fileHashes.bin" beforeDir="false" afterPath="$PROJECT_DIR$/.gradle/6.5.1/fileHashes/fileHashes.bin" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.gradle/6.5.1/fileHashes/fileHashes.lock" beforeDir="false" afterPath="$PROJECT_DIR$/.gradle/6.5.1/fileHashes/fileHashes.lock" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.gradle/6.5.1/javaCompile/classAnalysis.bin" beforeDir="false" afterPath="$PROJECT_DIR$/.gradle/6.5.1/javaCompile/classAnalysis.bin" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.gradle/6.5.1/javaCompile/javaCompile.lock" beforeDir="false" afterPath="$PROJECT_DIR$/.gradle/6.5.1/javaCompile/javaCompile.lock" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.gradle/buildOutputCleanup/buildOutputCleanup.lock" beforeDir="false" afterPath="$PROJECT_DIR$/.gradle/buildOutputCleanup/buildOutputCleanup.lock" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.gradle/buildOutputCleanup/cache.properties" beforeDir="false" afterPath="$PROJECT_DIR$/.gradle/buildOutputCleanup/cache.properties" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.gradle/buildOutputCleanup/outputFiles.bin" beforeDir="false" afterPath="$PROJECT_DIR$/.gradle/buildOutputCleanup/outputFiles.bin" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/.name" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/misc.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/misc.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.gradle/checksums/checksums.lock" beforeDir="false" afterPath="$PROJECT_DIR$/.gradle/checksums/checksums.lock" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.gradle/checksums/sha1-checksums.bin" beforeDir="false" afterPath="$PROJECT_DIR$/.gradle/checksums/sha1-checksums.bin" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/build.gradle" beforeDir="false" afterPath="$PROJECT_DIR$/build.gradle" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/gradle/wrapper/gradle-wrapper.properties" beforeDir="false" afterPath="$PROJECT_DIR$/gradle/wrapper/gradle-wrapper.properties" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/io/pravega/connecter/Source.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/io/pravega/connecter/Source.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/build/classes/java/main/io/pravega/connecter/ConnectStandalone.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/build/classes/java/main/io/pravega/connecter/FileSource.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/build/classes/java/main/io/pravega/connecter/FileWriter.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/build/classes/java/main/io/pravega/connecter/Source.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/build/classes/java/main/io/pravega/connecter/Task.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/build/classes/java/main/io/pravega/connecter/WorkerFileSource.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/build/classes/java/main/io/pravega/connecter/test.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/build/tmp/compileJava/source-classes-mapping.txt" beforeDir="false" afterPath="$PROJECT_DIR$/build/tmp/compileJava/source-classes-mapping.txt" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/file.properties" beforeDir="false" afterPath="$PROJECT_DIR$/file.properties" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/io/pravega/connecter/ConnectStandalone.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/io/pravega/connecter/file/source/ConnectStandalone.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/io/pravega/connecter/FileSource.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/io/pravega/connecter/file/source/FileSource.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/io/pravega/connecter/FileWriter.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/io/pravega/connecter/file/source/PravegaWriter.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/io/pravega/connecter/Source.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/io/pravega/connecter/file/source/Source.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/io/pravega/connecter/WorkerFileSource.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/io/pravega/connecter/file/source/WorkerFileSource.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/io/pravega/connecter/test.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/test.txt" beforeDir="false" afterPath="$PROJECT_DIR$/test.txt" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -60,6 +71,7 @@
   <component name="FileTemplateManagerImpl">
     <option name="RECENT_TEMPLATES">
       <list>
+        <option value="Interface" />
         <option value="Class" />
       </list>
     </option>
@@ -76,23 +88,38 @@
     <option name="showLibraryContents" value="true" />
   </component>
   <component name="PropertiesComponent">
+    <property name="ASKED_ADD_EXTERNAL_FILES" value="true" />
     <property name="RunOnceActivity.OpenProjectViewOnStart" value="true" />
     <property name="RunOnceActivity.ShowReadmeOnStart" value="true" />
     <property name="SHARE_PROJECT_CONFIGURATION_FILES" value="true" />
     <property name="WebServerToolWindowFactoryState" value="false" />
     <property name="aspect.path.notification.shown" value="true" />
-    <property name="project.structure.last.edited" value="Modules" />
+    <property name="nodejs_package_manager_path" value="npm" />
+    <property name="project.structure.last.edited" value="SDKs" />
     <property name="project.structure.proportion" value="0.15" />
     <property name="project.structure.side.proportion" value="0.2" />
     <property name="settings.editor.selected.configurable" value="reference.settingsdialog.project.gradle" />
   </component>
-  <component name="RunManager" selected="Application.ConnectStandalone">
-    <configuration name="ConnectStandalone" type="Application" factoryName="Application" temporary="true" nameIsGenerated="true">
-      <option name="MAIN_CLASS_NAME" value="io.pravega.connecter.ConnectStandalone" />
-      <module name="pravega-connectors.main" />
+  <component name="RunManager" selected="Application.ConnectStandalone (1)">
+    <configuration name="ConnectStandalone (1)" type="Application" factoryName="Application" temporary="true" nameIsGenerated="true">
+      <option name="MAIN_CLASS_NAME" value="io.pravega.connecter.file.sink.ConnectStandalone" />
+      <module name="untitled.main" />
       <extension name="coverage">
         <pattern>
-          <option name="PATTERN" value="io.pravega.connecter.*" />
+          <option name="PATTERN" value="io.pravega.connecter.file.sink.*" />
+          <option name="ENABLED" value="true" />
+        </pattern>
+      </extension>
+      <method v="2">
+        <option name="Make" enabled="true" />
+      </method>
+    </configuration>
+    <configuration name="ConnectStandalone" type="Application" factoryName="Application" temporary="true" nameIsGenerated="true">
+      <option name="MAIN_CLASS_NAME" value="io.pravega.connecter.file.source.ConnectStandalone" />
+      <module name="untitled.main" />
+      <extension name="coverage">
+        <pattern>
+          <option name="PATTERN" value="io.pravega.connecter.file.source.*" />
           <option name="ENABLED" value="true" />
         </pattern>
       </extension>
@@ -105,7 +132,7 @@
       <module name="pravega-connectors.main" />
       <extension name="coverage">
         <pattern>
-          <option name="PATTERN" value="io.pravega.connecter.*" />
+          <option name="PATTERN" value="io.pravega.connecter.file.source.*" />
           <option name="ENABLED" value="true" />
         </pattern>
       </extension>
@@ -115,6 +142,7 @@
     </configuration>
     <recent_temporary>
       <list>
+        <item itemvalue="Application.ConnectStandalone (1)" />
         <item itemvalue="Application.ConnectStandalone" />
         <item itemvalue="Application.test" />
       </list>
@@ -135,7 +163,8 @@
       <workItem from="1622006653026" duration="59000" />
       <workItem from="1622007285673" duration="2586000" />
       <workItem from="1622021471828" duration="64000" />
-      <workItem from="1622021545630" duration="11130000" />
+      <workItem from="1622021545630" duration="12161000" />
+      <workItem from="1622080558225" duration="5789000" />
     </task>
     <servers />
   </component>
@@ -154,35 +183,46 @@
     </option>
     <option name="oldMeFiltersMigrated" value="true" />
   </component>
+  <component name="VcsManagerConfiguration">
+    <option name="ADD_EXTERNAL_FILES_SILENTLY" value="true" />
+  </component>
   <component name="WindowStateProjectService">
-    <state x="536" y="118" key="#Project_Structure" timestamp="1622021534053">
+    <state x="646" y="136" key="#ConnectStandalone" timestamp="1622081360214">
       <screen x="0" y="0" width="2048" height="1112" />
     </state>
-    <state x="536" y="118" key="#Project_Structure/0.0.2048.1112@0.0.2048.1112" timestamp="1622021534053" />
-    <state x="1270" y="266" key="#com.intellij.ide.util.MemberChooser" timestamp="1622035386346">
+    <state x="646" y="136" key="#ConnectStandalone/0.0.2048.1112@0.0.2048.1112" timestamp="1622081360214" />
+    <state x="536" y="118" key="#Project_Structure" timestamp="1622092119536">
       <screen x="0" y="0" width="2048" height="1112" />
     </state>
-    <state x="1270" y="266" key="#com.intellij.ide.util.MemberChooser/0.0.2048.1112@0.0.2048.1112" timestamp="1622035386346" />
-    <state x="1078" y="177" key="#com.intellij.refactoring.rename.AutomaticRenamingDialog" timestamp="1622033370146">
+    <state x="536" y="118" key="#Project_Structure/0.0.2048.1112@0.0.2048.1112" timestamp="1622092119536" />
+    <state x="1270" y="266" key="#com.intellij.ide.util.MemberChooser" timestamp="1622093664844">
       <screen x="0" y="0" width="2048" height="1112" />
     </state>
-    <state x="1078" y="177" key="#com.intellij.refactoring.rename.AutomaticRenamingDialog/0.0.2048.1112@0.0.2048.1112" timestamp="1622033370146" />
-    <state width="1121" height="316" key="GridCell.Tab.0.bottom" timestamp="1622037103911">
+    <state x="1270" y="266" key="#com.intellij.ide.util.MemberChooser/0.0.2048.1112@0.0.2048.1112" timestamp="1622093664844" />
+    <state x="733" y="411" width="618" height="218" key="#com.intellij.refactoring.move.moveClassesOrPackages.MoveClassesOrPackagesDialog.classes" timestamp="1622083807970">
       <screen x="0" y="0" width="2048" height="1112" />
     </state>
-    <state width="1121" height="316" key="GridCell.Tab.0.bottom/0.0.2048.1112@0.0.2048.1112" timestamp="1622037103911" />
-    <state width="1121" height="316" key="GridCell.Tab.0.center" timestamp="1622037103911">
+    <state x="733" y="411" width="618" height="218" key="#com.intellij.refactoring.move.moveClassesOrPackages.MoveClassesOrPackagesDialog.classes/0.0.2048.1112@0.0.2048.1112" timestamp="1622083807970" />
+    <state x="1078" y="163" key="#com.intellij.refactoring.rename.AutomaticRenamingDialog" timestamp="1622092244713">
       <screen x="0" y="0" width="2048" height="1112" />
     </state>
-    <state width="1121" height="316" key="GridCell.Tab.0.center/0.0.2048.1112@0.0.2048.1112" timestamp="1622037103911" />
-    <state width="1121" height="316" key="GridCell.Tab.0.left" timestamp="1622037103911">
+    <state x="1078" y="163" key="#com.intellij.refactoring.rename.AutomaticRenamingDialog/0.0.2048.1112@0.0.2048.1112" timestamp="1622092244713" />
+    <state width="1614" height="244" key="GridCell.Tab.0.bottom" timestamp="1622094152481">
       <screen x="0" y="0" width="2048" height="1112" />
     </state>
-    <state width="1121" height="316" key="GridCell.Tab.0.left/0.0.2048.1112@0.0.2048.1112" timestamp="1622037103911" />
-    <state width="1121" height="316" key="GridCell.Tab.0.right" timestamp="1622037103911">
+    <state width="1614" height="244" key="GridCell.Tab.0.bottom/0.0.2048.1112@0.0.2048.1112" timestamp="1622094152481" />
+    <state width="1614" height="244" key="GridCell.Tab.0.center" timestamp="1622094152481">
       <screen x="0" y="0" width="2048" height="1112" />
     </state>
-    <state width="1121" height="316" key="GridCell.Tab.0.right/0.0.2048.1112@0.0.2048.1112" timestamp="1622037103911" />
+    <state width="1614" height="244" key="GridCell.Tab.0.center/0.0.2048.1112@0.0.2048.1112" timestamp="1622094152481" />
+    <state width="1614" height="244" key="GridCell.Tab.0.left" timestamp="1622094152480">
+      <screen x="0" y="0" width="2048" height="1112" />
+    </state>
+    <state width="1614" height="244" key="GridCell.Tab.0.left/0.0.2048.1112@0.0.2048.1112" timestamp="1622094152480" />
+    <state width="1614" height="244" key="GridCell.Tab.0.right" timestamp="1622094152481">
+      <screen x="0" y="0" width="2048" height="1112" />
+    </state>
+    <state width="1614" height="244" key="GridCell.Tab.0.right/0.0.2048.1112@0.0.2048.1112" timestamp="1622094152481" />
     <state x="452" y="55" key="SettingsEditor" timestamp="1622021653769">
       <screen x="0" y="0" width="2048" height="1112" />
     </state>
