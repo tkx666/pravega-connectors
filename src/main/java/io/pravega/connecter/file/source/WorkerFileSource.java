@@ -15,10 +15,14 @@ public class WorkerFileSource implements Runnable{
     @Override
     public void run() {
         List<String> line;
-        while((line = fileSource.readNext()) != null){
-            String str = line.get(0);
-            sendRecord(str);
+//        while((line = fileSource.readNext()) != null){
+//            String str = line.get(0);
+//            sendRecord(str);
+//        }
+        for(int i = 0; i < 10000; i++){
+            sendRecord(String.valueOf(i));
         }
+        fileSource.close();
 
     }
 

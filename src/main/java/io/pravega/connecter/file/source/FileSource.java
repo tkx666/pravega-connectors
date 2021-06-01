@@ -27,7 +27,11 @@ public class FileSource implements Source {
 
     @Override
     public void close() {
-
+        try {
+            in.close();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
     }
 
     @Override

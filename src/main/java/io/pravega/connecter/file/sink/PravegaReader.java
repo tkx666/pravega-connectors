@@ -6,36 +6,46 @@ import io.pravega.client.admin.ReaderGroupManager;
 import io.pravega.client.admin.StreamManager;
 import io.pravega.client.stream.*;
 import io.pravega.client.stream.impl.JavaSerializer;
+import io.pravega.client.stream.impl.UTF8StringSerializer;
 
 import java.net.URI;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.UUID;
+import java.util.concurrent.LinkedBlockingDeque;
 
 public class PravegaReader {
-    public final String scope;
-    public final String streamName;
-    public final URI controllerURI;
+    public static String scope;
+    public static String streamName;
+    public static URI controllerURI;
+    private static final String readerGroup = "group";
     private static final int READER_TIMEOUT_MS = 2000;
+    private static EventStreamClientFactory clientFactory;
+    private String readerName;
+    private LinkedBlockingDeque<EventRead<String>> queue;
 
 
-    public PravegaReader(Map<String, String> pravegaProps){
+    public PravegaReader(Map<String, String> pravegaProps, String readerName, LinkedBlockingDeque<EventRead<String>> queue) {
         this.scope = pravegaProps.get("scope");
         this.streamName = pravegaProps.get("name");
         this.controllerURI = URI.create(pravegaProps.get("uri"));
+        this.readerName = readerName;
+        this.queue = queue;
     }
 
-    public List<EventRead<String>> run() {
+    public static void init(Map<String, String> pravegaProps) {
+        scope = pravegaProps.get("scope");
+        streamName = pravegaProps.get("name");
+        controllerURI = URI.create(pravegaProps.get("uri"));
         StreamManager streamManager = StreamManager.create(controllerURI);
 
         final boolean scopeIsNew = streamManager.createScope(scope);
         StreamConfiguration streamConfig = StreamConfiguration.builder()
-                .scalingPolicy(ScalingPolicy.fixed(1))
+                .scalingPolicy(ScalingPolicy.fixed(5))
                 .build();
         final boolean streamIsNew = streamManager.createStream(scope, streamName, streamConfig);
 
-        final String readerGroup = UUID.randomUUID().toString().replace("-", "");
         final ReaderGroupConfig readerGroupConfig = ReaderGroupConfig.builder()
                 .stream(Stream.of(scope, streamName))
                 .build();
@@ -43,21 +53,26 @@ public class PravegaReader {
             readerGroupManager.createReaderGroup(readerGroup, readerGroupConfig);
         }
 
-        try (EventStreamClientFactory clientFactory = EventStreamClientFactory.withScope(scope,
+        clientFactory = EventStreamClientFactory.withScope(scope,
                 ClientConfig.builder().controllerURI(controllerURI).build());
-             EventStreamReader<String> reader = clientFactory.createReader("reader",
-                     readerGroup,
-                     new JavaSerializer<String>(),
-                     ReaderConfig.builder().build())) {
-            System.out.format("Reading all the events from %s/%s%n", scope, streamName);
-            EventRead<String> event = null;
+    }
+
+
+    public List<EventRead<String>> readEvent() {
+        try (EventStreamReader<String> reader = clientFactory.createReader(readerName,
+                readerGroup,
+                new UTF8StringSerializer(),
+                ReaderConfig.builder().build())) {
             List<EventRead<String>> readList = new ArrayList<>();
+            EventRead<String> event = null;
+
             do {
                 try {
                     event = reader.readNextEvent(READER_TIMEOUT_MS);
                     if (event.getEvent() != null) {
+                        queue.add(event);
                         readList.add(event);
-                        System.out.format("Read event '%s'%n", event.getEvent());
+                        System.out.format("Read event '%s %s'%n", Thread.currentThread().getName(), event.getEvent());
                     }
                 } catch (ReinitializationRequiredException e) {
                     //There are certain circumstances where the reader needs to be reinitialized
@@ -66,8 +81,39 @@ public class PravegaReader {
             } while (event.getEvent() != null);
             return readList;
         }
-    }
 
+
+//            String a = null;
+//            while (true) {
+//                System.out.println(Thread.currentThread().getName());
+//                if((a = reader.readNextEvent(1000).getEvent()) != null)
+//                    System.out.format("Read event '%s %s'%n", Thread.currentThread().getName(), a);
+//                else break;
+//            }
+        //reader.close();
+
+
+//        do {
+//            try {
+//                event = reader.readNextEvent(READER_TIMEOUT_MS);
+//                if (event.getEvent() != null) {
+//                    readList.add(event);
+//                    System.out.format("Read event '%s %s'%n", Thread.currentThread().getName(), event.getEvent());
+//                }
+//            } catch (ReinitializationRequiredException e) {
+//                //There are certain circumstances where the reader needs to be reinitialized
+//                e.printStackTrace();
+//            }
+//        } while (event.getEvent() != null);
+//        String a = null;
+//        while (true) {
+//            System.out.println(Thread.currentThread().getName());
+//            if((a = reader.readNextEvent(1000).getEvent()) != null)
+//                System.out.format("Read event '%s %s'%n", Thread.currentThread().getName(), a);
+//            else break;
+//        }
+
+    }
 
 
 }

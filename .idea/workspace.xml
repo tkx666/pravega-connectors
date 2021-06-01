@@ -25,12 +25,8 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="c7770bdd-fd01-4eb7-87ed-524b089b763c" name="Default Changelist" comment="">
-      <change afterPath="$PROJECT_DIR$/src/main/java/io/pravega/connecter/file/sink/ConnectStandalone.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/java/io/pravega/connecter/file/sink/FileSink.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/java/io/pravega/connecter/file/sink/PravegaReader.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/java/io/pravega/connecter/file/sink/Sink.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/java/io/pravega/connecter/file/sink/WorkerFileSink.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/write.txt" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/main/java/io/pravega/connecter/file/sink/SinkWorker.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/main/java/io/pravega/connecter/utils/WriteTest.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.gradle/6.5.1/executionHistory/executionHistory.bin" beforeDir="false" afterPath="$PROJECT_DIR$/.gradle/6.5.1/executionHistory/executionHistory.bin" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.gradle/6.5.1/executionHistory/executionHistory.lock" beforeDir="false" afterPath="$PROJECT_DIR$/.gradle/6.5.1/executionHistory/executionHistory.lock" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.gradle/6.5.1/fileHashes/fileHashes.bin" beforeDir="false" afterPath="$PROJECT_DIR$/.gradle/6.5.1/fileHashes/fileHashes.bin" afterDir="false" />
@@ -38,25 +34,28 @@
       <change beforePath="$PROJECT_DIR$/.gradle/6.5.1/javaCompile/classAnalysis.bin" beforeDir="false" afterPath="$PROJECT_DIR$/.gradle/6.5.1/javaCompile/classAnalysis.bin" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.gradle/6.5.1/javaCompile/javaCompile.lock" beforeDir="false" afterPath="$PROJECT_DIR$/.gradle/6.5.1/javaCompile/javaCompile.lock" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.gradle/buildOutputCleanup/buildOutputCleanup.lock" beforeDir="false" afterPath="$PROJECT_DIR$/.gradle/buildOutputCleanup/buildOutputCleanup.lock" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.gradle/checksums/checksums.lock" beforeDir="false" afterPath="$PROJECT_DIR$/.gradle/checksums/checksums.lock" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.gradle/checksums/sha1-checksums.bin" beforeDir="false" afterPath="$PROJECT_DIR$/.gradle/checksums/sha1-checksums.bin" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/build/classes/java/main/io/pravega/connecter/ConnectStandalone.class" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/build/classes/java/main/io/pravega/connecter/FileSource.class" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/build/classes/java/main/io/pravega/connecter/FileWriter.class" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/build/classes/java/main/io/pravega/connecter/Source.class" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/build/classes/java/main/io/pravega/connecter/Task.class" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/build/classes/java/main/io/pravega/connecter/WorkerFileSource.class" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/build/classes/java/main/io/pravega/connecter/test.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/build/classes/java/main/io/pravega/connecter/file/sink/ConnectStandalone.class" beforeDir="false" afterPath="$PROJECT_DIR$/build/classes/java/main/io/pravega/connecter/file/sink/ConnectStandalone.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/build/classes/java/main/io/pravega/connecter/file/sink/FileSink.class" beforeDir="false" afterPath="$PROJECT_DIR$/build/classes/java/main/io/pravega/connecter/file/sink/FileSink.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/build/classes/java/main/io/pravega/connecter/file/sink/PravegaReader.class" beforeDir="false" afterPath="$PROJECT_DIR$/build/classes/java/main/io/pravega/connecter/file/sink/PravegaReader.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/build/classes/java/main/io/pravega/connecter/file/sink/Sink.class" beforeDir="false" afterPath="$PROJECT_DIR$/build/classes/java/main/io/pravega/connecter/file/sink/Sink.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/build/classes/java/main/io/pravega/connecter/file/sink/WorkerFileSink.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/build/classes/java/main/io/pravega/connecter/file/source/ConnectStandalone.class" beforeDir="false" afterPath="$PROJECT_DIR$/build/classes/java/main/io/pravega/connecter/file/source/ConnectStandalone.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/build/classes/java/main/io/pravega/connecter/file/source/FileSource.class" beforeDir="false" afterPath="$PROJECT_DIR$/build/classes/java/main/io/pravega/connecter/file/source/FileSource.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/build/classes/java/main/io/pravega/connecter/file/source/PravegaWriter.class" beforeDir="false" afterPath="$PROJECT_DIR$/build/classes/java/main/io/pravega/connecter/file/source/PravegaWriter.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/build/classes/java/main/io/pravega/connecter/file/source/WorkerFileSource.class" beforeDir="false" afterPath="$PROJECT_DIR$/build/classes/java/main/io/pravega/connecter/file/source/WorkerFileSource.class" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/build/tmp/compileJava/source-classes-mapping.txt" beforeDir="false" afterPath="$PROJECT_DIR$/build/tmp/compileJava/source-classes-mapping.txt" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/file.properties" beforeDir="false" afterPath="$PROJECT_DIR$/file.properties" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/io/pravega/connecter/ConnectStandalone.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/io/pravega/connecter/file/source/ConnectStandalone.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/io/pravega/connecter/FileSource.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/io/pravega/connecter/file/source/FileSource.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/io/pravega/connecter/FileWriter.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/io/pravega/connecter/file/source/PravegaWriter.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/io/pravega/connecter/Source.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/io/pravega/connecter/file/source/Source.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/io/pravega/connecter/WorkerFileSource.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/io/pravega/connecter/file/source/WorkerFileSource.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/io/pravega/connecter/test.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/io/pravega/connecter/file/sink/ConnectStandalone.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/io/pravega/connecter/file/sink/ConnectStandalone.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/io/pravega/connecter/file/sink/FileSink.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/io/pravega/connecter/file/sink/FileSink.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/io/pravega/connecter/file/sink/PravegaReader.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/io/pravega/connecter/file/sink/PravegaReader.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/io/pravega/connecter/file/sink/Sink.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/io/pravega/connecter/file/sink/Sink.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/io/pravega/connecter/file/sink/WorkerFileSink.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/io/pravega/connecter/file/sink/SinkTask.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/io/pravega/connecter/file/source/ConnectStandalone.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/io/pravega/connecter/file/source/ConnectStandalone.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/io/pravega/connecter/file/source/FileSource.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/io/pravega/connecter/file/source/FileSource.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/io/pravega/connecter/file/source/PravegaWriter.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/io/pravega/connecter/file/source/PravegaWriter.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/io/pravega/connecter/file/source/WorkerFileSource.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/io/pravega/connecter/file/source/WorkerFileSource.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/test.txt" beforeDir="false" afterPath="$PROJECT_DIR$/test.txt" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/write.txt" beforeDir="false" afterPath="$PROJECT_DIR$/write.txt" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -127,6 +126,32 @@
         <option name="Make" enabled="true" />
       </method>
     </configuration>
+    <configuration name="ConnectStandalone" type="Application" factoryName="Application" temporary="true" nameIsGenerated="true">
+      <option name="MAIN_CLASS_NAME" value="io.pravega.connecter.file.sink.ConnectStandalone" />
+      <module name="untitled.main" />
+      <extension name="coverage">
+        <pattern>
+          <option name="PATTERN" value="io.pravega.connecter.file.sink.*" />
+          <option name="ENABLED" value="true" />
+        </pattern>
+      </extension>
+      <method v="2">
+        <option name="Make" enabled="true" />
+      </method>
+    </configuration>
+    <configuration name="WriteTest" type="Application" factoryName="Application" temporary="true" nameIsGenerated="true">
+      <option name="MAIN_CLASS_NAME" value="io.pravega.connecter.utils.WriteTest" />
+      <module name="untitled.main" />
+      <extension name="coverage">
+        <pattern>
+          <option name="PATTERN" value="io.pravega.connecter.utils.*" />
+          <option name="ENABLED" value="true" />
+        </pattern>
+      </extension>
+      <method v="2">
+        <option name="Make" enabled="true" />
+      </method>
+    </configuration>
     <configuration name="test" type="Application" factoryName="Application" temporary="true" nameIsGenerated="true">
       <option name="MAIN_CLASS_NAME" value="io.pravega.connecter.test" />
       <module name="pravega-connectors.main" />
@@ -143,6 +168,7 @@
     <recent_temporary>
       <list>
         <item itemvalue="Application.ConnectStandalone (1)" />
+        <item itemvalue="Application.WriteTest" />
         <item itemvalue="Application.ConnectStandalone" />
         <item itemvalue="Application.test" />
       </list>
@@ -164,7 +190,8 @@
       <workItem from="1622007285673" duration="2586000" />
       <workItem from="1622021471828" duration="64000" />
       <workItem from="1622021545630" duration="12161000" />
-      <workItem from="1622080558225" duration="5789000" />
+      <workItem from="1622080558225" duration="29668000" />
+      <workItem from="1622514609504" duration="13558000" />
     </task>
     <servers />
   </component>
@@ -195,34 +222,40 @@
       <screen x="0" y="0" width="2048" height="1112" />
     </state>
     <state x="536" y="118" key="#Project_Structure/0.0.2048.1112@0.0.2048.1112" timestamp="1622092119536" />
-    <state x="1270" y="266" key="#com.intellij.ide.util.MemberChooser" timestamp="1622093664844">
+    <state x="1270" y="266" key="#com.intellij.ide.util.MemberChooser" timestamp="1622549994881">
       <screen x="0" y="0" width="2048" height="1112" />
     </state>
-    <state x="1270" y="266" key="#com.intellij.ide.util.MemberChooser/0.0.2048.1112@0.0.2048.1112" timestamp="1622093664844" />
-    <state x="733" y="411" width="618" height="218" key="#com.intellij.refactoring.move.moveClassesOrPackages.MoveClassesOrPackagesDialog.classes" timestamp="1622083807970">
-      <screen x="0" y="0" width="2048" height="1112" />
+    <state x="1270" y="266" key="#com.intellij.ide.util.MemberChooser/0.0.2048.1112@0.0.2048.1112" timestamp="1622549994881" />
+    <state x="458" y="251" width="432" height="216" key="#com.intellij.refactoring.move.moveClassesOrPackages.MoveClassesOrPackagesDialog.classes" timestamp="1622518413855">
+      <screen x="0" y="0" width="1280" height="680" />
     </state>
+    <state x="458" y="251" width="432" height="216" key="#com.intellij.refactoring.move.moveClassesOrPackages.MoveClassesOrPackagesDialog.classes/0.0.1280.680@0.0.1280.680" timestamp="1622518413855" />
     <state x="733" y="411" width="618" height="218" key="#com.intellij.refactoring.move.moveClassesOrPackages.MoveClassesOrPackagesDialog.classes/0.0.2048.1112@0.0.2048.1112" timestamp="1622083807970" />
-    <state x="1078" y="163" key="#com.intellij.refactoring.rename.AutomaticRenamingDialog" timestamp="1622092244713">
+    <state x="275" y="0" key="#com.intellij.refactoring.rename.AutomaticRenamingDialog" timestamp="1622434795718">
+      <screen x="0" y="0" width="1280" height="680" />
+    </state>
+    <state x="275" y="0" key="#com.intellij.refactoring.rename.AutomaticRenamingDialog/0.0.1280.680@0.0.1280.680" timestamp="1622434795718" />
+    <state x="756" y="163" key="#com.intellij.refactoring.rename.AutomaticRenamingDialog/0.0.2048.1112@0.0.2048.1112" timestamp="1622187424400" />
+    <state width="2005" height="355" key="GridCell.Tab.0.bottom" timestamp="1622551677624">
       <screen x="0" y="0" width="2048" height="1112" />
     </state>
-    <state x="1078" y="163" key="#com.intellij.refactoring.rename.AutomaticRenamingDialog/0.0.2048.1112@0.0.2048.1112" timestamp="1622092244713" />
-    <state width="1614" height="244" key="GridCell.Tab.0.bottom" timestamp="1622094152481">
+    <state width="1222" height="195" key="GridCell.Tab.0.bottom/0.0.1280.680@0.0.1280.680" timestamp="1622535634916" />
+    <state width="2005" height="355" key="GridCell.Tab.0.bottom/0.0.2048.1112@0.0.2048.1112" timestamp="1622551677624" />
+    <state width="2005" height="355" key="GridCell.Tab.0.center" timestamp="1622551677624">
       <screen x="0" y="0" width="2048" height="1112" />
     </state>
-    <state width="1614" height="244" key="GridCell.Tab.0.bottom/0.0.2048.1112@0.0.2048.1112" timestamp="1622094152481" />
-    <state width="1614" height="244" key="GridCell.Tab.0.center" timestamp="1622094152481">
+    <state width="1222" height="195" key="GridCell.Tab.0.center/0.0.1280.680@0.0.1280.680" timestamp="1622535634916" />
+    <state width="2005" height="355" key="GridCell.Tab.0.center/0.0.2048.1112@0.0.2048.1112" timestamp="1622551677624" />
+    <state width="2005" height="355" key="GridCell.Tab.0.left" timestamp="1622551677624">
       <screen x="0" y="0" width="2048" height="1112" />
     </state>
-    <state width="1614" height="244" key="GridCell.Tab.0.center/0.0.2048.1112@0.0.2048.1112" timestamp="1622094152481" />
-    <state width="1614" height="244" key="GridCell.Tab.0.left" timestamp="1622094152480">
+    <state width="1222" height="195" key="GridCell.Tab.0.left/0.0.1280.680@0.0.1280.680" timestamp="1622535634916" />
+    <state width="2005" height="355" key="GridCell.Tab.0.left/0.0.2048.1112@0.0.2048.1112" timestamp="1622551677624" />
+    <state width="2005" height="355" key="GridCell.Tab.0.right" timestamp="1622551677624">
       <screen x="0" y="0" width="2048" height="1112" />
     </state>
-    <state width="1614" height="244" key="GridCell.Tab.0.left/0.0.2048.1112@0.0.2048.1112" timestamp="1622094152480" />
-    <state width="1614" height="244" key="GridCell.Tab.0.right" timestamp="1622094152481">
-      <screen x="0" y="0" width="2048" height="1112" />
-    </state>
-    <state width="1614" height="244" key="GridCell.Tab.0.right/0.0.2048.1112@0.0.2048.1112" timestamp="1622094152481" />
+    <state width="1222" height="195" key="GridCell.Tab.0.right/0.0.1280.680@0.0.1280.680" timestamp="1622535634916" />
+    <state width="2005" height="355" key="GridCell.Tab.0.right/0.0.2048.1112@0.0.2048.1112" timestamp="1622551677624" />
     <state x="452" y="55" key="SettingsEditor" timestamp="1622021653769">
       <screen x="0" y="0" width="2048" height="1112" />
     </state>
@@ -232,5 +265,27 @@
       <screen x="0" y="0" width="2048" height="1112" />
     </state>
     <state x="1127" y="248" key="search.everywhere.popup/0.0.2048.1112@0.0.2048.1112" timestamp="1622035380499" />
+  </component>
+  <component name="XDebuggerManager">
+    <breakpoint-manager>
+      <breakpoints>
+        <line-breakpoint enabled="true" type="java-method">
+          <url>file://$PROJECT_DIR$/src/main/java/io/pravega/connecter/file/sink/ConnectStandalone.java</url>
+          <line>11</line>
+          <properties class="io.pravega.connecter.file.sink.ConnectStandalone" method="main">
+            <option name="EMULATED" value="true" />
+          </properties>
+          <option name="timeStamp" value="1" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" type="java-method">
+          <url>file://$PROJECT_DIR$/src/main/java/io/pravega/connecter/utils/WriteTest.java</url>
+          <line>9</line>
+          <properties class="io.pravega.connecter.utils.WriteTest" method="main">
+            <option name="EMULATED" value="true" />
+          </properties>
+          <option name="timeStamp" value="2" />
+        </line-breakpoint>
+      </breakpoints>
+    </breakpoint-manager>
   </component>
 </project>

@@ -1,8 +1,5 @@
 package io.pravega.connecter.file.sink;
 
-import io.pravega.connecter.file.source.FileSource;
-import io.pravega.connecter.file.source.PravegaWriter;
-import io.pravega.connecter.file.source.WorkerFileSource;
 import io.pravega.connecter.utils.Utils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -18,15 +15,18 @@ public class ConnectStandalone {    private static final Logger log = LoggerFact
         Properties fileProps = Utils.loadProps("file.properties");
         Map<String, String> pravegaMap = Utils.propsToMap(pravegaProps);
         Map<String, String> fileMap = Utils.propsToMap(fileProps);
+        SinkWorker sinkWorker = new SinkWorker(fileMap, pravegaMap);
+        sinkWorker.execute(10);
 
-        PravegaReader pravegaReader = new PravegaReader(pravegaMap);
-        FileSink fileSink = new FileSink();
-        fileSink.open(fileMap, pravegaMap, pravegaReader);
 
-        WorkerFileSink workerFileSink= new WorkerFileSink(pravegaReader, fileSink, pravegaMap);
-        Thread worker = new Thread(workerFileSink);
-        worker.start();
-        //fileSink.close();
+//        PravegaReader pravegaReader = new PravegaReader(pravegaMap);
+//        FileSink fileSink = new FileSink();
+//        fileSink.open(fileMap, pravegaMap);
+//
+//        FileSinkTask fileSinkTask = new FileSinkTask(pravegaReader, fileSink, pravegaMap);
+//        Thread worker = new Thread(fileSinkTask);
+//        worker.start();
+//        //fileSink.close();
     }
 
 }

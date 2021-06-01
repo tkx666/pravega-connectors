@@ -17,6 +17,7 @@ public class ConnectStandalone {
         Map<String, String> pravegaMap = Utils.propsToMap(pravegaProps);
         Map<String, String> fileMap = Utils.propsToMap(fileProps);
 
+        PravegaWriter.init(pravegaMap);
         PravegaWriter pravegaWriter = new PravegaWriter(pravegaMap);
         FileSource fileSource = new FileSource();
         fileSource.open(fileMap, pravegaMap);
