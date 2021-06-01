@@ -1,26 +1,26 @@
-io/pravega/connecter/file/sink/Sink.java
- io.pravega.connecter.file.sink.Sink
-io/pravega/connecter/utils/WriteTest.java
- io.pravega.connecter.utils.WriteTest
-io/pravega/connecter/file/source/PravegaWriter.java
- io.pravega.connecter.file.source.PravegaWriter
-io/pravega/connecter/utils/Utils.java
- io.pravega.connecter.utils.Utils
-io/pravega/connecter/file/source/ConnectStandalone.java
- io.pravega.connecter.file.source.ConnectStandalone
 io/pravega/connecter/file/source/FileSource.java
  io.pravega.connecter.file.source.FileSource
-io/pravega/connecter/file/source/Source.java
- io.pravega.connecter.file.source.Source
-io/pravega/connecter/file/sink/ConnectStandalone.java
- io.pravega.connecter.file.sink.ConnectStandalone
-io/pravega/connecter/file/sink/FileSink.java
- io.pravega.connecter.file.sink.FileSink
-io/pravega/connecter/file/source/WorkerFileSource.java
- io.pravega.connecter.file.source.WorkerFileSource
-io/pravega/connecter/file/sink/SinkWorker.java
- io.pravega.connecter.file.sink.SinkWorker
-io/pravega/connecter/file/sink/PravegaReader.java
- io.pravega.connecter.file.sink.PravegaReader
 io/pravega/connecter/file/sink/SinkTask.java
  io.pravega.connecter.file.sink.SinkTask
+io/pravega/connecter/file/source/Source.java
+ io.pravega.connecter.file.source.Source
+io/pravega/connecter/utils/Utils.java
+ io.pravega.connecter.utils.Utils
+io/pravega/connecter/file/sink/Sink.java
+ io.pravega.connecter.file.sink.Sink
+io/pravega/connecter/file/sink/ConnectStandalone.java
+ io.pravega.connecter.file.sink.ConnectStandalone
+io/pravega/connecter/file/source/PravegaWriter.java
+ io.pravega.connecter.file.source.PravegaWriter
+io/pravega/connecter/utils/WriteTest.java
+ io.pravega.connecter.utils.WriteTest
+io/pravega/connecter/file/sink/FileSink.java
+ io.pravega.connecter.file.sink.FileSink
+io/pravega/connecter/file/sink/PravegaReader.java
+ io.pravega.connecter.file.sink.PravegaReader
+io/pravega/connecter/file/sink/SinkWorker.java
+ io.pravega.connecter.file.sink.SinkWorker
+io/pravega/connecter/file/source/ConnectStandalone.java
+ io.pravega.connecter.file.source.ConnectStandalone
+io/pravega/connecter/file/source/WorkerFileSource.java
+ io.pravega.connecter.file.source.WorkerFileSource

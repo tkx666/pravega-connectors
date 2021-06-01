@@ -18,7 +18,6 @@ public class ConnectStandalone {    private static final Logger log = LoggerFact
         SinkWorker sinkWorker = new SinkWorker(fileMap, pravegaMap);
         sinkWorker.execute(5);
 
-
 //        PravegaReader pravegaReader = new PravegaReader(pravegaMap);
 //        FileSink fileSink = new FileSink();
 //        fileSink.open(fileMap, pravegaMap);

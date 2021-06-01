@@ -5,18 +5,15 @@ import io.pravega.client.stream.EventRead;
 import java.io.*;
 import java.util.List;
 import java.util.Map;
-import java.util.concurrent.LinkedBlockingDeque;
 
 public class FileSink implements Sink{
-    private Map<String, String> fileProps;
-    private Map<String, String> pravegaProps;
-    private BufferedWriter out;
-    private LinkedBlockingDeque<EventRead<String>> queue;
+    Map<String, String> fileProps;
+    Map<String, String> pravegaProps;
+    BufferedWriter out;
     @Override
-    public void open(Map<String, String> fileProps, Map<String, String> pravegaProps, LinkedBlockingDeque<EventRead<String>> queue) {
+    public void open(Map<String, String> fileProps, Map<String, String> pravegaProps) {
         this.fileProps = fileProps;
         this.pravegaProps = pravegaProps;
-        this.queue = queue;
         try {
             this.out = new BufferedWriter(new FileWriter(fileProps.get("writePath"), true));
         } catch (FileNotFoundException e) {

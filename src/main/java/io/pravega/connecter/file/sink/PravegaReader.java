@@ -13,7 +13,6 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.UUID;
-import java.util.concurrent.LinkedBlockingDeque;
 
 public class PravegaReader {
     public static String scope;
@@ -23,15 +22,13 @@ public class PravegaReader {
     private static final int READER_TIMEOUT_MS = 2000;
     private static EventStreamClientFactory clientFactory;
     private String readerName;
-    private LinkedBlockingDeque<EventRead<String>> queue;
 
 
-    public PravegaReader(Map<String, String> pravegaProps, String readerName, LinkedBlockingDeque<EventRead<String>> queue) {
+    public PravegaReader(Map<String, String> pravegaProps, String readerName) {
         this.scope = pravegaProps.get("scope");
         this.streamName = pravegaProps.get("name");
         this.controllerURI = URI.create(pravegaProps.get("uri"));
         this.readerName = readerName;
-        this.queue = queue;
     }
 
     public static void init(Map<String, String> pravegaProps) {
@@ -56,42 +53,39 @@ public class PravegaReader {
         clientFactory = EventStreamClientFactory.withScope(scope,
                 ClientConfig.builder().controllerURI(controllerURI).build());
     }
-
+    public void start(){
+        try (EventStreamClientFactory Factory = EventStreamClientFactory.withScope(scope,
+                ClientConfig.builder().controllerURI(controllerURI).build());
+             EventStreamReader<String> reader = Factory.createReader("reader",
+                     readerGroup,
+                     new UTF8StringSerializer(),
+                     ReaderConfig.builder().build())) {
+            System.out.println("reader start");
+        }
+    }
 
     public List<EventRead<String>> readEvent() {
-        try (EventStreamReader<String> reader = clientFactory.createReader(readerName,
-                readerGroup,
-                new UTF8StringSerializer(),
-                ReaderConfig.builder().build())) {
-            List<EventRead<String>> readList = new ArrayList<>();
-            EventRead<String> event = null;
-
-            do {
-                try {
-                    event = reader.readNextEvent(READER_TIMEOUT_MS);
-                    if (event.getEvent() != null) {
-                        // queue.add(event);
-                        readList.add(event);
-                        System.out.format("Read event '%s %s'%n", Thread.currentThread().getName(), event.getEvent());
+            try (EventStreamReader<String> reader = clientFactory.createReader(readerName,
+                    readerGroup,
+                    new UTF8StringSerializer(),
+                    ReaderConfig.builder().build())) {
+                List<EventRead<String>> readList = new ArrayList<>();
+                EventRead<String> event = null;
+                do {
+                    try {
+                        event = reader.readNextEvent(READER_TIMEOUT_MS);
+                        if (event.getEvent() != null) {
+                            readList.add(event);
+                            System.out.format("Read event '%s %s'%n", Thread.currentThread().getName(), event.getEvent());
+                        }
+                    } catch (ReinitializationRequiredException e) {
+                        //There are certain circumstances where the reader needs to be reinitialized
+                        e.printStackTrace();
                     }
-                } catch (ReinitializationRequiredException e) {
-                    //There are certain circumstances where the reader needs to be reinitialized
-                    e.printStackTrace();
-                }
-            } while (event.getEvent() != null);
-//            while (true) {
-//                System.out.println(Thread.currentThread().getName());
-//                event = reader.readNextEvent(1000);
-//                if ((event.getEvent()) != null){
-//                    System.out.format("Read event '%s %s'%n", Thread.currentThread().getName(), event.getEvent());
-//                    readList.add(event);
-//
-//                }
-//
-//                else break;
-//            }
-            return readList;
-        }
+                } while (event.getEvent() != null);
+                return readList;
+            }
+
 
 
 //            String a = null;
