@@ -38,45 +38,10 @@ public class FileSink implements Sink{
 
     @Override
     public void write(List<EventRead<String>> readList) {
-        synchronized (FileSink.class){
-            try {
-                while (true) {
-//                    if(!queue.isEmpty()){
-//                        System.out.println("write");
-//                        out.write(queue.poll().getEvent());
-//                        out.newLine();
-//                        out.flush();
-//                    }
-                    out.write(queue.take().getEvent());
-                    out.newLine();
-                    out.flush();
-
-                }
-            } catch (IOException | InterruptedException e) {
-                e.printStackTrace();
-            } finally {
-                try {
-                    out.flush();
-                } catch (IOException e) {
-                    e.printStackTrace();
-                }
-            }
-        }
-
-
-    }
-
-    public void write() {
         try {
-            while (true) {
-                if(!queue.isEmpty()){
-                    System.out.println("write");
-                    out.write(queue.poll().getEvent());
-                    out.newLine();
-                    out.flush();
-                }
-                else break;
-
+            for (EventRead<String> event : readList) {
+                out.write(event.getEvent());
+                out.newLine();
             }
         } catch (IOException e) {
             e.printStackTrace();
@@ -89,6 +54,5 @@ public class FileSink implements Sink{
         }
 
     }
-
 
 }

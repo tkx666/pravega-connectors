@@ -70,7 +70,7 @@ public class PravegaReader {
                 try {
                     event = reader.readNextEvent(READER_TIMEOUT_MS);
                     if (event.getEvent() != null) {
-                        queue.add(event);
+                        // queue.add(event);
                         readList.add(event);
                         System.out.format("Read event '%s %s'%n", Thread.currentThread().getName(), event.getEvent());
                     }
@@ -79,6 +79,17 @@ public class PravegaReader {
                     e.printStackTrace();
                 }
             } while (event.getEvent() != null);
+//            while (true) {
+//                System.out.println(Thread.currentThread().getName());
+//                event = reader.readNextEvent(1000);
+//                if ((event.getEvent()) != null){
+//                    System.out.format("Read event '%s %s'%n", Thread.currentThread().getName(), event.getEvent());
+//                    readList.add(event);
+//
+//                }
+//
+//                else break;
+//            }
             return readList;
         }
 

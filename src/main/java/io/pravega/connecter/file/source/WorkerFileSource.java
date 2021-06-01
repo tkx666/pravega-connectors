@@ -19,14 +19,14 @@ public class WorkerFileSource implements Runnable{
 //            String str = line.get(0);
 //            sendRecord(str);
 //        }
-        for(int i = 0; i < 10000; i++){
-            sendRecord(String.valueOf(i));
+        for(int i = 0; i < 30000; i++){
+            sendRecord(String.valueOf(i), String.valueOf(i % 5));
         }
         fileSource.close();
 
     }
 
-    public void sendRecord(String str){
-        pravegaWriter.run(pravegaProps.get("routingKey"), str);
+    public void sendRecord(String str, String routingKey){
+        pravegaWriter.run(routingKey, str);
     }
 }

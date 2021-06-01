@@ -52,8 +52,6 @@ public class PravegaWriter {
                     message, routingKey, scope, streamName);
             final CompletableFuture writeFuture = writer.writeEvent(message);
 
-
-
     }
 
 }

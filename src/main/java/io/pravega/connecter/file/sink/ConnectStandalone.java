@@ -16,7 +16,7 @@ public class ConnectStandalone {    private static final Logger log = LoggerFact
         Map<String, String> pravegaMap = Utils.propsToMap(pravegaProps);
         Map<String, String> fileMap = Utils.propsToMap(fileProps);
         SinkWorker sinkWorker = new SinkWorker(fileMap, pravegaMap);
-        sinkWorker.execute(10);
+        sinkWorker.execute(5);
 
 
 //        PravegaReader pravegaReader = new PravegaReader(pravegaMap);
