@@ -25,44 +25,15 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="c7770bdd-fd01-4eb7-87ed-524b089b763c" name="Default Changelist" comment="">
-      <change afterPath="$PROJECT_DIR$/.gitignore" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/sink.properties" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/main/java/io/pravega/connecter/runtime/source/SourceTask.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.gradle/6.5.1/executionHistory/executionHistory.bin" beforeDir="false" afterPath="$PROJECT_DIR$/.gradle/6.5.1/executionHistory/executionHistory.bin" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.gradle/6.5.1/executionHistory/executionHistory.lock" beforeDir="false" afterPath="$PROJECT_DIR$/.gradle/6.5.1/executionHistory/executionHistory.lock" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.gradle/6.5.1/fileHashes/fileHashes.bin" beforeDir="false" afterPath="$PROJECT_DIR$/.gradle/6.5.1/fileHashes/fileHashes.bin" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.gradle/6.5.1/fileHashes/fileHashes.lock" beforeDir="false" afterPath="$PROJECT_DIR$/.gradle/6.5.1/fileHashes/fileHashes.lock" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.gradle/6.5.1/javaCompile/classAnalysis.bin" beforeDir="false" afterPath="$PROJECT_DIR$/.gradle/6.5.1/javaCompile/classAnalysis.bin" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.gradle/6.5.1/javaCompile/javaCompile.lock" beforeDir="false" afterPath="$PROJECT_DIR$/.gradle/6.5.1/javaCompile/javaCompile.lock" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.gradle/buildOutputCleanup/buildOutputCleanup.lock" beforeDir="false" afterPath="$PROJECT_DIR$/.gradle/buildOutputCleanup/buildOutputCleanup.lock" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/gradle.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/gradle.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/build/classes/java/main/io/pravega/connecter/file/sink/ConnectStandalone.class" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/build/classes/java/main/io/pravega/connecter/file/sink/FileSink.class" beforeDir="false" afterPath="$PROJECT_DIR$/build/classes/java/main/io/pravega/connecter/file/sink/FileSink.class" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/build/classes/java/main/io/pravega/connecter/file/sink/PravegaReader.class" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/build/classes/java/main/io/pravega/connecter/file/sink/Sink.class" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/build/classes/java/main/io/pravega/connecter/file/sink/SinkTask.class" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/build/classes/java/main/io/pravega/connecter/file/sink/SinkWorker.class" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/build/classes/java/main/io/pravega/connecter/file/source/ConnectStandalone.class" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/build/classes/java/main/io/pravega/connecter/file/source/FileSource.class" beforeDir="false" afterPath="$PROJECT_DIR$/build/classes/java/main/io/pravega/connecter/file/source/FileSource.class" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/build/classes/java/main/io/pravega/connecter/file/source/PravegaWriter.class" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/build/classes/java/main/io/pravega/connecter/file/source/Source.class" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/build/classes/java/main/io/pravega/connecter/file/source/WorkerFileSource.class" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/build/classes/java/main/io/pravega/connecter/utils/WriteTest.class" beforeDir="false" afterPath="$PROJECT_DIR$/build/classes/java/main/io/pravega/connecter/utils/WriteTest.class" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/build/tmp/compileJava/source-classes-mapping.txt" beforeDir="false" afterPath="$PROJECT_DIR$/build/tmp/compileJava/source-classes-mapping.txt" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/io/pravega/connecter/file/sink/ConnectStandalone.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/io/pravega/connecter/runtime/cli/ConnectSinkStandalone.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/io/pravega/connecter/file/sink/FileSink.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/io/pravega/connecter/file/sink/FileSink.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/io/pravega/connecter/file/sink/PravegaReader.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/io/pravega/connecter/runtime/PravegaReader.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/io/pravega/connecter/file/sink/Sink.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/io/pravega/connecter/runtime/sink/Sink.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/io/pravega/connecter/file/sink/SinkTask.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/io/pravega/connecter/runtime/sink/SinkTask.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/io/pravega/connecter/file/sink/SinkWorker.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/io/pravega/connecter/runtime/sink/SinkWorker.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/io/pravega/connecter/file/source/ConnectStandalone.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/io/pravega/connecter/runtime/cli/ConnectSourceStandalone.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/io/pravega/connecter/file/source/FileSource.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/io/pravega/connecter/file/source/FileSource.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/io/pravega/connecter/file/source/PravegaWriter.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/io/pravega/connecter/runtime/PravegaWriter.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/io/pravega/connecter/file/source/Source.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/io/pravega/connecter/runtime/source/Source.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/io/pravega/connecter/file/source/WorkerFileSource.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/io/pravega/connecter/runtime/source/SourceTask.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/io/pravega/connecter/utils/WriteTest.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/io/pravega/connecter/utils/WriteTest.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/test.txt" beforeDir="false" afterPath="$PROJECT_DIR$/test.txt" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/write.txt" beforeDir="false" afterPath="$PROJECT_DIR$/write.txt" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -106,7 +77,7 @@
     <property name="project.structure.side.proportion" value="0.2" />
     <property name="settings.editor.selected.configurable" value="preferences.pluginManager" />
   </component>
-  <component name="RunManager" selected="Application.ConnectSinkStandalone">
+  <component name="RunManager" selected="Application.ConnectSourceStandalone">
     <configuration name="ConnectSinkStandalone" type="Application" factoryName="Application" temporary="true" nameIsGenerated="true">
       <option name="MAIN_CLASS_NAME" value="io.pravega.connecter.runtime.cli.ConnectSinkStandalone" />
       <module name="untitled.main" />
@@ -257,25 +228,25 @@
     </state>
     <state x="275" y="0" key="#com.intellij.refactoring.rename.AutomaticRenamingDialog/0.0.1280.680@0.0.1280.680" timestamp="1622621308925" />
     <state x="756" y="163" key="#com.intellij.refactoring.rename.AutomaticRenamingDialog/0.0.2048.1112@0.0.2048.1112" timestamp="1622187424400" />
-    <state width="1237" height="203" key="GridCell.Tab.0.bottom" timestamp="1622622065971">
+    <state width="1237" height="135" key="GridCell.Tab.0.bottom" timestamp="1622626153469">
       <screen x="0" y="0" width="1280" height="680" />
     </state>
-    <state width="1237" height="203" key="GridCell.Tab.0.bottom/0.0.1280.680@0.0.1280.680" timestamp="1622622065971" />
+    <state width="1237" height="135" key="GridCell.Tab.0.bottom/0.0.1280.680@0.0.1280.680" timestamp="1622626153469" />
     <state width="2005" height="295" key="GridCell.Tab.0.bottom/0.0.2048.1112@0.0.2048.1112" timestamp="1622558663823" />
-    <state width="1237" height="203" key="GridCell.Tab.0.center" timestamp="1622622065971">
+    <state width="1237" height="135" key="GridCell.Tab.0.center" timestamp="1622626153469">
       <screen x="0" y="0" width="1280" height="680" />
     </state>
-    <state width="1237" height="203" key="GridCell.Tab.0.center/0.0.1280.680@0.0.1280.680" timestamp="1622622065971" />
+    <state width="1237" height="135" key="GridCell.Tab.0.center/0.0.1280.680@0.0.1280.680" timestamp="1622626153469" />
     <state width="2005" height="295" key="GridCell.Tab.0.center/0.0.2048.1112@0.0.2048.1112" timestamp="1622558663823" />
-    <state width="1237" height="203" key="GridCell.Tab.0.left" timestamp="1622622065971">
+    <state width="1237" height="135" key="GridCell.Tab.0.left" timestamp="1622626153468">
       <screen x="0" y="0" width="1280" height="680" />
     </state>
-    <state width="1237" height="203" key="GridCell.Tab.0.left/0.0.1280.680@0.0.1280.680" timestamp="1622622065971" />
+    <state width="1237" height="135" key="GridCell.Tab.0.left/0.0.1280.680@0.0.1280.680" timestamp="1622626153468" />
     <state width="2005" height="295" key="GridCell.Tab.0.left/0.0.2048.1112@0.0.2048.1112" timestamp="1622558663823" />
-    <state width="1237" height="203" key="GridCell.Tab.0.right" timestamp="1622622065971">
+    <state width="1237" height="135" key="GridCell.Tab.0.right" timestamp="1622626153469">
       <screen x="0" y="0" width="1280" height="680" />
     </state>
-    <state width="1237" height="203" key="GridCell.Tab.0.right/0.0.1280.680@0.0.1280.680" timestamp="1622622065971" />
+    <state width="1237" height="135" key="GridCell.Tab.0.right/0.0.1280.680@0.0.1280.680" timestamp="1622626153469" />
     <state width="2005" height="295" key="GridCell.Tab.0.right/0.0.2048.1112@0.0.2048.1112" timestamp="1622558663823" />
     <state width="1237" height="203" key="GridCell.Tab.1.bottom" timestamp="1622622065972">
       <screen x="0" y="0" width="1280" height="680" />
