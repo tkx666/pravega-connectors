@@ -40,6 +40,13 @@ public class FileSink implements Sink{
                 out.write(event.getEvent());
                 out.newLine();
             }
+//            synchronized (FileSink.class){
+//                for (int i = 0; i < 10000; i++) {
+//                    out.write(Integer.toString(i));
+//                    out.newLine();
+//                }
+//            }
+
         } catch (IOException e) {
             e.printStackTrace();
         } finally {

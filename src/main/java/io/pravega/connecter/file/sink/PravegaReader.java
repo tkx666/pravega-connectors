@@ -19,7 +19,7 @@ public class PravegaReader {
     public static String streamName;
     public static URI controllerURI;
     private static final String readerGroup = "group";
-    private static final int READER_TIMEOUT_MS = 2000;
+    private static final int READER_TIMEOUT_MS = 5000;
     private static EventStreamClientFactory clientFactory;
     private String readerName;
 
@@ -52,16 +52,6 @@ public class PravegaReader {
 
         clientFactory = EventStreamClientFactory.withScope(scope,
                 ClientConfig.builder().controllerURI(controllerURI).build());
-    }
-    public void start(){
-        try (EventStreamClientFactory Factory = EventStreamClientFactory.withScope(scope,
-                ClientConfig.builder().controllerURI(controllerURI).build());
-             EventStreamReader<String> reader = Factory.createReader("reader",
-                     readerGroup,
-                     new UTF8StringSerializer(),
-                     ReaderConfig.builder().build())) {
-            System.out.println("reader start");
-        }
     }
 
     public List<EventRead<String>> readEvent() {

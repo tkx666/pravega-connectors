@@ -1,5 +1,6 @@
 package io.pravega.connecter.file.source;
 
+import io.pravega.connecter.file.sink.PravegaReader;
 import io.pravega.connecter.utils.Utils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -16,6 +17,7 @@ public class ConnectStandalone {
         Properties fileProps = Utils.loadProps("file.properties");
         Map<String, String> pravegaMap = Utils.propsToMap(pravegaProps);
         Map<String, String> fileMap = Utils.propsToMap(fileProps);
+        PravegaWriter.init(pravegaMap);
 
         PravegaWriter pravegaWriter = new PravegaWriter(pravegaMap);
         FileSource fileSource = new FileSource();

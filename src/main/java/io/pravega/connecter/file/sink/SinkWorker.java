@@ -11,7 +11,7 @@ public class SinkWorker {
     private Map<String, String> fileProps;
     private Map<String, String> pravegaProps;
     public SinkWorker(Map<String, String> fileProps, Map<String, String> pravegaProps){
-        this.executor = new ThreadPoolExecutor(10, 200, 60L, TimeUnit.SECONDS, new LinkedBlockingDeque<Runnable>());
+        this.executor = new ThreadPoolExecutor(20, 200, 60L, TimeUnit.SECONDS, new LinkedBlockingDeque<Runnable>());
         this.pravegaProps = pravegaProps;
         this.fileProps = fileProps;
     }

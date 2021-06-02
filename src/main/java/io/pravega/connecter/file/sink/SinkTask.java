@@ -19,9 +19,13 @@ public class SinkTask implements Runnable{
     @Override
     public void run() {
         List<EventRead<String>> readList = null;
-        readList = pravegaReader.readEvent();
-        System.out.println(Thread.currentThread() + "  size: " + readList.size());
+        while(true){
+            readList = pravegaReader.readEvent();
+            if(readList.size() == 0) break;
+            System.out.println(Thread.currentThread() + "  size: " + readList.size());
+            fileSink.write(readList);
 
-        fileSink.write(readList);
+        }
+
     }
 }

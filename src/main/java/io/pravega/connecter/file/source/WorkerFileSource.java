@@ -15,15 +15,15 @@ public class WorkerFileSource implements Runnable{
     @Override
     public void run() {
         List<String> line;
-        PravegaWriter.init(pravegaProps);
-//        while((line = fileSource.readNext()) != null){
-//            String str = line.get(0);
-//            sendRecord(str);
-//        }
-        for(int i= 0; i < 1000; i++){
-            sendRecord(Integer.toString(i));
-
+        // PravegaWriter.init(pravegaProps);
+        while((line = fileSource.readNext()) != null){
+            String str = line.get(0);
+            sendRecord(str);
         }
+//        for(int i= 0; i < 500; i++){
+//            sendRecord(Integer.toString(i));
+//
+//        }
         fileSource.close();
 
     }
