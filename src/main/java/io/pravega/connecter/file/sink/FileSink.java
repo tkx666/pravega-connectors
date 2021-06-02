@@ -1,12 +1,13 @@
 package io.pravega.connecter.file.sink;
 
 import io.pravega.client.stream.EventRead;
+import io.pravega.connecter.runtime.sink.Sink;
 
 import java.io.*;
 import java.util.List;
 import java.util.Map;
 
-public class FileSink implements Sink{
+public class FileSink implements Sink {
     Map<String, String> fileProps;
     Map<String, String> pravegaProps;
     BufferedWriter out;

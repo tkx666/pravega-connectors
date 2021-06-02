@@ -1,4 +1,4 @@
-package io.pravega.connecter.file.source;
+package io.pravega.connecter.runtime;
 
 import io.pravega.client.ClientConfig;
 import io.pravega.client.EventStreamClientFactory;

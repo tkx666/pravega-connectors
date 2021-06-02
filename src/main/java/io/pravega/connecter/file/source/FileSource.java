@@ -1,5 +1,7 @@
 package io.pravega.connecter.file.source;
 
+import io.pravega.connecter.runtime.source.Source;
+
 import java.io.BufferedReader;
 import java.io.FileNotFoundException;
 import java.io.FileReader;

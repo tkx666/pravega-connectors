@@ -1,18 +1,17 @@
-package io.pravega.connecter.file.sink;
+package io.pravega.connecter.runtime.sink;
 
 import io.pravega.client.stream.EventRead;
-import io.pravega.connecter.file.source.FileSource;
-import io.pravega.connecter.file.source.PravegaWriter;
+import io.pravega.connecter.runtime.PravegaReader;
 
 import java.util.List;
 import java.util.Map;
 
 public class SinkTask implements Runnable{
-    private Sink fileSink;
+    private Sink sink;
     private PravegaReader pravegaReader;
     private Map<String, String> pravegaProps;
-    public SinkTask(PravegaReader pravegaReader, Sink fileSink, Map<String, String> pravegaProps){
-        this.fileSink = fileSink;
+    public SinkTask(PravegaReader pravegaReader, Sink sink, Map<String, String> pravegaProps){
+        this.sink = sink;
         this.pravegaReader = pravegaReader;
         this.pravegaProps = pravegaProps;
     }
@@ -23,7 +22,7 @@ public class SinkTask implements Runnable{
             readList = pravegaReader.readEvent();
             if(readList.size() == 0) break;
             System.out.println(Thread.currentThread() + "  size: " + readList.size());
-            fileSink.write(readList);
+            sink.write(readList);
 
         }
 

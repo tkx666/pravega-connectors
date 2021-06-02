@@ -1,6 +1,8 @@
-package io.pravega.connecter.file.source;
+package io.pravega.connecter.runtime.cli;
 
-import io.pravega.connecter.file.sink.PravegaReader;
+import io.pravega.connecter.file.source.FileSource;
+import io.pravega.connecter.runtime.PravegaWriter;
+import io.pravega.connecter.runtime.source.SourceTask;
 import io.pravega.connecter.utils.Utils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -8,8 +10,8 @@ import org.slf4j.LoggerFactory;
 import java.util.Map;
 import java.util.Properties;
 
-public class ConnectStandalone {
-    private static final Logger log = LoggerFactory.getLogger(ConnectStandalone.class);
+public class ConnectSourceStandalone {
+    private static final Logger log = LoggerFactory.getLogger(ConnectSourceStandalone.class);
 
     public static void main(String[] args) {
         log.info("start pravega connect standalone");
@@ -23,8 +25,8 @@ public class ConnectStandalone {
         FileSource fileSource = new FileSource();
         fileSource.open(fileMap, pravegaMap);
 
-        WorkerFileSource workerFileSource= new WorkerFileSource(pravegaWriter, fileSource, pravegaMap);
-        Thread worker = new Thread(workerFileSource);
+        SourceTask sourceTask = new SourceTask(pravegaWriter, fileSource, pravegaMap);
+        Thread worker = new Thread(sourceTask);
         worker.start();
     }
 

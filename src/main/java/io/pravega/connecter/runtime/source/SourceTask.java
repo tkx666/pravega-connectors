@@ -1,14 +1,16 @@
-package io.pravega.connecter.file.source;
+package io.pravega.connecter.runtime.source;
+
+import io.pravega.connecter.runtime.PravegaWriter;
 
 import java.util.List;
 import java.util.Map;
 
-public class WorkerFileSource implements Runnable{
-    private FileSource fileSource;
+public class SourceTask implements Runnable{
+    private Source source;
     private PravegaWriter pravegaWriter;
     private Map<String, String> pravegaProps;
-    public WorkerFileSource(PravegaWriter pravegaWriter, FileSource fileSource, Map<String, String> pravegaProps){
-        this.fileSource = fileSource;
+    public SourceTask(PravegaWriter pravegaWriter, Source source, Map<String, String> pravegaProps){
+        this.source = source;
         this.pravegaWriter = pravegaWriter;
         this.pravegaProps = pravegaProps;
     }
@@ -16,7 +18,7 @@ public class WorkerFileSource implements Runnable{
     public void run() {
         List<String> line;
         // PravegaWriter.init(pravegaProps);
-        while((line = fileSource.readNext()) != null){
+        while((line = source.readNext()) != null){
             String str = line.get(0);
             sendRecord(str);
         }
@@ -24,7 +26,7 @@ public class WorkerFileSource implements Runnable{
 //            sendRecord(Integer.toString(i));
 //
 //        }
-        fileSource.close();
+        source.close();
 
     }
 

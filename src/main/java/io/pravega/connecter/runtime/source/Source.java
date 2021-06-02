@@ -1,4 +1,4 @@
-package io.pravega.connecter.file.source;
+package io.pravega.connecter.runtime.source;
 
 import java.util.List;
 import java.util.Map;

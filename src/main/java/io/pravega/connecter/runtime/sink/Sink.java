@@ -1,4 +1,4 @@
-package io.pravega.connecter.file.sink;
+package io.pravega.connecter.runtime.sink;
 
 import io.pravega.client.stream.EventRead;
 
