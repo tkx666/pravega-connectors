@@ -27,6 +27,7 @@ public class SourceTask implements Runnable{
 //
 //        }
         source.close();
+        pravegaWriter.close();
 
     }
 

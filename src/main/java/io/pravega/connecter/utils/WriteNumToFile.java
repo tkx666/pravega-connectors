@@ -5,13 +5,13 @@ import io.pravega.client.stream.EventRead;
 import java.io.*;
 import java.nio.charset.Charset;
 
-public class WriteTest {
+public class WriteNumToFile {
 
     public static void main(String[] args) throws IOException {
         FileOutputStream writerStream = new FileOutputStream("test.txt");
         BufferedWriter out = new BufferedWriter(new OutputStreamWriter(writerStream, "UTF-8"));
         try {
-            for (int i = 0; i < 1000; i++) {
+            for (int i = 0; i < 50000; i++) {
                 out.write(Integer.toString(i));
                 out.newLine();
             }

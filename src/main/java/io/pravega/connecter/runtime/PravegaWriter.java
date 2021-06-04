@@ -21,7 +21,7 @@ public class PravegaWriter {
     public static EventStreamClientFactory clientFactory;
     private EventStreamWriter<String> writer;
 
-    public PravegaWriter(Map<String, String> pravegaProps){
+    public PravegaWriter(Map<String, String> pravegaProps) {
         this.scope = pravegaProps.get("scope");
         this.streamName = pravegaProps.get("name");
         this.controllerURI = URI.create(pravegaProps.get("uri"));
@@ -29,7 +29,8 @@ public class PravegaWriter {
                 new UTF8StringSerializer(),
                 EventWriterConfig.builder().build());
     }
-    public static void init(Map<String, String> pravegaProps){
+
+    public static void init(Map<String, String> pravegaProps) {
         scope = pravegaProps.get("scope");
         streamName = pravegaProps.get("name");
         controllerURI = URI.create(pravegaProps.get("uri"));
@@ -45,23 +46,17 @@ public class PravegaWriter {
                 ClientConfig.builder().controllerURI(controllerURI).build());
 
 
-
     }
 
     public void run(String routingKey, String message) {
-        try(EventStreamWriter<String> writer = clientFactory.createEventWriter(streamName,
-                new UTF8StringSerializer(),
-                EventWriterConfig.builder().build())){
-            System.out.format("Writing message: '%s' with routing-key: '%s' to stream '%s / %s'%n",
-                    message, routingKey, scope, streamName);
-            for(int i = 0; i < 10; i++){
-                final CompletableFuture writeFuture = writer.writeEvent(message);
-            }
-        }
+        System.out.format("Writing message: '%s' with routing-key: '%s' to stream '%s / %s'%n",
+                message, routingKey, scope, streamName);
+        final CompletableFuture writeFuture = writer.writeEvent(message);
+    }
 
-
-
-
+    public void close(){
+        clientFactory.close();
+        writer.close();
     }
 
 }
