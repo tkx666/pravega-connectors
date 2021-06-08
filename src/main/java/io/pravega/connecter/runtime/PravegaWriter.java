@@ -44,6 +44,7 @@ public class PravegaWriter {
 
         clientFactory = EventStreamClientFactory.withScope(scope,
                 ClientConfig.builder().controllerURI(controllerURI).build());
+        streamManager.close();
 
 
     }

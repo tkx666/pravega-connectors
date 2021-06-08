@@ -16,10 +16,10 @@ public class SourceTask implements Runnable{
     }
     @Override
     public void run() {
-        List<String> line;
-        while((line = source.readNext()) != null){
-            String str = line.get(0);
-            sendRecord(str);
+        List<String> records;
+        while((records = source.read()) != null){
+            for(int i = 0; i < records.size(); i++)
+                sendRecord(records.get(i));
         }
         source.close();
         pravegaWriter.close();

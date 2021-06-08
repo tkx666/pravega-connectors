@@ -37,7 +37,7 @@ public class FileSource implements Source {
     }
 
     @Override
-    public List<String> readNext() {
+    public List<String> read() {
         String str;
         List<String> list = new ArrayList<>();
         try {

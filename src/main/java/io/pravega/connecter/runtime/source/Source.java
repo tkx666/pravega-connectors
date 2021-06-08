@@ -8,6 +8,6 @@ public interface Source {
 
     void close();
 
-    List<String> readNext();
+    List<String> read();
 
 }
