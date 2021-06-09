@@ -1,5 +1,7 @@
-apply plugin: "distribution"
+//apply plugin: "distribution"
 apply plugin: "java"
+apply plugin: "application"
+
 
 
 version '1.0-SNAPSHOT'
@@ -21,14 +23,14 @@ repositories {
 //}
 
 
-jar {
-    baseName = 'xxx'
-    version = '0.0.1'
-    manifest {
-        attributes "Manifest-Version": 1.0,
-                'Main-Class': 'io.pravega.connecter.runtime.cli.ConnectSourceStandalone'
-    }
-}
+//jar {
+//    baseName = 'xxx'
+//    version = '0.0.1'
+//    manifest {
+//        attributes "Manifest-Version": 1.0,
+//                'Main-Class': 'io.pravega.connecter.runtime.cli.ConnectSourceStandalone'
+//    }
+//}
 
 dependencies {
     println "project dir " + "${buildDir}"
@@ -39,3 +41,4 @@ dependencies {
     implementation group: 'commons-cli', name: 'commons-cli', version: '1.4'
 
 }
+mainClassName= 'io.pravega.connecter.runtime.cli.ConnectSourceStandalone'
