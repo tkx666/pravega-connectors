@@ -1,5 +1,7 @@
 package io.pravega.connecter.runtime.cli;
 
+import io.pravega.connecter.runtime.Worker;
+import io.pravega.connecter.runtime.sink.SinkWorker;
 import io.pravega.connecter.runtime.source.SourceWorker;
 import io.pravega.connecter.utils.Utils;
 import org.apache.commons.cli.*;
@@ -9,8 +11,9 @@ import org.slf4j.LoggerFactory;
 import java.util.Map;
 import java.util.Properties;
 
-public class ConnectSourceStandalone {
-    private static final Logger log = LoggerFactory.getLogger(ConnectSourceStandalone.class);
+public class ConnectStandalone {
+    private static final Logger log = LoggerFactory.getLogger(ConnectStandalone.class);
+
 
     public static void main(String[] args) {
         log.info("start pravega connect standalone");
@@ -29,8 +32,9 @@ public class ConnectSourceStandalone {
 
             Map<String, String> pravegaMap = Utils.propsToMap(pravegaProps);
             Map<String, String> connectorMap = Utils.propsToMap(connectorProps);
-            SourceWorker sourceWorker = new SourceWorker(pravegaMap, connectorMap);
-            sourceWorker.execute(Integer.valueOf(connectorMap.get("tasks.max")));
+
+            Worker worker = Worker.getWorkerByType(connectorMap, pravegaMap);
+            worker.execute(Integer.valueOf(connectorMap.get("tasks.max")));
 
         } catch (Exception e) {
             e.printStackTrace();
@@ -38,4 +42,6 @@ public class ConnectSourceStandalone {
 
     }
 
+
 }
+

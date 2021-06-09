@@ -2,6 +2,7 @@ package io.pravega.connecter.runtime.source;
 
 import io.pravega.connecter.runtime.PravegaReader;
 import io.pravega.connecter.runtime.PravegaWriter;
+import io.pravega.connecter.runtime.Worker;
 import io.pravega.connecter.runtime.sink.Sink;
 import io.pravega.connecter.runtime.sink.SinkTask;
 
@@ -11,7 +12,7 @@ import java.util.concurrent.LinkedBlockingDeque;
 import java.util.concurrent.ThreadPoolExecutor;
 import java.util.concurrent.TimeUnit;
 
-public class SourceWorker {
+public class SourceWorker implements Worker {
     private final ExecutorService executor;
     private Map<String, String> pravegaProps;
     private Map<String, String> sourceProps;
@@ -21,9 +22,15 @@ public class SourceWorker {
         this.pravegaProps = pravegaProps;
         this.sourceProps = sourceProps;
     }
-    public void execute(int nThread) throws ClassNotFoundException, IllegalAccessException, InstantiationException {
-        Class<?> sourceClass = Class.forName(sourceProps.get("class"));
-        source = (Source) sourceClass.newInstance();
+    public void execute(int nThread){
+        Class<?> sourceClass = null;
+        try {
+            sourceClass = Class.forName(sourceProps.get("class"));
+            source = (Source) sourceClass.newInstance();
+
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
         source.open(sourceProps, pravegaProps);
         PravegaWriter.init(pravegaProps);
 

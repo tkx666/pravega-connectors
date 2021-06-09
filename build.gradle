@@ -41,4 +41,4 @@ dependencies {
     implementation group: 'commons-cli', name: 'commons-cli', version: '1.4'
 
 }
-mainClassName= 'io.pravega.connecter.runtime.cli.ConnectSourceStandalone'
+mainClassName= 'io.pravega.connecter.runtime.cli.ConnectStandalone'

@@ -2,6 +2,7 @@ package io.pravega.connecter.runtime.sink;
 
 import io.pravega.connecter.file.sink.FileSink;
 import io.pravega.connecter.runtime.PravegaReader;
+import io.pravega.connecter.runtime.Worker;
 
 import java.util.Map;
 import java.util.concurrent.ExecutorService;
@@ -9,7 +10,7 @@ import java.util.concurrent.LinkedBlockingDeque;
 import java.util.concurrent.ThreadPoolExecutor;
 import java.util.concurrent.TimeUnit;
 
-public class SinkWorker {
+public class SinkWorker implements Worker {
     private final ExecutorService executor;
     private Map<String, String> pravegaProps;
     private Map<String, String> sinkProps;
@@ -19,9 +20,14 @@ public class SinkWorker {
         this.pravegaProps = pravegaProps;
         this.sinkProps = sinkProps;
     }
-    public void execute(int nThread) throws ClassNotFoundException, IllegalAccessException, InstantiationException {
-        Class<?> sinkClass = Class.forName(sinkProps.get("class"));
-        sink = (Sink) sinkClass.newInstance();
+    public void execute(int nThread) {
+        Class<?> sinkClass = null;
+        try {
+            sinkClass = Class.forName(sinkProps.get("class"));
+            sink = (Sink) sinkClass.newInstance();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
         // FileSink fileSink = new FileSink();
         sink.open(sinkProps, pravegaProps);
         PravegaReader.init(pravegaProps);
