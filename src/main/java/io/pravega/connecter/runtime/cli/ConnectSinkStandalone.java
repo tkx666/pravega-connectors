@@ -2,6 +2,7 @@ package io.pravega.connecter.runtime.cli;
 
 import io.pravega.connecter.runtime.sink.SinkWorker;
 import io.pravega.connecter.utils.Utils;
+import org.apache.commons.cli.*;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -12,24 +13,31 @@ public class ConnectSinkStandalone {    private static final Logger log = Logger
 
     public static void main(String[] args) {
         log.info("start pravega connect standalone");
-        Properties pravegaProps = Utils.loadProps("pravega.properties");
-        Properties fileProps = Utils.loadProps("file.properties");
-        Properties connectorProps = Utils.loadProps("sink.properties");
+        CommandLineParser commandParser = new DefaultParser();
+        Options options = new Options();
 
-        Map<String, String> pravegaMap = Utils.propsToMap(pravegaProps);
-        Map<String, String> fileMap = Utils.propsToMap(fileProps);
-        Map<String, String> connectorMap = Utils.propsToMap(connectorProps);
-
-        SinkWorker sinkWorker = new SinkWorker(fileMap, pravegaMap, connectorMap);
+        options.addOption("pravega", true, "properties of pravega");
+        options.addOption("connector", true, "properties of connector");
+        CommandLine cli = null;
         try {
+            cli = commandParser.parse(options, args);
+            String pravegaPath = cli.getOptionValue("pravega");
+            Properties pravegaProps = Utils.loadProps(pravegaPath);
+            String connectorPath = cli.getOptionValue("connector");
+            Properties connectorProps = Utils.loadProps(connectorPath);
+            Map<String, String> pravegaMap = Utils.propsToMap(pravegaProps);
+            Map<String, String> connectorMap = Utils.propsToMap(connectorProps);
+            SinkWorker sinkWorker = new SinkWorker(pravegaMap, connectorMap);
             sinkWorker.execute(Integer.valueOf(connectorMap.get("tasks.max")));
-        } catch (ClassNotFoundException e) {
-            e.printStackTrace();
-        } catch (IllegalAccessException e) {
-            e.printStackTrace();
-        } catch (InstantiationException e) {
+
+
+        } catch (Exception e) {
             e.printStackTrace();
         }
+
+
+
+
 
 //        PravegaReader pravegaReader = new PravegaReader(pravegaMap);
 //        FileSink fileSink = new FileSink();

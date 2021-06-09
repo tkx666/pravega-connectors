@@ -8,15 +8,15 @@ import java.util.List;
 import java.util.Map;
 
 public class FileSink implements Sink {
-    Map<String, String> fileProps;
+    Map<String, String> sinkProps;
     Map<String, String> pravegaProps;
     BufferedWriter out;
     @Override
-    public void open(Map<String, String> fileProps, Map<String, String> pravegaProps) {
-        this.fileProps = fileProps;
+    public void open(Map<String, String> sinkProps, Map<String, String> pravegaProps) {
+        this.sinkProps = sinkProps;
         this.pravegaProps = pravegaProps;
         try {
-            this.out = new BufferedWriter(new FileWriter(fileProps.get("writePath"), true));
+            this.out = new BufferedWriter(new FileWriter(sinkProps.get("writePath"), true));
         } catch (FileNotFoundException e) {
             e.printStackTrace();
         } catch (IOException e) {

@@ -21,22 +21,18 @@ public class ConnectSourceStandalone {
         Options options = new Options();
 
         options.addOption("pravega", true, "properties of pravega");
-        options.addOption("file", true, "properties of file");
         options.addOption("connector", true, "properties of connector");
 
         try {
             CommandLine cli = commandParser.parse(options, args);
             String pravegaPath = cli.getOptionValue("pravega");
             Properties pravegaProps = Utils.loadProps(pravegaPath);
-            String filePath = cli.getOptionValue("file");
-            Properties fileProps = Utils.loadProps(filePath);
             String connectorPath = cli.getOptionValue("connector");
             Properties connectorProps = Utils.loadProps(connectorPath);
 
             Map<String, String> pravegaMap = Utils.propsToMap(pravegaProps);
-            Map<String, String> fileMap = Utils.propsToMap(fileProps);
             Map<String, String> connectorMap = Utils.propsToMap(connectorProps);
-            SourceWorker sourceWorker = new SourceWorker(fileMap, pravegaMap, connectorMap);
+            SourceWorker sourceWorker = new SourceWorker(pravegaMap, connectorMap);
             sourceWorker.execute(Integer.valueOf(connectorMap.get("tasks.max")));
 
         } catch (Exception e) {

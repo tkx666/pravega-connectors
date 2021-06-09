@@ -11,17 +11,17 @@ import java.util.List;
 import java.util.Map;
 
 public class FileSource implements Source {
-    Map<String, String> fileProps;
+    Map<String, String> sourceProps;
     Map<String, String> pravegaProps;
     BufferedReader in;
 
 
     @Override
-    public void open(Map<String, String> fileProps, Map<String, String> pravegaProps) {
-        this.fileProps = fileProps;
+    public void open(Map<String, String> sourceProps, Map<String, String> pravegaProps) {
+        this.sourceProps = sourceProps;
         this.pravegaProps = pravegaProps;
         try {
-            this.in = new BufferedReader(new FileReader(fileProps.get("readPath")));
+            this.in = new BufferedReader(new FileReader(sourceProps.get("readPath")));
         } catch (FileNotFoundException e) {
             e.printStackTrace();
         }

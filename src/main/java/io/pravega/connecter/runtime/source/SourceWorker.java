@@ -13,20 +13,18 @@ import java.util.concurrent.TimeUnit;
 
 public class SourceWorker {
     private final ExecutorService executor;
-    private Map<String, String> fileProps;
     private Map<String, String> pravegaProps;
     private Map<String, String> sourceProps;
     private Source source;
-    public SourceWorker(Map<String, String> fileProps, Map<String, String> pravegaProps, Map<String, String> sourceProps){
+    public SourceWorker(Map<String, String> pravegaProps, Map<String, String> sourceProps){
         this.executor = new ThreadPoolExecutor(20, 200, 60L, TimeUnit.SECONDS, new LinkedBlockingDeque<Runnable>());
         this.pravegaProps = pravegaProps;
-        this.fileProps = fileProps;
         this.sourceProps = sourceProps;
     }
     public void execute(int nThread) throws ClassNotFoundException, IllegalAccessException, InstantiationException {
         Class<?> sourceClass = Class.forName(sourceProps.get("class"));
         source = (Source) sourceClass.newInstance();
-        source.open(fileProps, pravegaProps);
+        source.open(sourceProps, pravegaProps);
         PravegaWriter.init(pravegaProps);
 
         for(int i = 0; i < nThread; i++)

@@ -11,21 +11,19 @@ import java.util.concurrent.TimeUnit;
 
 public class SinkWorker {
     private final ExecutorService executor;
-    private Map<String, String> fileProps;
     private Map<String, String> pravegaProps;
     private Map<String, String> sinkProps;
     private Sink sink;
-    public SinkWorker(Map<String, String> fileProps, Map<String, String> pravegaProps, Map<String, String> sinkProps){
+    public SinkWorker(Map<String, String> pravegaProps, Map<String, String> sinkProps){
         this.executor = new ThreadPoolExecutor(20, 200, 60L, TimeUnit.SECONDS, new LinkedBlockingDeque<Runnable>());
         this.pravegaProps = pravegaProps;
-        this.fileProps = fileProps;
         this.sinkProps = sinkProps;
     }
     public void execute(int nThread) throws ClassNotFoundException, IllegalAccessException, InstantiationException {
         Class<?> sinkClass = Class.forName(sinkProps.get("class"));
         sink = (Sink) sinkClass.newInstance();
         // FileSink fileSink = new FileSink();
-        sink.open(fileProps, pravegaProps);
+        sink.open(sinkProps, pravegaProps);
         PravegaReader.init(pravegaProps);
 
         for(int i = 0; i < nThread; i++)
