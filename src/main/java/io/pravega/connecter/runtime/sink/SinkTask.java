@@ -17,14 +17,20 @@ public class SinkTask implements Runnable{
     }
     @Override
     public void run() {
-        List<EventRead<String>> readList = null;
+        List<SinkRecord> readList = null;
         while(true){
-            readList = pravegaReader.readEvent();
+            try {
+                readList = pravegaReader.readEvent();
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
             if(readList.size() == 0) break;
             System.out.println(Thread.currentThread() + "  size: " + readList.size());
             sink.write(readList);
 
         }
+        sink.close();
+        pravegaReader.close();
 
     }
 }

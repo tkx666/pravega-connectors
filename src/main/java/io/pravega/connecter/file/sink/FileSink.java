@@ -2,6 +2,7 @@ package io.pravega.connecter.file.sink;
 
 import io.pravega.client.stream.EventRead;
 import io.pravega.connecter.runtime.sink.Sink;
+import io.pravega.connecter.runtime.sink.SinkRecord;
 
 import java.io.*;
 import java.util.List;
@@ -35,10 +36,10 @@ public class FileSink implements Sink {
     }
 
     @Override
-    public void write(List<EventRead<String>> readList) {
+    public void write(List<SinkRecord> readList) {
         try {
-            for (EventRead<String> event : readList) {
-                out.write(event.getEvent());
+            for (SinkRecord record : readList) {
+                out.write((String) record.getValue());
                 out.newLine();
             }
 //            synchronized (FileSink.class){

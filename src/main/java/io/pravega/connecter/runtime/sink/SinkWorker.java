@@ -25,12 +25,12 @@ public class SinkWorker implements Worker {
         try {
             sinkClass = Class.forName(sinkProps.get("class"));
             sink = (Sink) sinkClass.newInstance();
+            sink.open(sinkProps, pravegaProps);
+            PravegaReader.init(pravegaProps);
         } catch (Exception e) {
             e.printStackTrace();
         }
-        // FileSink fileSink = new FileSink();
-        sink.open(sinkProps, pravegaProps);
-        PravegaReader.init(pravegaProps);
+
 
         for(int i = 0; i < nThread; i++)
         {

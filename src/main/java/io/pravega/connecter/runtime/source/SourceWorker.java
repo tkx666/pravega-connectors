@@ -27,12 +27,12 @@ public class SourceWorker implements Worker {
         try {
             sourceClass = Class.forName(sourceProps.get("class"));
             source = (Source) sourceClass.newInstance();
+            source.open(sourceProps, pravegaProps);
+            PravegaWriter.init(pravegaProps);
 
         } catch (Exception e) {
             e.printStackTrace();
         }
-        source.open(sourceProps, pravegaProps);
-        PravegaWriter.init(pravegaProps);
 
         for(int i = 0; i < nThread; i++)
         {

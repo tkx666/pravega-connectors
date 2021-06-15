@@ -10,5 +10,5 @@ public interface Sink {
 
     void close();
 
-    void write(List<EventRead<String>> readList);
+    void write(List<SinkRecord> readList);
 }

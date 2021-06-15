@@ -1,6 +1,7 @@
 package io.pravega.connecter.file.source;
 
 import io.pravega.connecter.runtime.source.Source;
+import io.pravega.connecter.runtime.source.SourceRecord;
 
 import java.io.BufferedReader;
 import java.io.FileNotFoundException;
@@ -37,13 +38,13 @@ public class FileSource implements Source {
     }
 
     @Override
-    public List<String> read() {
+    public List<SourceRecord> read() {
         String str;
-        List<String> list = new ArrayList<>();
+        List<SourceRecord> list = new ArrayList<>();
         try {
             if ((str = in.readLine()) != null) {
                 System.out.println(str);
-                list.add(str);
+                list.add(new SourceRecord(str));
                 return list;
             }
         } catch (IOException e) {

@@ -7,6 +7,9 @@ import io.pravega.client.admin.StreamManager;
 import io.pravega.client.stream.*;
 import io.pravega.client.stream.impl.JavaSerializer;
 import io.pravega.client.stream.impl.UTF8StringSerializer;
+import io.pravega.connecter.runtime.sink.SinkRecord;
+import io.pravega.connecter.runtime.source.Source;
+import io.pravega.connecter.runtime.source.SourceRecord;
 
 import java.net.URI;
 import java.util.ArrayList;
@@ -17,24 +20,29 @@ import java.util.UUID;
 public class PravegaReader {
     public static String scope;
     public static String streamName;
+    public static Class<?> serializerClass;
     public static URI controllerURI;
     private static final String readerGroup = "group";
     private static final int READER_TIMEOUT_MS = 5000;
     private static EventStreamClientFactory clientFactory;
     private String readerName;
+    private EventStreamReader<Object> reader;
 
 
-    public PravegaReader(Map<String, String> pravegaProps, String readerName) {
-        this.scope = pravegaProps.get("scope");
-        this.streamName = pravegaProps.get("name");
-        this.controllerURI = URI.create(pravegaProps.get("uri"));
+    public PravegaReader(Map<String, String> pravegaProps, String readerName) throws IllegalAccessException, InstantiationException {
         this.readerName = readerName;
+        this.reader = clientFactory.createReader(readerName,
+                readerGroup,
+                (Serializer) serializerClass.newInstance(),
+                ReaderConfig.builder().build());
+
     }
 
-    public static void init(Map<String, String> pravegaProps) {
+    public static void init(Map<String, String> pravegaProps) throws ClassNotFoundException, IllegalAccessException, InstantiationException {
         scope = pravegaProps.get("scope");
         streamName = pravegaProps.get("name");
         controllerURI = URI.create(pravegaProps.get("uri"));
+        serializerClass = Class.forName(pravegaProps.get("serializer"));
         StreamManager streamManager = StreamManager.create(controllerURI);
 
         final boolean scopeIsNew = streamManager.createScope(scope);
@@ -52,62 +60,32 @@ public class PravegaReader {
 
         clientFactory = EventStreamClientFactory.withScope(scope,
                 ClientConfig.builder().controllerURI(controllerURI).build());
+        streamManager.close();
     }
 
-    public List<EventRead<String>> readEvent() {
-            try (EventStreamReader<String> reader = clientFactory.createReader(readerName,
-                    readerGroup,
-                    new UTF8StringSerializer(),
-                    ReaderConfig.builder().build())) {
-                List<EventRead<String>> readList = new ArrayList<>();
-                EventRead<String> event = null;
-                do {
-                    try {
-                        event = reader.readNextEvent(READER_TIMEOUT_MS);
-                        if (event.getEvent() != null) {
-                            readList.add(event);
-                            System.out.format("Read event '%s %s'%n", Thread.currentThread().getName(), event.getEvent());
-                        }
-                    } catch (ReinitializationRequiredException e) {
-                        //There are certain circumstances where the reader needs to be reinitialized
-                        e.printStackTrace();
-                    }
-                } while (event.getEvent() != null);
-                return readList;
+    public List<SinkRecord> readEvent() throws IllegalAccessException, InstantiationException {
+
+        List<SinkRecord> readList = new ArrayList<>();
+        EventRead<Object> event = null;
+        do {
+            try {
+                event = reader.readNextEvent(READER_TIMEOUT_MS);
+                if (event.getEvent() != null) {
+                    readList.add(new SinkRecord(event.getEvent()));
+                    System.out.format("Read event '%s %s'%n", Thread.currentThread().getName(), event.getEvent());
+                }
+            } catch (ReinitializationRequiredException e) {
+                //There are certain circumstances where the reader needs to be reinitialized
+                e.printStackTrace();
             }
+        } while (event.getEvent() != null);
 
+        return readList;
 
-
-//            String a = null;
-//            while (true) {
-//                System.out.println(Thread.currentThread().getName());
-//                if((a = reader.readNextEvent(1000).getEvent()) != null)
-//                    System.out.format("Read event '%s %s'%n", Thread.currentThread().getName(), a);
-//                else break;
-//            }
-        //reader.close();
-
-
-//        do {
-//            try {
-//                event = reader.readNextEvent(READER_TIMEOUT_MS);
-//                if (event.getEvent() != null) {
-//                    readList.add(event);
-//                    System.out.format("Read event '%s %s'%n", Thread.currentThread().getName(), event.getEvent());
-//                }
-//            } catch (ReinitializationRequiredException e) {
-//                //There are certain circumstances where the reader needs to be reinitialized
-//                e.printStackTrace();
-//            }
-//        } while (event.getEvent() != null);
-//        String a = null;
-//        while (true) {
-//            System.out.println(Thread.currentThread().getName());
-//            if((a = reader.readNextEvent(1000).getEvent()) != null)
-//                System.out.format("Read event '%s %s'%n", Thread.currentThread().getName(), a);
-//            else break;
-//        }
-
+    }
+    public void close(){
+        reader.close();
+        clientFactory.close();
     }
 
 

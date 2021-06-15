@@ -3,10 +3,7 @@ package io.pravega.connecter.runtime;
 import io.pravega.client.ClientConfig;
 import io.pravega.client.EventStreamClientFactory;
 import io.pravega.client.admin.StreamManager;
-import io.pravega.client.stream.EventStreamWriter;
-import io.pravega.client.stream.EventWriterConfig;
-import io.pravega.client.stream.ScalingPolicy;
-import io.pravega.client.stream.StreamConfiguration;
+import io.pravega.client.stream.*;
 import io.pravega.client.stream.impl.JavaSerializer;
 import io.pravega.client.stream.impl.UTF8StringSerializer;
 
@@ -18,22 +15,22 @@ public class PravegaWriter {
     public static String scope;
     public static String streamName;
     public static URI controllerURI;
-    public static EventStreamClientFactory clientFactory;
-    private EventStreamWriter<String> writer;
+    public static Class<?> serializerClass;
 
-    public PravegaWriter(Map<String, String> pravegaProps) {
-        this.scope = pravegaProps.get("scope");
-        this.streamName = pravegaProps.get("name");
-        this.controllerURI = URI.create(pravegaProps.get("uri"));
+    public static EventStreamClientFactory clientFactory;
+    private EventStreamWriter<Object> writer;
+
+    public PravegaWriter(Map<String, String> pravegaProps) throws IllegalAccessException, InstantiationException {
         this.writer = clientFactory.createEventWriter(streamName,
-                new UTF8StringSerializer(),
+                (Serializer)serializerClass.newInstance(),
                 EventWriterConfig.builder().build());
     }
 
-    public static void init(Map<String, String> pravegaProps) {
+    public static void init(Map<String, String> pravegaProps) throws ClassNotFoundException {
         scope = pravegaProps.get("scope");
         streamName = pravegaProps.get("name");
         controllerURI = URI.create(pravegaProps.get("uri"));
+        serializerClass = Class.forName(pravegaProps.get("serializer"));
         StreamManager streamManager = StreamManager.create(controllerURI);
         final boolean scopeIsNew = streamManager.createScope(scope);
 
@@ -49,7 +46,7 @@ public class PravegaWriter {
 
     }
 
-    public void run(String routingKey, String message) {
+    public void run(String routingKey, Object message) {
         System.out.format("Writing message: '%s' with routing-key: '%s' to stream '%s / %s'%n",
                 message, routingKey, scope, streamName);
         final CompletableFuture writeFuture = writer.writeEvent(message);

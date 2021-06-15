@@ -16,7 +16,7 @@ public class SourceTask implements Runnable{
     }
     @Override
     public void run() {
-        List<String> records;
+        List<SourceRecord> records;
         while((records = source.read()) != null){
             for(int i = 0; i < records.size(); i++)
                 sendRecord(records.get(i));
@@ -26,7 +26,7 @@ public class SourceTask implements Runnable{
 
     }
 
-    public void sendRecord(String str){
-        pravegaWriter.run(pravegaProps.get("routingKey"), str);
+    public void sendRecord(SourceRecord record){
+        pravegaWriter.run(pravegaProps.get("routingKey"), record.getValue());
     }
 }
