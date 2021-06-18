@@ -21,6 +21,7 @@ public class PravegaWriter {
     private EventStreamWriter<Object> writer;
 
     public PravegaWriter(Map<String, String> pravegaProps) throws IllegalAccessException, InstantiationException {
+        System.out.println(serializerClass);
         this.writer = clientFactory.createEventWriter(streamName,
                 (Serializer)serializerClass.newInstance(),
                 EventWriterConfig.builder().build());
@@ -35,7 +36,7 @@ public class PravegaWriter {
         final boolean scopeIsNew = streamManager.createScope(scope);
 
         StreamConfiguration streamConfig = StreamConfiguration.builder()
-                .scalingPolicy(ScalingPolicy.fixed(5))
+                .scalingPolicy(ScalingPolicy.fixed(Integer.valueOf(pravegaProps.get("segments"))))
                 .build();
         final boolean streamIsNew = streamManager.createStream(scope, streamName, streamConfig);
 

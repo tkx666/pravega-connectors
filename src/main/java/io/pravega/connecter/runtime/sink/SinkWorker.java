@@ -4,6 +4,8 @@ import io.pravega.connecter.file.sink.FileSink;
 import io.pravega.connecter.runtime.PravegaReader;
 import io.pravega.connecter.runtime.Worker;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.LinkedBlockingDeque;
@@ -14,7 +16,7 @@ public class SinkWorker implements Worker {
     private final ExecutorService executor;
     private Map<String, String> pravegaProps;
     private Map<String, String> sinkProps;
-    private Sink sink;
+//    private Sink sink;
     public SinkWorker(Map<String, String> pravegaProps, Map<String, String> sinkProps){
         this.executor = new ThreadPoolExecutor(20, 200, 60L, TimeUnit.SECONDS, new LinkedBlockingDeque<Runnable>());
         this.pravegaProps = pravegaProps;
@@ -24,19 +26,29 @@ public class SinkWorker implements Worker {
         Class<?> sinkClass = null;
         try {
             sinkClass = Class.forName(sinkProps.get("class"));
-            sink = (Sink) sinkClass.newInstance();
-            sink.open(sinkProps, pravegaProps);
             PravegaReader.init(pravegaProps);
         } catch (Exception e) {
             e.printStackTrace();
+        }
+        List<PravegaReader> readerGroup = new ArrayList<>();
+        for(int i = 0; i < nThread; i++){
+            try {
+                readerGroup.add(new PravegaReader(pravegaProps, sinkProps.get("name") + i));
+            } catch (IllegalAccessException e) {
+                e.printStackTrace();
+            } catch (InstantiationException e) {
+                e.printStackTrace();
+            }
         }
 
 
         for(int i = 0; i < nThread; i++)
         {
             try{
-                PravegaReader pravegaReader = new PravegaReader(pravegaProps, "thread-" + i);
-                SinkTask sinkTask = new SinkTask(pravegaReader, sink, pravegaProps);
+                //PravegaReader pravegaReader = new PravegaReader(pravegaProps, sinkProps.get("name") + i);
+                Sink sink = (Sink) sinkClass.newInstance();
+                sink.open(sinkProps, pravegaProps);
+                SinkTask sinkTask = new SinkTask(readerGroup.get(i), sink, pravegaProps);
                 executor.submit(sinkTask);
             } catch (Exception e){
                 e.printStackTrace();

@@ -36,18 +36,12 @@ public class FileSink implements Sink {
     }
 
     @Override
-    public void write(List<SinkRecord> readList) {
+    public void write(List<SinkRecord> recordList) {
         try {
-            for (SinkRecord record : readList) {
-                out.write((String) record.getValue());
+            for (SinkRecord record : recordList) {
+                out.write(record.getValue().toString());
                 out.newLine();
             }
-//            synchronized (FileSink.class){
-//                for (int i = 0; i < 10000; i++) {
-//                    out.write(Integer.toString(i));
-//                    out.newLine();
-//                }
-//            }
 
         } catch (IOException e) {
             e.printStackTrace();

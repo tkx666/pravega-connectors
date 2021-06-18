@@ -47,7 +47,7 @@ public class PravegaReader {
 
         final boolean scopeIsNew = streamManager.createScope(scope);
         StreamConfiguration streamConfig = StreamConfiguration.builder()
-                .scalingPolicy(ScalingPolicy.fixed(5))
+                .scalingPolicy(ScalingPolicy.fixed(Integer.valueOf(pravegaProps.get("segments"))))
                 .build();
         final boolean streamIsNew = streamManager.createStream(scope, streamName, streamConfig);
 
@@ -72,11 +72,12 @@ public class PravegaReader {
                 event = reader.readNextEvent(READER_TIMEOUT_MS);
                 if (event.getEvent() != null) {
                     readList.add(new SinkRecord(event.getEvent()));
-                    System.out.format("Read event '%s %s'%n", Thread.currentThread().getName(), event.getEvent());
+//                    System.out.format("Read event '%s %s %s'%n", Thread.currentThread().getName(), event.getEvent(), event.getPosition());
                 }
             } catch (ReinitializationRequiredException e) {
                 //There are certain circumstances where the reader needs to be reinitialized
                 e.printStackTrace();
+
             }
         } while (event.getEvent() != null);
 
@@ -85,7 +86,6 @@ public class PravegaReader {
     }
     public void close(){
         reader.close();
-        clientFactory.close();
     }
 
 

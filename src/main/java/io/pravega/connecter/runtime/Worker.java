@@ -6,13 +6,14 @@ import io.pravega.connecter.runtime.source.SourceWorker;
 import java.util.Map;
 
 public interface Worker {
-    public void execute(int nThread);
+    void execute(int nThread);
     static Worker getWorkerByType(Map<String, String> connectorProps, Map<String, String> pravegapProps){
         if(connectorProps.get("type").equals("source")){
             return new SourceWorker(pravegapProps, connectorProps);
         }
-        else{
+        else if(connectorProps.get("type").equals("sink")){
             return new SinkWorker(pravegapProps, connectorProps);
         }
+        return null;
     }
 }

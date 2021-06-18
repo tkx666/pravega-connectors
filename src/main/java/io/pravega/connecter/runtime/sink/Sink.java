@@ -6,9 +6,9 @@ import java.util.List;
 import java.util.Map;
 
 public interface Sink {
-    void open(Map<String, String> fileProps, Map<String, String> pravegaProps);
+    void open(Map<String, String> sinkProps, Map<String, String> pravegaProps);
 
     void close();
 
-    void write(List<SinkRecord> readList);
+    void write(List<SinkRecord> recordList);
 }

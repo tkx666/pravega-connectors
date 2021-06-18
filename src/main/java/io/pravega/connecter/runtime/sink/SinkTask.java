@@ -24,8 +24,8 @@ public class SinkTask implements Runnable{
             } catch (Exception e) {
                 e.printStackTrace();
             }
-            if(readList.size() == 0) break;
             System.out.println(Thread.currentThread() + "  size: " + readList.size());
+            if(readList.size() == 0) break;
             sink.write(readList);
 
         }
