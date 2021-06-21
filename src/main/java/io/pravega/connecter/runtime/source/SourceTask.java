@@ -19,8 +19,8 @@ public class SourceTask implements Runnable{
         List<SourceRecord> records;
         while(true){
             records = source.read();
+            System.out.println(Thread.currentThread().getName() + " sourceRecord sizes: " + records.size());
             if(records.size() == 0) break;
-            System.out.println("sourceRecord sizes: " + records.size());
             for(int i = 0; i < records.size(); i++)
                 sendRecord(records.get(i));
         }

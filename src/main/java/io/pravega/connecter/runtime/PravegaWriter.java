@@ -48,8 +48,8 @@ public class PravegaWriter {
     }
 
     public void run(String routingKey, Object message) {
-        System.out.format("Writing message: '%s' with routing-key: '%s' to stream '%s / %s'%n",
-                message, routingKey, scope, streamName);
+//        System.out.format("Writing message: '%s' with routing-key: '%s' to stream '%s / %s'%n",
+//                message, routingKey, scope, streamName);
         final CompletableFuture writeFuture = writer.writeEvent(message).exceptionally( ex -> {
             System.out.println("wirte to pravega exception: " + ex.getMessage());
             return null;
