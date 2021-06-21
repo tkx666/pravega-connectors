@@ -33,7 +33,7 @@ public class kafkaSource implements Source {
         List<SourceRecord> sourceList = new ArrayList<>();
         try {
             while (true) {
-                ConsumerRecords<String, String> consumerRecords = consumer.poll(1000);
+                ConsumerRecords<String, String> consumerRecords = consumer.poll(5000);
                 if (consumerRecords.count() == 0) return sourceList;
                 for (ConsumerRecord<String, String> record : consumerRecords) {
                     sourceList.add(new SourceRecord(record.value()));

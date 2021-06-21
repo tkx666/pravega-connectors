@@ -50,7 +50,7 @@ public class FileSource implements Source {
         } catch (IOException e) {
             e.printStackTrace();
         }
-        return null;
+        return list;
     }
 
 }

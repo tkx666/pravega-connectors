@@ -36,6 +36,7 @@ public class kafkaSink implements Sink {
             ProducerRecord<String, String> producerRecord = new ProducerRecord<String, String>(kafkaProps.get("topic"), null, (String) sinkRecord.getValue());
             producer.send(producerRecord,new ProducerCallBack());
         }
+        producer.flush();
     }
 }
 class ProducerCallBack implements Callback {
