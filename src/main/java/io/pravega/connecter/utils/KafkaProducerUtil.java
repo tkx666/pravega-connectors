@@ -15,7 +15,7 @@ public class KafkaProducerUtil {
         properties.put("value.serializer","org.apache.kafka.common.serialization.StringSerializer");
         KafkaProducer<String, String> producer = new KafkaProducer<String,String>(properties);
 
-        for(int i = 0; i < 50000; i++){
+        for(int i = 0; i < 5000; i++){
             ProducerRecord<String, String> producerRecord = new ProducerRecord<String, String>("sink", null, String.valueOf(i));
             producer.send(producerRecord);
         }

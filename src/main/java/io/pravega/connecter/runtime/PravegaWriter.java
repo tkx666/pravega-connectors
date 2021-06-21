@@ -54,6 +54,7 @@ public class PravegaWriter {
             System.out.println("wirte to pravega exception: " + ex.getMessage());
             return null;
         });
+        writer.flush();
     }
 
     public void close(){
