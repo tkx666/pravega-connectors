@@ -9,6 +9,7 @@ import java.util.List;
 import java.util.Map;
 
 public class FileSink implements Sink {
+    public static String WRITE_PATH_CONFIG = "writePath";
     Map<String, String> sinkProps;
     Map<String, String> pravegaProps;
     BufferedWriter out;
@@ -17,7 +18,7 @@ public class FileSink implements Sink {
         this.sinkProps = sinkProps;
         this.pravegaProps = pravegaProps;
         try {
-            this.out = new BufferedWriter(new FileWriter(sinkProps.get("writePath"), true));
+            this.out = new BufferedWriter(new FileWriter(sinkProps.get(WRITE_PATH_CONFIG), true));
         } catch (FileNotFoundException e) {
             e.printStackTrace();
         } catch (IOException e) {

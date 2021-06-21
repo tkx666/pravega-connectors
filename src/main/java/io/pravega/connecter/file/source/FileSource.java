@@ -12,6 +12,8 @@ import java.util.List;
 import java.util.Map;
 
 public class FileSource implements Source {
+    public static String READ_PATH_CONFIG = "readPath";
+
     Map<String, String> sourceProps;
     Map<String, String> pravegaProps;
     BufferedReader in;
@@ -22,7 +24,7 @@ public class FileSource implements Source {
         this.sourceProps = sourceProps;
         this.pravegaProps = pravegaProps;
         try {
-            this.in = new BufferedReader(new FileReader(sourceProps.get("readPath")));
+            this.in = new BufferedReader(new FileReader(sourceProps.get(READ_PATH_CONFIG)));
         } catch (FileNotFoundException e) {
             e.printStackTrace();
         }

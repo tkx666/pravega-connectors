@@ -9,6 +9,7 @@ public class SourceTask implements Runnable{
     private Source source;
     private PravegaWriter pravegaWriter;
     private Map<String, String> pravegaProps;
+    public static String ROUTING_KEY_CONFIG = "routingKey";
     public SourceTask(PravegaWriter pravegaWriter, Source source, Map<String, String> pravegaProps){
         this.source = source;
         this.pravegaProps = pravegaProps;
@@ -30,6 +31,6 @@ public class SourceTask implements Runnable{
     }
 
     public void sendRecord(SourceRecord record){
-        pravegaWriter.run(pravegaProps.get("routingKey"), record.getValue());
+        pravegaWriter.run(pravegaProps.get(ROUTING_KEY_CONFIG), record.getValue());
     }
 }

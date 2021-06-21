@@ -22,11 +22,19 @@ public class PravegaReader {
     public static String streamName;
     public static Class<?> serializerClass;
     public static URI controllerURI;
-    private static final String readerGroup = "group";
+    private static String readerGroup;
     private static final int READER_TIMEOUT_MS = 5000;
     private static EventStreamClientFactory clientFactory;
     private String readerName;
     private EventStreamReader<Object> reader;
+
+    public static String SCOPE_CONFIG = "scope";
+    public static String STREAM_NAME_CONFIG = "streamName";
+    public static String URI_CONFIG = "uri";
+    public static String SERIALIZER_CONFIG = "serializer";
+    public static String SEGMENTS_NUM_CONFIG = "segments";
+    public static String READER_GROUP_NAME_CONFIG = "readerGroup";
+
 
 
     public PravegaReader(Map<String, String> pravegaProps, String readerName) throws IllegalAccessException, InstantiationException {
@@ -39,15 +47,16 @@ public class PravegaReader {
     }
 
     public static void init(Map<String, String> pravegaProps) throws ClassNotFoundException, IllegalAccessException, InstantiationException {
-        scope = pravegaProps.get("scope");
-        streamName = pravegaProps.get("name");
-        controllerURI = URI.create(pravegaProps.get("uri"));
-        serializerClass = Class.forName(pravegaProps.get("serializer"));
+        scope = pravegaProps.get(SCOPE_CONFIG);
+        streamName = pravegaProps.get(STREAM_NAME_CONFIG);
+        controllerURI = URI.create(pravegaProps.get(URI_CONFIG));
+        serializerClass = Class.forName(pravegaProps.get(SERIALIZER_CONFIG));
+        readerGroup = pravegaProps.get(READER_GROUP_NAME_CONFIG);
         StreamManager streamManager = StreamManager.create(controllerURI);
 
         final boolean scopeIsNew = streamManager.createScope(scope);
         StreamConfiguration streamConfig = StreamConfiguration.builder()
-                .scalingPolicy(ScalingPolicy.fixed(Integer.valueOf(pravegaProps.get("segments"))))
+                .scalingPolicy(ScalingPolicy.fixed(Integer.valueOf(pravegaProps.get(SEGMENTS_NUM_CONFIG))))
                 .build();
         final boolean streamIsNew = streamManager.createStream(scope, streamName, streamConfig);
 
@@ -75,7 +84,6 @@ public class PravegaReader {
 //                    System.out.format("Read event '%s %s %s'%n", Thread.currentThread().getName(), event.getEvent(), event.getPosition());
                 }
             } catch (ReinitializationRequiredException e) {
-                //There are certain circumstances where the reader needs to be reinitialized
                 e.printStackTrace();
 
             }

@@ -13,12 +13,16 @@ public class kafkaSink implements Sink {
 
     private Producer<String, String> producer;
     private Map<String, String> kafkaProps;
+    public static final String SERVER_SERVERS_CONFIG = "bootstrap.servers";
+    public static final String KEY_SERIALIZER_CONFIG = "key.serializer";
+    public static final String VALUE_SERIALIZER_CONFIG = "value.serializer";
+    public static final String TOPIC_CONFIG="topic";
     @Override
     public void open(Map<String, String> sinkProps, Map<String, String> pravegaProps) {
         Properties properties = new Properties();
-        properties.put("bootstrap.servers",sinkProps.get("bootstrap.servers"));
-        properties.put("key.serializer",sinkProps.get("key.serializer"));
-        properties.put("value.serializer",sinkProps.get("value.serializer"));
+        properties.put(SERVER_SERVERS_CONFIG,sinkProps.get(SERVER_SERVERS_CONFIG));
+        properties.put(KEY_SERIALIZER_CONFIG,sinkProps.get(KEY_SERIALIZER_CONFIG));
+        properties.put(VALUE_SERIALIZER_CONFIG,sinkProps.get(VALUE_SERIALIZER_CONFIG));
         producer = new KafkaProducer<String, String>(properties);
         this.kafkaProps=sinkProps;
 

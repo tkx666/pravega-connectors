@@ -18,6 +18,7 @@ public class SourceWorker implements Worker {
     private final ExecutorService executor;
     private Map<String, String> pravegaProps;
     private Map<String, String> sourceProps;
+    public static String SOURCE_CLASS_CONFIG = "class";
     public SourceWorker(Map<String, String> pravegaProps, Map<String, String> sourceProps){
         this.executor = new ThreadPoolExecutor(20, 200, 60L, TimeUnit.SECONDS, new LinkedBlockingDeque<Runnable>());
         this.pravegaProps = pravegaProps;
@@ -29,13 +30,13 @@ public class SourceWorker implements Worker {
         try {
             PravegaWriter.init(pravegaProps);
             for(int i = 0; i < nThread; i++){
-                sourceClass = Class.forName(sourceProps.get("class"));
+                sourceClass = Class.forName(sourceProps.get(SOURCE_CLASS_CONFIG));
                 Source source = (Source) sourceClass.newInstance();
                 source.open(sourceProps, pravegaProps);
                 sourceGroup.add(source);
             }
         } catch (Exception e){
-            System.out.println(e.getMessage());
+            e.printStackTrace();
         }
 
 

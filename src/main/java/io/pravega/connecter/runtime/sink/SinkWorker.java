@@ -16,7 +16,10 @@ public class SinkWorker implements Worker {
     private final ExecutorService executor;
     private Map<String, String> pravegaProps;
     private Map<String, String> sinkProps;
-//    private Sink sink;
+    public static String SINK_CLASS_CONFIG = "class";
+    public static String SINK_NAME_CONFIG = "name";
+
+    //    private Sink sink;
     public SinkWorker(Map<String, String> pravegaProps, Map<String, String> sinkProps){
         this.executor = new ThreadPoolExecutor(20, 200, 60L, TimeUnit.SECONDS, new LinkedBlockingDeque<Runnable>());
         this.pravegaProps = pravegaProps;
@@ -25,7 +28,7 @@ public class SinkWorker implements Worker {
     public void execute(int nThread) {
         Class<?> sinkClass = null;
         try {
-            sinkClass = Class.forName(sinkProps.get("class"));
+            sinkClass = Class.forName(sinkProps.get(SINK_CLASS_CONFIG));
             PravegaReader.init(pravegaProps);
         } catch (Exception e) {
             e.printStackTrace();
@@ -33,7 +36,7 @@ public class SinkWorker implements Worker {
         List<PravegaReader> readerGroup = new ArrayList<>();
         for(int i = 0; i < nThread; i++){
             try {
-                readerGroup.add(new PravegaReader(pravegaProps, sinkProps.get("name") + i));
+                readerGroup.add(new PravegaReader(pravegaProps, sinkProps.get(SINK_NAME_CONFIG) + i));
             } catch (IllegalAccessException e) {
                 e.printStackTrace();
             } catch (InstantiationException e) {

@@ -19,6 +19,11 @@ public class PravegaWriter {
 
     public static EventStreamClientFactory clientFactory;
     private EventStreamWriter<Object> writer;
+    public static String SCOPE_CONFIG = "scope";
+    public static String STREAM_NAME_CONFIG = "streamName";
+    public static String URI_CONFIG = "uri";
+    public static String SERIALIZER_CONFIG = "serializer";
+    public static String SEGMENTS_NUM_CONFIG = "segments";
 
     public PravegaWriter(Map<String, String> pravegaProps) throws IllegalAccessException, InstantiationException {
         System.out.println(serializerClass);
@@ -28,15 +33,15 @@ public class PravegaWriter {
     }
 
     public static void init(Map<String, String> pravegaProps) throws ClassNotFoundException {
-        scope = pravegaProps.get("scope");
-        streamName = pravegaProps.get("name");
-        controllerURI = URI.create(pravegaProps.get("uri"));
-        serializerClass = Class.forName(pravegaProps.get("serializer"));
+        scope = pravegaProps.get(SCOPE_CONFIG);
+        streamName = pravegaProps.get(STREAM_NAME_CONFIG);
+        controllerURI = URI.create(pravegaProps.get(URI_CONFIG));
+        serializerClass = Class.forName(pravegaProps.get(SERIALIZER_CONFIG));
         StreamManager streamManager = StreamManager.create(controllerURI);
         final boolean scopeIsNew = streamManager.createScope(scope);
 
         StreamConfiguration streamConfig = StreamConfiguration.builder()
-                .scalingPolicy(ScalingPolicy.fixed(Integer.valueOf(pravegaProps.get("segments"))))
+                .scalingPolicy(ScalingPolicy.fixed(Integer.valueOf(pravegaProps.get(SEGMENTS_NUM_CONFIG))))
                 .build();
         final boolean streamIsNew = streamManager.createStream(scope, streamName, streamConfig);
 
