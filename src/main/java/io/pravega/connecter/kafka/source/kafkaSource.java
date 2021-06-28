@@ -37,16 +37,14 @@ public class kafkaSource implements Source {
     @Override
     public List<SourceRecord> read() {
         List<SourceRecord> sourceList = new ArrayList<>();
-        try {
-            while (true) {
-                ConsumerRecords<String, String> consumerRecords = consumer.poll(5000);
-                if (consumerRecords.count() == 0) return sourceList;
-                for (ConsumerRecord<String, String> record : consumerRecords) {
-                    sourceList.add(new SourceRecord(record.value()));
-                }
+
+        while (true) {
+            ConsumerRecords<String, String> consumerRecords = consumer.poll(5000);
+            if (consumerRecords.count() == 0) return sourceList;
+            for (ConsumerRecord<String, String> record : consumerRecords) {
+                sourceList.add(new SourceRecord(record.value()));
             }
-        } finally {
-            close();
         }
+
     }
 }

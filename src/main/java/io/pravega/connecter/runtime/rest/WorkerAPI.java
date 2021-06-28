@@ -2,6 +2,7 @@ package io.pravega.connecter.runtime.rest;
 
 
 import io.pravega.connecter.runtime.Task;
+import io.pravega.connecter.runtime.WorkerState;
 import io.pravega.connecter.runtime.storage.MemoryTasksInfoStore;
 import io.pravega.connecter.runtime.storage.TasksInfoStore;
 
@@ -19,7 +20,24 @@ public class WorkerAPI {
         System.out.println("pause start");
         TasksInfoStore tasksInfoStore = new MemoryTasksInfoStore();
         Map<String, Task> tasks = tasksInfoStore.getTasks(worker);
-        System.out.println(tasks.get("1"));
+        for(String taskId: tasks.keySet()) {
+            tasks.get(taskId).setState(WorkerState.Paused);
+        }
+
+
+        return Response.accepted().build();
+    }
+
+    @GET
+    @Path("{worker}/resume")
+    public Response resumeConnector(@PathParam("worker") String worker) {
+        System.out.println("resume start");
+        TasksInfoStore tasksInfoStore = new MemoryTasksInfoStore();
+        Map<String, Task> tasks = tasksInfoStore.getTasks(worker);
+        for(String taskId: tasks.keySet()) {
+            tasks.get(taskId).setState(WorkerState.Started);
+        }
+
 
         return Response.accepted().build();
     }

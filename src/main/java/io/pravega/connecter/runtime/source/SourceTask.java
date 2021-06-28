@@ -30,12 +30,13 @@ public class SourceTask extends Task {
             List<SourceRecord> records;
             while (true) {
                 if (hasPaused()) {
+                    System.out.println(Thread.currentThread().getName() + " has paused");
                     awaitResume();
                     continue;
                 }
                 records = source.read();
                 System.out.println(Thread.currentThread().getName() + " sourceRecord sizes: " + records.size());
-                if (records.size() == 0) break;
+                if (records.size() == 0) continue;
                 for (int i = 0; i < records.size(); i++)
                     sendRecord(records.get(i));
             }
@@ -67,19 +68,16 @@ public class SourceTask extends Task {
         }
 
     }
-//    @Override
-//    public void setState() {
-//        synchronized (this) {
-//            if (stopping)
-//                return;
-//
-//            this.workerState = state;
-//            this.notifyAll();
-//        }
-//    }
-
-
+    @Override
     public void setState(WorkerState state) {
+        synchronized (this) {
+            if (stopping)
+                return;
 
+            this.workerState = state;
+            this.notifyAll();
+        }
     }
+
+
 }

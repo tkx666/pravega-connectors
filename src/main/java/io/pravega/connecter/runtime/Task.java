@@ -6,5 +6,8 @@ public abstract class Task implements Runnable{
     public void run() {
         execute();
     }
+
     protected abstract void execute();
+
+    public abstract void setState(WorkerState state);
 }

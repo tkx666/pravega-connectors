@@ -3,6 +3,7 @@ package io.pravega.connecter.runtime.sink;
 import io.pravega.client.stream.EventRead;
 import io.pravega.connecter.runtime.PravegaReader;
 import io.pravega.connecter.runtime.Task;
+import io.pravega.connecter.runtime.WorkerState;
 
 import java.util.List;
 import java.util.Map;
@@ -36,8 +37,8 @@ public class SinkTask extends Task {
         pravegaReader.close();
     }
 
-//    @Override
-//    public void setState() {
-//
-//    }
+    @Override
+    public void setState(WorkerState state) {
+
+    }
 }
