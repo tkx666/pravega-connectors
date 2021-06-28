@@ -1,5 +1,6 @@
 package io.pravega.connecter.runtime.cli;
 
+import io.pravega.connecter.runtime.WorkerState;
 import io.pravega.connecter.runtime.source.SourceWorker;
 import io.pravega.connecter.utils.Utils;
 import org.apache.commons.cli.*;
@@ -29,7 +30,7 @@ public class ConnectSourceStandalone {
 
             Map<String, String> pravegaMap = Utils.propsToMap(pravegaProps);
             Map<String, String> connectorMap = Utils.propsToMap(connectorProps);
-            SourceWorker sourceWorker = new SourceWorker(pravegaMap, connectorMap);
+            SourceWorker sourceWorker = new SourceWorker(pravegaMap, connectorMap, WorkerState.Started);
             sourceWorker.execute(Integer.valueOf(connectorMap.get("tasks.max")));
 
         } catch (Exception e) {

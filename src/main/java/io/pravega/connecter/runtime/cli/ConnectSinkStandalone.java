@@ -9,7 +9,8 @@ import org.slf4j.LoggerFactory;
 import java.util.Map;
 import java.util.Properties;
 
-public class ConnectSinkStandalone {    private static final Logger log = LoggerFactory.getLogger(ConnectSourceStandalone.class);
+public class ConnectSinkStandalone {
+    private static final Logger log = LoggerFactory.getLogger(ConnectSourceStandalone.class);
 
     public static void main(String[] args) {
         log.info("start pravega connect standalone");
@@ -35,18 +36,6 @@ public class ConnectSinkStandalone {    private static final Logger log = Logger
             e.printStackTrace();
         }
 
-
-
-
-
-//        PravegaReader pravegaReader = new PravegaReader(pravegaMap);
-//        FileSink fileSink = new FileSink();
-//        fileSink.open(fileMap, pravegaMap);
-//
-//        FileSinkTask fileSinkTask = new FileSinkTask(pravegaReader, fileSink, pravegaMap);
-//        Thread worker = new Thread(fileSinkTask);
-//        worker.start();
-//        //fileSink.close();
     }
 
 }

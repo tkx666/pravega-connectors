@@ -1,36 +1,85 @@
 package io.pravega.connecter.runtime.source;
 
 import io.pravega.connecter.runtime.PravegaWriter;
+import io.pravega.connecter.runtime.Task;
+import io.pravega.connecter.runtime.WorkerState;
 
 import java.util.List;
 import java.util.Map;
 
-public class SourceTask implements Runnable{
+public class SourceTask extends Task {
     private Source source;
     private PravegaWriter pravegaWriter;
     private Map<String, String> pravegaProps;
+    private volatile WorkerState workerState;
+    private boolean stopping;
     public static String ROUTING_KEY_CONFIG = "routingKey";
-    public SourceTask(PravegaWriter pravegaWriter, Source source, Map<String, String> pravegaProps){
+
+    public SourceTask(PravegaWriter pravegaWriter, Source source, Map<String, String> pravegaProps, WorkerState workerState) {
         this.source = source;
         this.pravegaProps = pravegaProps;
         this.pravegaWriter = pravegaWriter;
+        this.workerState = workerState;
+        this.stopping = false;
     }
+
+
     @Override
-    public void run() {
-        List<SourceRecord> records;
-        while(true){
-            records = source.read();
-            System.out.println(Thread.currentThread().getName() + " sourceRecord sizes: " + records.size());
-            if(records.size() == 0) break;
-            for(int i = 0; i < records.size(); i++)
-                sendRecord(records.get(i));
+    protected void execute() {
+        try {
+            List<SourceRecord> records;
+            while (true) {
+                if (hasPaused()) {
+                    awaitResume();
+                    continue;
+                }
+                records = source.read();
+                System.out.println(Thread.currentThread().getName() + " sourceRecord sizes: " + records.size());
+                if (records.size() == 0) break;
+                for (int i = 0; i < records.size(); i++)
+                    sendRecord(records.get(i));
+            }
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        } finally {
+            source.close();
+            pravegaWriter.close();
+
         }
-        source.close();
-        pravegaWriter.close();
 
     }
 
-    public void sendRecord(SourceRecord record){
+
+    public void sendRecord(SourceRecord record) {
         pravegaWriter.run(pravegaProps.get(ROUTING_KEY_CONFIG), record.getValue());
+    }
+
+    public boolean hasPaused() {
+        return workerState == WorkerState.Paused;
+    }
+
+    public boolean awaitResume() throws InterruptedException {
+        synchronized (this) {
+            while (workerState == WorkerState.Paused) {
+                this.wait();
+            }
+            return true;
+        }
+
+    }
+//    @Override
+//    public void setState() {
+//        synchronized (this) {
+//            if (stopping)
+//                return;
+//
+//            this.workerState = state;
+//            this.notifyAll();
+//        }
+//    }
+
+
+    public void setState(WorkerState state) {
+
     }
 }

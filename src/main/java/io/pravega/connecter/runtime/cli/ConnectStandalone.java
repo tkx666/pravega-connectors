@@ -1,6 +1,7 @@
 package io.pravega.connecter.runtime.cli;
 
 import io.pravega.connecter.runtime.Worker;
+import io.pravega.connecter.runtime.rest.RestServer;
 import io.pravega.connecter.runtime.sink.SinkWorker;
 import io.pravega.connecter.runtime.source.SourceWorker;
 import io.pravega.connecter.utils.Utils;
@@ -35,6 +36,9 @@ public class ConnectStandalone {
 
             Map<String, String> pravegaMap = Utils.propsToMap(pravegaProps);
             Map<String, String> connectorMap = Utils.propsToMap(connectorProps);
+
+            RestServer server = new RestServer();
+            server.initialize();
 
             Worker worker = Worker.getWorkerByType(connectorMap, pravegaMap);
             worker.execute(Integer.valueOf(connectorMap.get(TASK_NUM_CONFIG)));

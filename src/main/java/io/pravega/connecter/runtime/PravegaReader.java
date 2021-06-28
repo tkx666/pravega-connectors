@@ -36,7 +36,6 @@ public class PravegaReader {
     public static String READER_GROUP_NAME_CONFIG = "readerGroup";
 
 
-
     public PravegaReader(Map<String, String> pravegaProps, String readerName) throws IllegalAccessException, InstantiationException {
         this.readerName = readerName;
         this.reader = clientFactory.createReader(readerName,
@@ -92,7 +91,8 @@ public class PravegaReader {
         return readList;
 
     }
-    public void close(){
+
+    public void close() {
         reader.close();
     }
 

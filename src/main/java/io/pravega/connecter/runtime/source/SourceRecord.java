@@ -7,7 +7,7 @@ public class SourceRecord extends Record {
         super(value);
     }
 
-    public Object getValue(){
+    public Object getValue() {
         return this.value;
     }
 }

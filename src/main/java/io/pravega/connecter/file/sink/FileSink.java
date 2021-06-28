@@ -13,6 +13,7 @@ public class FileSink implements Sink {
     Map<String, String> sinkProps;
     Map<String, String> pravegaProps;
     BufferedWriter out;
+
     @Override
     public void open(Map<String, String> sinkProps, Map<String, String> pravegaProps) {
         this.sinkProps = sinkProps;
