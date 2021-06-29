@@ -1,15 +1,13 @@
 package io.pravega.connecter.runtime.source;
 
-import io.pravega.connecter.runtime.PravegaReader;
-import io.pravega.connecter.runtime.PravegaWriter;
-import io.pravega.connecter.runtime.Worker;
-import io.pravega.connecter.runtime.WorkerState;
+import io.pravega.connecter.runtime.*;
 import io.pravega.connecter.runtime.sink.Sink;
 import io.pravega.connecter.runtime.sink.SinkTask;
 import io.pravega.connecter.runtime.storage.MemoryTasksInfoStore;
 import io.pravega.connecter.runtime.storage.TasksInfoStore;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ExecutorService;
@@ -21,7 +19,7 @@ public class SourceWorker implements Worker {
     private final ExecutorService executor;
     private Map<String, String> pravegaProps;
     private Map<String, String> sourceProps;
-    private TasksInfoStore tasksInfoStore;
+    private Map<String, List<Task>> tasks;
     private volatile WorkerState workerState;
     public static String SOURCE_CLASS_CONFIG = "class";
 
@@ -30,7 +28,7 @@ public class SourceWorker implements Worker {
         this.pravegaProps = pravegaProps;
         this.sourceProps = sourceProps;
         this.workerState = workerState;
-        this.tasksInfoStore = new MemoryTasksInfoStore();
+        this.tasks = new HashMap<>();
     }
 
     public void execute(int nThread) {
@@ -49,13 +47,12 @@ public class SourceWorker implements Worker {
             e.printStackTrace();
         }
 
-
-
         for (int i = 0; i < nThread; i++) {
             try {
                 PravegaWriter pravegaWriter = new PravegaWriter(pravegaProps);
                 SourceTask sourceTask = new SourceTask(pravegaWriter, sourceGroup.get(i), pravegaProps, WorkerState.Started);
-                tasksInfoStore.putTask(workerName, String.valueOf(i), sourceTask);
+                tasks.putIfAbsent(sourceProps.get("name"), new ArrayList<>());
+                tasks.get(sourceProps.get("name")).add(sourceTask);
                 executor.submit(sourceTask);
             } catch (Exception e) {
                 e.printStackTrace();
@@ -65,4 +62,14 @@ public class SourceWorker implements Worker {
         executor.shutdown();
 
     }
+
+    public void setWorkerState(WorkerState workerState, String workerName) {
+        this.workerState = workerState;
+        List<Task> tasksList = tasks.get(workerName);
+        if(tasksList == null) return;
+        for(Task task: tasksList) {
+            task.setState(workerState);
+        }
+    }
+
 }

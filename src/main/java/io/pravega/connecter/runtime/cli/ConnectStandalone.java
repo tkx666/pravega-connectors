@@ -36,11 +36,11 @@ public class ConnectStandalone {
 
             Map<String, String> pravegaMap = Utils.propsToMap(pravegaProps);
             Map<String, String> connectorMap = Utils.propsToMap(connectorProps);
+            Worker worker = Worker.getWorkerByType(connectorMap, pravegaMap);
 
             RestServer server = new RestServer();
-            server.initialize();
-
-            Worker worker = Worker.getWorkerByType(connectorMap, pravegaMap);
+            server.initializeServer();
+            server.initializeResource(worker);
             worker.execute(Integer.valueOf(connectorMap.get(TASK_NUM_CONFIG)));
 
         } catch (Exception e) {

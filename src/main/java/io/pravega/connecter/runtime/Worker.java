@@ -3,10 +3,12 @@ package io.pravega.connecter.runtime;
 import io.pravega.connecter.runtime.sink.SinkWorker;
 import io.pravega.connecter.runtime.source.SourceWorker;
 
+import java.util.List;
 import java.util.Map;
 
 public interface Worker {
     void execute(int nThread);
+    void setWorkerState(WorkerState workerState, String workerName);
 
     static Worker getWorkerByType(Map<String, String> connectorProps, Map<String, String> pravegapProps) {
         if (connectorProps.get("type").equals("source")) {

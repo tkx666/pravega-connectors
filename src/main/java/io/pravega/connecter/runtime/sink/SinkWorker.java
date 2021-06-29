@@ -3,6 +3,7 @@ package io.pravega.connecter.runtime.sink;
 import io.pravega.connecter.file.sink.FileSink;
 import io.pravega.connecter.runtime.PravegaReader;
 import io.pravega.connecter.runtime.Worker;
+import io.pravega.connecter.runtime.WorkerState;
 import io.pravega.connecter.runtime.storage.MemoryTasksInfoStore;
 import io.pravega.connecter.runtime.storage.TasksInfoStore;
 
@@ -63,6 +64,11 @@ public class SinkWorker implements Worker {
 
         }
         executor.shutdown();
+
+    }
+
+    @Override
+    public void setWorkerState(WorkerState workerState, String workerName) {
 
     }
 }

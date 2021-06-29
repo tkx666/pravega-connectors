@@ -2,6 +2,7 @@ package io.pravega.connecter.runtime.rest;
 
 
 import io.pravega.connecter.runtime.Task;
+import io.pravega.connecter.runtime.Worker;
 import io.pravega.connecter.runtime.WorkerState;
 import io.pravega.connecter.runtime.storage.MemoryTasksInfoStore;
 import io.pravega.connecter.runtime.storage.TasksInfoStore;
@@ -13,32 +14,24 @@ import java.util.Map;
 
 @Path("worker")
 public class WorkerAPI {
+    private Worker worker;
+    public WorkerAPI(Worker worker) {
+        this.worker = worker;
+    }
 
     @GET
     @Path("{worker}/pause")
-    public Response pauseConnector(@PathParam("worker") String worker) {
+    public Response pauseConnector(@PathParam("worker") String workerName) {
         System.out.println("pause start");
-        TasksInfoStore tasksInfoStore = new MemoryTasksInfoStore();
-        Map<String, Task> tasks = tasksInfoStore.getTasks(worker);
-        for(String taskId: tasks.keySet()) {
-            tasks.get(taskId).setState(WorkerState.Paused);
-        }
-
-
+        worker.setWorkerState(WorkerState.Paused, workerName);
         return Response.accepted().build();
     }
 
     @GET
     @Path("{worker}/resume")
-    public Response resumeConnector(@PathParam("worker") String worker) {
+    public Response resumeConnector(@PathParam("worker") String workerName) {
         System.out.println("resume start");
-        TasksInfoStore tasksInfoStore = new MemoryTasksInfoStore();
-        Map<String, Task> tasks = tasksInfoStore.getTasks(worker);
-        for(String taskId: tasks.keySet()) {
-            tasks.get(taskId).setState(WorkerState.Started);
-        }
-
-
+        worker.setWorkerState(WorkerState.Started, workerName);
         return Response.accepted().build();
     }
 
