@@ -6,6 +6,8 @@ import io.pravega.connecter.runtime.Worker;
 import io.pravega.connecter.runtime.WorkerState;
 import io.pravega.connecter.runtime.storage.MemoryTasksInfoStore;
 import io.pravega.connecter.runtime.storage.TasksInfoStore;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import javax.ws.rs.*;
 import javax.ws.rs.core.MediaType;
@@ -15,6 +17,8 @@ import java.util.Map;
 @Path("worker")
 public class WorkerAPI {
     private Worker worker;
+    private static final Logger log = LoggerFactory.getLogger(WorkerAPI.class);
+
     public WorkerAPI(Worker worker) {
         this.worker = worker;
     }
@@ -22,7 +26,7 @@ public class WorkerAPI {
     @GET
     @Path("{worker}/pause")
     public Response pauseConnector(@PathParam("worker") String workerName) {
-        System.out.println("pause start");
+        log.info("pause start");
         worker.setWorkerState(WorkerState.Paused, workerName);
         return Response.accepted().build();
     }
@@ -30,7 +34,7 @@ public class WorkerAPI {
     @GET
     @Path("{worker}/resume")
     public Response resumeConnector(@PathParam("worker") String workerName) {
-        System.out.println("resume start");
+        log.info("resume start");
         worker.setWorkerState(WorkerState.Started, workerName);
         return Response.accepted().build();
     }
