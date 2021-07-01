@@ -13,7 +13,12 @@ import io.pravega.connecter.runtime.storage.TasksInfoStore;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
+import java.io.IOException;
 import java.net.URI;
+import java.nio.ByteBuffer;
+import java.nio.channels.FileChannel;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -84,7 +89,7 @@ public class SinkWorker implements Worker {
             }
 
         }
-//        startCheckPoint(pravegaProps);
+        startCheckPoint(pravegaProps);
         executor.shutdown();
 
     }
@@ -111,16 +116,16 @@ public class SinkWorker implements Worker {
                         group.initiateCheckpoint(pravegaProps.get(CHECK_POINT_NAME), Executors.newScheduledThreadPool(5));
                 try {
                     Checkpoint checkpoint = checkpointResult.get(10, TimeUnit.SECONDS);
-                    logger.info("check point start {}", checkpoint.getName());
-                } catch (InterruptedException e) {
-                    e.printStackTrace();
-                } catch (ExecutionException e) {
-                    e.printStackTrace();
-                } catch (TimeoutException e) {
+                    logger.info("check point start {}", checkpoint);
+                    ByteBuffer serializedCheckPoint = checkpoint.toBytes();
+                    FileChannel fileChannel = new FileOutputStream("checkpoint.txt").getChannel();
+                    fileChannel.write(serializedCheckPoint);
+                    fileChannel.close();
+                } catch (Exception e) {
                     e.printStackTrace();
                 }
 
             }
-        }, 30, Long.parseLong(CHECK_POINT_INTERVAL), TimeUnit.SECONDS);
+        }, 0, Long.parseLong(CHECK_POINT_INTERVAL), TimeUnit.SECONDS);
     }
 }

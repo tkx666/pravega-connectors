@@ -25,7 +25,7 @@ public class SinkTask extends Task {
     protected void execute() {
         try {
             List<SinkRecord> readList = null;
-            while (isStopped()) {
+            while (!isStopped()) {
                 readList = pravegaReader.readEvent();
                 System.out.println(Thread.currentThread() + "  size: " + readList.size());
                 if (readList.size() == 0) continue;
