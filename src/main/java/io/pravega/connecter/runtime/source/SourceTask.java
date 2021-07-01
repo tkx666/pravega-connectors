@@ -71,7 +71,7 @@ public class SourceTask extends Task {
     @Override
     public void setState(WorkerState state) {
         synchronized (this) {
-            if (stopping)
+            if (workerState == WorkerState.Stopped)
                 return;
 
             this.workerState = state;

@@ -12,33 +12,47 @@ public class SinkTask extends Task {
     private Sink sink;
     private PravegaReader pravegaReader;
     private Map<String, String> pravegaProps;
+    private WorkerState workerState;
 
-    public SinkTask(PravegaReader pravegaReader, Sink sink, Map<String, String> pravegaProps) {
+    public SinkTask(PravegaReader pravegaReader, Sink sink, Map<String, String> pravegaProps, WorkerState state) {
         this.sink = sink;
         this.pravegaReader = pravegaReader;
         this.pravegaProps = pravegaProps;
+        this.workerState = state;
     }
 
     @Override
     protected void execute() {
-        List<SinkRecord> readList = null;
-        while (true) {
-            try {
+        try {
+            List<SinkRecord> readList = null;
+            while (isStopped()) {
                 readList = pravegaReader.readEvent();
-            } catch (Exception e) {
-                e.printStackTrace();
+                System.out.println(Thread.currentThread() + "  size: " + readList.size());
+                if (readList.size() == 0) continue;
+                sink.write(readList);
             }
-            System.out.println(Thread.currentThread() + "  size: " + readList.size());
-            if (readList.size() == 0) break;
-            sink.write(readList);
-
+        } catch (Exception e){
+            e.printStackTrace();
         }
-        sink.close();
-        pravegaReader.close();
+        finally {
+            sink.close();
+            pravegaReader.close();
+        }
+
     }
 
     @Override
     public void setState(WorkerState state) {
+        synchronized (this) {
+            if (workerState == WorkerState.Stopped)
+                return;
 
+            this.workerState = state;
+            this.notifyAll();
+        }
+    }
+
+    public boolean isStopped() {
+        return this.workerState == WorkerState.Stopped;
     }
 }

@@ -39,6 +39,14 @@ public class WorkerAPI {
         return Response.accepted().build();
     }
 
+    @GET
+    @Path("{worker}/stop")
+    public Response stopConnector(@PathParam("worker") String workerName) {
+        log.info("stop start");
+        worker.setWorkerState(WorkerState.Stopped, workerName);
+        return Response.accepted().build();
+    }
+
 
 
 }
