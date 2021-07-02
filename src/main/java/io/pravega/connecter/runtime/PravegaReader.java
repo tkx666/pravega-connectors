@@ -11,7 +11,13 @@ import io.pravega.connecter.runtime.sink.SinkRecord;
 import io.pravega.connecter.runtime.source.Source;
 import io.pravega.connecter.runtime.source.SourceRecord;
 
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
+import java.io.IOException;
 import java.net.URI;
+import java.nio.ByteBuffer;
+import java.nio.channels.FileChannel;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
@@ -27,6 +33,8 @@ public class PravegaReader {
     private static EventStreamClientFactory clientFactory;
     private String readerName;
     private EventStreamReader<Object> reader;
+    private Map<String, String> pravegaProps;
+    private ReaderGroupConfig readerGroupConfig;
 
     public static String SCOPE_CONFIG = "scope";
     public static String STREAM_NAME_CONFIG = "streamName";
@@ -34,6 +42,7 @@ public class PravegaReader {
     public static String SERIALIZER_CONFIG = "serializer";
     public static String SEGMENTS_NUM_CONFIG = "segments";
     public static String READER_GROUP_NAME_CONFIG = "readerGroup";
+    public static String CHECK_POINT_PATH_CONFIG = "checkPointPersistPath";
 
 
     public PravegaReader(Map<String, String> pravegaProps, String readerName) throws IllegalAccessException, InstantiationException {
@@ -42,33 +51,55 @@ public class PravegaReader {
                 readerGroup,
                 (Serializer) serializerClass.newInstance(),
                 ReaderConfig.builder().build());
+        this.pravegaProps = pravegaProps;
 
     }
 
-    public static void init(Map<String, String> pravegaProps) throws ClassNotFoundException, IllegalAccessException, InstantiationException {
+    public static void init(Map<String, String> pravegaProps) throws ClassNotFoundException, IllegalAccessException, InstantiationException, IOException {
         scope = pravegaProps.get(SCOPE_CONFIG);
         streamName = pravegaProps.get(STREAM_NAME_CONFIG);
         controllerURI = URI.create(pravegaProps.get(URI_CONFIG));
         serializerClass = Class.forName(pravegaProps.get(SERIALIZER_CONFIG));
         readerGroup = pravegaProps.get(READER_GROUP_NAME_CONFIG);
         StreamManager streamManager = StreamManager.create(controllerURI);
-
         final boolean scopeIsNew = streamManager.createScope(scope);
         StreamConfiguration streamConfig = StreamConfiguration.builder()
                 .scalingPolicy(ScalingPolicy.fixed(Integer.valueOf(pravegaProps.get(SEGMENTS_NUM_CONFIG))))
                 .build();
         final boolean streamIsNew = streamManager.createStream(scope, streamName, streamConfig);
 
-        final ReaderGroupConfig readerGroupConfig = ReaderGroupConfig.builder()
-                .stream(Stream.of(scope, streamName))
-                .build();
-        try (ReaderGroupManager readerGroupManager = ReaderGroupManager.withScope(scope, controllerURI)) {
-            readerGroupManager.createReaderGroup(readerGroup, readerGroupConfig);
-        }
+        if (!hasCheckPoint(pravegaProps)) {
+            final ReaderGroupConfig readerGroupConfig = ReaderGroupConfig.builder()
+                    .stream(Stream.of(scope, streamName))
+                    .build();
+            try (ReaderGroupManager readerGroupManager = ReaderGroupManager.withScope(scope, controllerURI)) {
+                readerGroupManager.createReaderGroup(readerGroup, readerGroupConfig);
+            }
 
+        } else {
+            FileChannel fileChannel = new FileInputStream(pravegaProps.get(CHECK_POINT_PATH_CONFIG)).getChannel();
+            ByteBuffer buffer = ByteBuffer.allocate(1024);
+            fileChannel.read(buffer);
+            buffer.flip();
+            Checkpoint checkpoint = Checkpoint.fromBytes(buffer);
+            System.out.println("check point recover: " + checkpoint.getName());
+
+            ReaderGroupManager readerGroupManager = ReaderGroupManager.withScope(scope, controllerURI);
+
+            ReaderGroup existingGroup = readerGroupManager.getReaderGroup(readerGroup);
+            System.out.println(existingGroup.getOnlineReaders());
+            existingGroup.resetReaderGroup(ReaderGroupConfig
+                    .builder()
+                    .startFromCheckpoint(checkpoint)
+                    .build());
+
+
+        }
         clientFactory = EventStreamClientFactory.withScope(scope,
                 ClientConfig.builder().controllerURI(controllerURI).build());
         streamManager.close();
+
+
     }
 
     public List<SinkRecord> readEvent() throws IllegalAccessException, InstantiationException {
@@ -94,6 +125,11 @@ public class PravegaReader {
 
     public void close() {
         reader.close();
+    }
+
+    public static boolean hasCheckPoint(Map<String, String> pravegaProps) {
+        File file = new File(pravegaProps.get(CHECK_POINT_PATH_CONFIG));
+        return file.exists();
     }
 
 

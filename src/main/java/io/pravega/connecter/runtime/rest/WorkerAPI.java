@@ -42,8 +42,17 @@ public class WorkerAPI {
     @GET
     @Path("{worker}/stop")
     public Response stopConnector(@PathParam("worker") String workerName) {
-        log.info("stop start");
+        log.info("stop worker");
         worker.setWorkerState(WorkerState.Stopped, workerName);
+        worker.shutdownScheduledService();
+        return Response.accepted().build();
+    }
+
+    @GET
+    @Path("{worker}/restart")
+    public Response restartConnector(@PathParam("worker") String workerName) {
+        log.info("restart worker");
+        worker.execute();
         return Response.accepted().build();
     }
 

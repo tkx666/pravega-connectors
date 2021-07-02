@@ -41,7 +41,7 @@ public class ConnectStandalone {
             RestServer server = new RestServer();
             server.initializeServer();
             server.initializeResource(worker);
-            worker.execute(Integer.valueOf(connectorMap.get(TASK_NUM_CONFIG)));
+            worker.execute();
 
         } catch (Exception e) {
             e.printStackTrace();

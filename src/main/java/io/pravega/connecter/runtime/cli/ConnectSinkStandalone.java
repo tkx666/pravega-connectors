@@ -29,7 +29,7 @@ public class ConnectSinkStandalone {
             Map<String, String> pravegaMap = Utils.propsToMap(pravegaProps);
             Map<String, String> connectorMap = Utils.propsToMap(connectorProps);
             SinkWorker sinkWorker = new SinkWorker(pravegaMap, connectorMap);
-            sinkWorker.execute(Integer.valueOf(connectorMap.get("tasks.max")));
+            sinkWorker.execute();
 
 
         } catch (Exception e) {

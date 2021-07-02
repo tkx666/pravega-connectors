@@ -27,7 +27,7 @@ import java.util.concurrent.*;
 
 public class SinkWorker implements Worker {
     private static final Logger logger = LoggerFactory.getLogger(SinkWorker.class);
-    private final ExecutorService executor;
+    private ExecutorService executor;
     private ScheduledExecutorService scheduledExecutorService;
     private Map<String, String> pravegaProps;
     private Map<String, String> sinkProps;
@@ -42,8 +42,7 @@ public class SinkWorker implements Worker {
     public static String URI_CONFIG = "uri";
     public static String READER_GROUP_NAME_CONFIG = "readerGroup";
     public static String CHECK_POINT_NAME = "checkPoint";
-
-
+    public static String TASK_NUM_CONFIG = "tasks.max";
 
 
     //    private Sink sink;
@@ -55,8 +54,11 @@ public class SinkWorker implements Worker {
         this.tasks = new HashMap<>();
     }
 
-    public void execute(int nThread) {
+    public void execute() {
+        executor = new ThreadPoolExecutor(20, 200, 60L, TimeUnit.SECONDS, new LinkedBlockingDeque<Runnable>());
+
         Class<?> sinkClass = null;
+        int threadNum = Integer.valueOf(sinkProps.get(TASK_NUM_CONFIG));
         try {
             sinkClass = Class.forName(sinkProps.get(SINK_CLASS_CONFIG));
             PravegaReader.init(pravegaProps);
@@ -64,7 +66,7 @@ public class SinkWorker implements Worker {
             e.printStackTrace();
         }
         List<PravegaReader> readerGroup = new ArrayList<>();
-        for (int i = 0; i < nThread; i++) {
+        for (int i = 0; i < threadNum; i++) {
             try {
                 readerGroup.add(new PravegaReader(pravegaProps, sinkProps.get(SINK_NAME_CONFIG) + i));
             } catch (IllegalAccessException e) {
@@ -75,12 +77,12 @@ public class SinkWorker implements Worker {
         }
 
 
-        for (int i = 0; i < nThread; i++) {
+        for (int i = 0; i < threadNum; i++) {
             try {
                 //PravegaReader pravegaReader = new PravegaReader(pravegaProps, sinkProps.get("name") + i);
                 Sink sink = (Sink) sinkClass.newInstance();
                 sink.open(sinkProps, pravegaProps);
-                SinkTask sinkTask = new SinkTask(readerGroup.get(i), sink, pravegaProps,WorkerState.Started);
+                SinkTask sinkTask = new SinkTask(readerGroup.get(i), sink, pravegaProps, WorkerState.Started);
                 tasks.putIfAbsent(sinkProps.get("name"), new ArrayList<>());
                 tasks.get(sinkProps.get("name")).add(sinkTask);
                 executor.submit(sinkTask);
@@ -98,13 +100,15 @@ public class SinkWorker implements Worker {
     public void setWorkerState(WorkerState workerState, String workerName) {
         this.workerState = workerState;
         List<Task> tasksList = tasks.get(workerName);
-        if(tasksList == null) return;
-        for(Task task: tasksList) {
+        if (tasksList == null) return;
+        for (Task task : tasksList) {
             task.setState(workerState);
         }
     }
 
     public void startCheckPoint(Map<String, String> pravegaProps) {
+        scheduledExecutorService = Executors.newScheduledThreadPool(10);
+
 
         ReaderGroupManager readerGroupManager = ReaderGroupManager.withScope(pravegaProps.get(SCOPE_CONFIG), URI.create(pravegaProps.get(URI_CONFIG)));
         ReaderGroup group = readerGroupManager.getReaderGroup(pravegaProps.get(READER_GROUP_NAME_CONFIG));
@@ -126,6 +130,10 @@ public class SinkWorker implements Worker {
                 }
 
             }
-        }, 0, Long.parseLong(CHECK_POINT_INTERVAL), TimeUnit.SECONDS);
+        }, 10, Long.parseLong(CHECK_POINT_INTERVAL), TimeUnit.SECONDS);
+    }
+
+    public void shutdownScheduledService() {
+        scheduledExecutorService.shutdown();
     }
 }

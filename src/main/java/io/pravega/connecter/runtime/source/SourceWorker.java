@@ -22,6 +22,8 @@ public class SourceWorker implements Worker {
     private Map<String, List<Task>> tasks;
     private volatile WorkerState workerState;
     public static String SOURCE_CLASS_CONFIG = "class";
+    public static String TASK_NUM_CONFIG = "tasks.max";
+
 
     public SourceWorker(Map<String, String> pravegaProps, Map<String, String> sourceProps, WorkerState workerState) {
         this.executor = new ThreadPoolExecutor(20, 200, 60L, TimeUnit.SECONDS, new LinkedBlockingDeque<Runnable>());
@@ -31,13 +33,14 @@ public class SourceWorker implements Worker {
         this.tasks = new HashMap<>();
     }
 
-    public void execute(int nThread) {
+    public void execute() {
         Class<?> sourceClass = null;
+        int threadNum = Integer.valueOf(sourceProps.get(TASK_NUM_CONFIG));
         List<Source> sourceGroup = new ArrayList<>();
         String workerName = sourceProps.get("name");
         try {
             PravegaWriter.init(pravegaProps);
-            for (int i = 0; i < nThread; i++) {
+            for (int i = 0; i < threadNum; i++) {
                 sourceClass = Class.forName(sourceProps.get(SOURCE_CLASS_CONFIG));
                 Source source = (Source) sourceClass.newInstance();
                 source.open(sourceProps, pravegaProps);
@@ -47,7 +50,7 @@ public class SourceWorker implements Worker {
             e.printStackTrace();
         }
 
-        for (int i = 0; i < nThread; i++) {
+        for (int i = 0; i < threadNum; i++) {
             try {
                 PravegaWriter pravegaWriter = new PravegaWriter(pravegaProps);
                 SourceTask sourceTask = new SourceTask(pravegaWriter, sourceGroup.get(i), pravegaProps, WorkerState.Started);
@@ -70,6 +73,11 @@ public class SourceWorker implements Worker {
         for(Task task: tasksList) {
             task.setState(workerState);
         }
+    }
+
+    @Override
+    public void shutdownScheduledService() {
+
     }
 
 }

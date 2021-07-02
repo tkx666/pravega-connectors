@@ -7,8 +7,12 @@ import java.util.List;
 import java.util.Map;
 
 public interface Worker {
-    void execute(int nThread);
+    void execute();
+
     void setWorkerState(WorkerState workerState, String workerName);
+
+    void shutdownScheduledService();
+
 
     static Worker getWorkerByType(Map<String, String> connectorProps, Map<String, String> pravegapProps) {
         if (connectorProps.get("type").equals("source")) {
