@@ -38,7 +38,7 @@ public class ConnectStandalone {
             Map<String, String> connectorMap = Utils.propsToMap(connectorProps);
             Worker worker = Worker.getWorkerByType(connectorMap, pravegaMap);
 
-            RestServer server = new RestServer();
+            RestServer server = new RestServer(pravegaMap);
             server.initializeServer();
             server.initializeResource(worker);
             worker.execute();

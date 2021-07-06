@@ -13,6 +13,7 @@ import io.pravega.connecter.runtime.storage.TasksInfoStore;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
@@ -41,8 +42,9 @@ public class SinkWorker implements Worker {
     public static String SCOPE_CONFIG = "scope";
     public static String URI_CONFIG = "uri";
     public static String READER_GROUP_NAME_CONFIG = "readerGroup";
-    public static String CHECK_POINT_NAME = "checkPoint";
+    public static String CHECK_POINT_NAME = "checkpoint.name";
     public static String TASK_NUM_CONFIG = "tasks.max";
+    public static String CHECK_POINT_PATH_CONFIG = "checkpoint.persist.path";
 
 
     //    private Sink sink;
@@ -55,13 +57,11 @@ public class SinkWorker implements Worker {
     }
 
     public void execute() {
-        executor = new ThreadPoolExecutor(20, 200, 60L, TimeUnit.SECONDS, new LinkedBlockingDeque<Runnable>());
-
         Class<?> sinkClass = null;
         int threadNum = Integer.valueOf(sinkProps.get(TASK_NUM_CONFIG));
         try {
             sinkClass = Class.forName(sinkProps.get(SINK_CLASS_CONFIG));
-            PravegaReader.init(pravegaProps);
+            PravegaReader.init(pravegaProps, sinkProps);
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -79,7 +79,6 @@ public class SinkWorker implements Worker {
 
         for (int i = 0; i < threadNum; i++) {
             try {
-                //PravegaReader pravegaReader = new PravegaReader(pravegaProps, sinkProps.get("name") + i);
                 Sink sink = (Sink) sinkClass.newInstance();
                 sink.open(sinkProps, pravegaProps);
                 SinkTask sinkTask = new SinkTask(readerGroup.get(i), sink, pravegaProps, WorkerState.Started);
@@ -91,8 +90,8 @@ public class SinkWorker implements Worker {
             }
 
         }
-        startCheckPoint(pravegaProps);
-        executor.shutdown();
+        startCheckPoint(sinkProps);
+//        executor.shutdown();
 
     }
 
@@ -106,23 +105,21 @@ public class SinkWorker implements Worker {
         }
     }
 
-    public void startCheckPoint(Map<String, String> pravegaProps) {
-        scheduledExecutorService = Executors.newScheduledThreadPool(10);
-
-
+    public void startCheckPoint(Map<String, String> sinkProps) {
         ReaderGroupManager readerGroupManager = ReaderGroupManager.withScope(pravegaProps.get(SCOPE_CONFIG), URI.create(pravegaProps.get(URI_CONFIG)));
         ReaderGroup group = readerGroupManager.getReaderGroup(pravegaProps.get(READER_GROUP_NAME_CONFIG));
-        scheduledExecutorService.scheduleAtFixedRate(new Runnable() {
+        ScheduledFuture<?> future = scheduledExecutorService.scheduleAtFixedRate(new Runnable() {
             @Override
             public void run() {
                 logger.info("reader group {}", group.getOnlineReaders());
                 CompletableFuture<Checkpoint> checkpointResult =
-                        group.initiateCheckpoint(pravegaProps.get(CHECK_POINT_NAME), Executors.newScheduledThreadPool(5));
+                        group.initiateCheckpoint(sinkProps.get(CHECK_POINT_NAME), Executors.newScheduledThreadPool(5));
                 try {
                     Checkpoint checkpoint = checkpointResult.get(10, TimeUnit.SECONDS);
                     logger.info("check point start {}", checkpoint);
                     ByteBuffer serializedCheckPoint = checkpoint.toBytes();
-                    FileChannel fileChannel = new FileOutputStream("checkpoint.txt").getChannel();
+                    FileChannel fileChannel = new FileOutputStream(sinkProps.get(CHECK_POINT_PATH_CONFIG)).getChannel();
+
                     fileChannel.write(serializedCheckPoint);
                     fileChannel.close();
                 } catch (Exception e) {
@@ -130,10 +127,16 @@ public class SinkWorker implements Worker {
                 }
 
             }
-        }, 10, Long.parseLong(CHECK_POINT_INTERVAL), TimeUnit.SECONDS);
+        }, 15, Long.parseLong(CHECK_POINT_INTERVAL), TimeUnit.SECONDS);
     }
 
     public void shutdownScheduledService() {
         scheduledExecutorService.shutdown();
+    }
+
+    @Override
+    public void deleteTasksConfig(String worker) {
+        if (tasks.containsKey(worker)) tasks.remove(worker);
+        return;
     }
 }

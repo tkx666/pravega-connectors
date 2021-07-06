@@ -12,13 +12,19 @@ import org.glassfish.jersey.servlet.ServletContainer;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 
 public class RestServer {
     private Server jettyServer;
     private ContextHandlerCollection handlers;
+    private Map<String, String> pravegaProps;
+    public static String REST_PORT = "rest.port";
+    public RestServer(Map<String, String> pravegaProps) {
+        this.pravegaProps = pravegaProps;
+    }
 
     public void initializeServer() throws Exception {
-        jettyServer = new Server(8080);
+        jettyServer = new Server(Integer.parseInt(pravegaProps.get(REST_PORT)));
         handlers = new ContextHandlerCollection();
         StatisticsHandler statsHandler = new StatisticsHandler();
         statsHandler.setHandler(handlers);

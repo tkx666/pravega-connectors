@@ -42,7 +42,7 @@ public class PravegaReader {
     public static String SERIALIZER_CONFIG = "serializer";
     public static String SEGMENTS_NUM_CONFIG = "segments";
     public static String READER_GROUP_NAME_CONFIG = "readerGroup";
-    public static String CHECK_POINT_PATH_CONFIG = "checkPointPersistPath";
+    public static String CHECK_POINT_PATH_CONFIG = "checkpoint.persist.path";
 
 
     public PravegaReader(Map<String, String> pravegaProps, String readerName) throws IllegalAccessException, InstantiationException {
@@ -55,7 +55,7 @@ public class PravegaReader {
 
     }
 
-    public static void init(Map<String, String> pravegaProps) throws ClassNotFoundException, IllegalAccessException, InstantiationException, IOException {
+    public static void init(Map<String, String> pravegaProps, Map<String, String> connectorMap) throws ClassNotFoundException, IllegalAccessException, InstantiationException, IOException {
         scope = pravegaProps.get(SCOPE_CONFIG);
         streamName = pravegaProps.get(STREAM_NAME_CONFIG);
         controllerURI = URI.create(pravegaProps.get(URI_CONFIG));
@@ -68,7 +68,7 @@ public class PravegaReader {
                 .build();
         final boolean streamIsNew = streamManager.createStream(scope, streamName, streamConfig);
 
-        if (!hasCheckPoint(pravegaProps)) {
+        if (!hasCheckPoint(connectorMap)) {
             final ReaderGroupConfig readerGroupConfig = ReaderGroupConfig.builder()
                     .stream(Stream.of(scope, streamName))
                     .build();
@@ -77,7 +77,7 @@ public class PravegaReader {
             }
 
         } else {
-            FileChannel fileChannel = new FileInputStream(pravegaProps.get(CHECK_POINT_PATH_CONFIG)).getChannel();
+            FileChannel fileChannel = new FileInputStream(connectorMap.get(CHECK_POINT_PATH_CONFIG)).getChannel();
             ByteBuffer buffer = ByteBuffer.allocate(1024);
             fileChannel.read(buffer);
             buffer.flip();
@@ -92,8 +92,6 @@ public class PravegaReader {
                     .builder()
                     .startFromCheckpoint(checkpoint)
                     .build());
-
-
         }
         clientFactory = EventStreamClientFactory.withScope(scope,
                 ClientConfig.builder().controllerURI(controllerURI).build());
@@ -127,8 +125,8 @@ public class PravegaReader {
         reader.close();
     }
 
-    public static boolean hasCheckPoint(Map<String, String> pravegaProps) {
-        File file = new File(pravegaProps.get(CHECK_POINT_PATH_CONFIG));
+    public static boolean hasCheckPoint(Map<String, String> connectorProps) {
+        File file = new File(connectorProps.get(CHECK_POINT_PATH_CONFIG));
         return file.exists();
     }
 

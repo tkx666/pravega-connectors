@@ -12,6 +12,7 @@ public interface Worker {
     void setWorkerState(WorkerState workerState, String workerName);
 
     void shutdownScheduledService();
+    void deleteTasksConfig(String worker);
 
 
     static Worker getWorkerByType(Map<String, String> connectorProps, Map<String, String> pravegapProps) {

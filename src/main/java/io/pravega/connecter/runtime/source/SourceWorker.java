@@ -80,4 +80,9 @@ public class SourceWorker implements Worker {
 
     }
 
+    @Override
+    public void deleteTasksConfig(String worker) {
+
+    }
+
 }

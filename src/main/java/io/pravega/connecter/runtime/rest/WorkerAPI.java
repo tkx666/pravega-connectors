@@ -44,7 +44,8 @@ public class WorkerAPI {
     public Response stopConnector(@PathParam("worker") String workerName) {
         log.info("stop worker");
         worker.setWorkerState(WorkerState.Stopped, workerName);
-        worker.shutdownScheduledService();
+        worker.deleteTasksConfig(workerName);
+//        worker.shutdownScheduledService();
         return Response.accepted().build();
     }
 
