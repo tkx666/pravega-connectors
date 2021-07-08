@@ -24,11 +24,6 @@ import java.util.Map;
 import java.util.UUID;
 
 public class PravegaReader {
-    public static String scope;
-    public static String streamName;
-    public static Class<?> serializerClass;
-    public static URI controllerURI;
-    private static String readerGroup;
     private static final int READER_TIMEOUT_MS = 5000;
     private static EventStreamClientFactory clientFactory;
     private String readerName;
@@ -47,57 +42,27 @@ public class PravegaReader {
 
     public PravegaReader(Map<String, String> pravegaProps, String readerName) throws IllegalAccessException, InstantiationException {
         this.readerName = readerName;
-        this.reader = clientFactory.createReader(readerName,
-                readerGroup,
-                (Serializer) serializerClass.newInstance(),
-                ReaderConfig.builder().build());
+//        this.reader = clientFactory.createReader(readerName,
+//                readerGroup,
+//                (Serializer) serializerClass.newInstance(),
+//                ReaderConfig.builder().build());
         this.pravegaProps = pravegaProps;
 
     }
 
-    public static void init(Map<String, String> pravegaProps, Map<String, String> connectorMap) throws ClassNotFoundException, IllegalAccessException, InstantiationException, IOException {
-        scope = pravegaProps.get(SCOPE_CONFIG);
-        streamName = pravegaProps.get(STREAM_NAME_CONFIG);
-        controllerURI = URI.create(pravegaProps.get(URI_CONFIG));
-        serializerClass = Class.forName(pravegaProps.get(SERIALIZER_CONFIG));
-        readerGroup = pravegaProps.get(READER_GROUP_NAME_CONFIG);
-        StreamManager streamManager = StreamManager.create(controllerURI);
-        final boolean scopeIsNew = streamManager.createScope(scope);
-        StreamConfiguration streamConfig = StreamConfiguration.builder()
-                .scalingPolicy(ScalingPolicy.fixed(Integer.valueOf(pravegaProps.get(SEGMENTS_NUM_CONFIG))))
-                .build();
-        final boolean streamIsNew = streamManager.createStream(scope, streamName, streamConfig);
+    public boolean initialize(Map<String, String> pravegaProps) throws ClassNotFoundException, IllegalAccessException, InstantiationException {
+        Class serializerClass = Class.forName(pravegaProps.get(SERIALIZER_CONFIG));
+        String readerGroup = pravegaProps.get(READER_GROUP_NAME_CONFIG);
+        String scope = pravegaProps.get(SCOPE_CONFIG);
+        URI controllerURI = URI.create(pravegaProps.get(URI_CONFIG));
 
-        if (!hasCheckPoint(connectorMap)) {
-            final ReaderGroupConfig readerGroupConfig = ReaderGroupConfig.builder()
-                    .stream(Stream.of(scope, streamName))
-                    .build();
-            try (ReaderGroupManager readerGroupManager = ReaderGroupManager.withScope(scope, controllerURI)) {
-                readerGroupManager.createReaderGroup(readerGroup, readerGroupConfig);
-            }
-
-        } else {
-            FileChannel fileChannel = new FileInputStream(connectorMap.get(CHECK_POINT_PATH_CONFIG)).getChannel();
-            ByteBuffer buffer = ByteBuffer.allocate(1024);
-            fileChannel.read(buffer);
-            buffer.flip();
-            Checkpoint checkpoint = Checkpoint.fromBytes(buffer);
-            System.out.println("check point recover: " + checkpoint.getName());
-
-            ReaderGroupManager readerGroupManager = ReaderGroupManager.withScope(scope, controllerURI);
-
-            ReaderGroup existingGroup = readerGroupManager.getReaderGroup(readerGroup);
-            System.out.println(existingGroup.getOnlineReaders());
-            existingGroup.resetReaderGroup(ReaderGroupConfig
-                    .builder()
-                    .startFromCheckpoint(checkpoint)
-                    .build());
-        }
-        clientFactory = EventStreamClientFactory.withScope(scope,
+        EventStreamClientFactory clientFactory = EventStreamClientFactory.withScope(scope,
                 ClientConfig.builder().controllerURI(controllerURI).build());
-        streamManager.close();
-
-
+        this.reader = clientFactory.createReader(readerName,
+                readerGroup,
+                (Serializer) serializerClass.newInstance(),
+                ReaderConfig.builder().build());
+        return true;
     }
 
     public List<SinkRecord> readEvent() throws IllegalAccessException, InstantiationException {

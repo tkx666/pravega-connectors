@@ -11,6 +11,8 @@ import org.slf4j.LoggerFactory;
 
 import java.util.Map;
 import java.util.Properties;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
 
 public class ConnectStandalone {
     private static final Logger log = LoggerFactory.getLogger(ConnectStandalone.class);
@@ -26,6 +28,7 @@ public class ConnectStandalone {
 
         options.addOption(PRAVEGA_OPTION_CONFIG, true, "properties of pravega");
         options.addOption(CONNECTOR_OPTION_CONFIG, true, "properties of connector");
+        ExecutorService connectorsThreadPool = Executors.newCachedThreadPool();
 
         try {
             CommandLine cli = commandParser.parse(options, args);
@@ -41,7 +44,7 @@ public class ConnectStandalone {
             RestServer server = new RestServer(pravegaMap);
             server.initializeServer();
             server.initializeResource(worker);
-            worker.execute();
+            connectorsThreadPool.submit(() -> worker.startConnector(connectorMap));
 
         } catch (Exception e) {
             e.printStackTrace();

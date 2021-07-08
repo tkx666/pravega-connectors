@@ -12,12 +12,6 @@ import java.util.Map;
 import java.util.concurrent.CompletableFuture;
 
 public class PravegaWriter {
-    public static String scope;
-    public static String streamName;
-    public static URI controllerURI;
-    public static Class<?> serializerClass;
-
-    public static EventStreamClientFactory clientFactory;
     private EventStreamWriter<Object> writer;
     public static String SCOPE_CONFIG = "scope";
     public static String STREAM_NAME_CONFIG = "streamName";
@@ -26,30 +20,19 @@ public class PravegaWriter {
     public static String SEGMENTS_NUM_CONFIG = "segments";
 
     public PravegaWriter(Map<String, String> pravegaProps) throws IllegalAccessException, InstantiationException {
-        System.out.println(serializerClass);
+
+    }
+    public boolean initialize(Map<String, String> pravegaProps) throws IllegalAccessException, InstantiationException, ClassNotFoundException {
+        Class serializerClass = Class.forName(pravegaProps.get(SERIALIZER_CONFIG));
+        String scope = pravegaProps.get(SCOPE_CONFIG);
+        URI controllerURI = URI.create(pravegaProps.get(URI_CONFIG));
+        String streamName = pravegaProps.get(STREAM_NAME_CONFIG);
+        EventStreamClientFactory clientFactory = EventStreamClientFactory.withScope(scope,
+                ClientConfig.builder().controllerURI(controllerURI).build());
         this.writer = clientFactory.createEventWriter(streamName,
                 (Serializer)serializerClass.newInstance(),
                 EventWriterConfig.builder().build());
-    }
-
-    public static void init(Map<String, String> pravegaProps) throws ClassNotFoundException {
-        scope = pravegaProps.get(SCOPE_CONFIG);
-        streamName = pravegaProps.get(STREAM_NAME_CONFIG);
-        controllerURI = URI.create(pravegaProps.get(URI_CONFIG));
-        serializerClass = Class.forName(pravegaProps.get(SERIALIZER_CONFIG));
-        StreamManager streamManager = StreamManager.create(controllerURI);
-        final boolean scopeIsNew = streamManager.createScope(scope);
-
-        StreamConfiguration streamConfig = StreamConfiguration.builder()
-                .scalingPolicy(ScalingPolicy.fixed(Integer.valueOf(pravegaProps.get(SEGMENTS_NUM_CONFIG))))
-                .build();
-        final boolean streamIsNew = streamManager.createStream(scope, streamName, streamConfig);
-
-        clientFactory = EventStreamClientFactory.withScope(scope,
-                ClientConfig.builder().controllerURI(controllerURI).build());
-        streamManager.close();
-
-
+        return true;
     }
 
     public void run(String routingKey, Object message) {
@@ -61,7 +44,6 @@ public class PravegaWriter {
 
     public void close(){
         writer.close();
-        clientFactory.close();
     }
 
 }

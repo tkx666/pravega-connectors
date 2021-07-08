@@ -31,7 +31,7 @@ public class ConnectSourceStandalone {
             Map<String, String> pravegaMap = Utils.propsToMap(pravegaProps);
             Map<String, String> connectorMap = Utils.propsToMap(connectorProps);
             SourceWorker sourceWorker = new SourceWorker(pravegaMap, connectorMap, WorkerState.Started);
-            sourceWorker.execute();
+//            sourceWorker.execute();
 
         } catch (Exception e) {
             e.printStackTrace();

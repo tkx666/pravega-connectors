@@ -7,12 +7,14 @@ import java.util.List;
 import java.util.Map;
 
 public interface Worker {
-    void execute();
+    void startConnector(Map<String, String> sinkProps);
 
     void setWorkerState(WorkerState workerState, String workerName);
 
     void shutdownScheduledService();
-    void deleteTasksConfig(String worker);
+    void deleteTasksConfig(String connectorName);
+    void deleteConnectorConfig(String connectorName);
+    Map<String, String> getConnectorConfig(String connectorName);
 
 
     static Worker getWorkerByType(Map<String, String> connectorProps, Map<String, String> pravegapProps) {

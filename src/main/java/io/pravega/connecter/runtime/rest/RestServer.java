@@ -39,7 +39,7 @@ public class RestServer {
 //        ServletContextHandler context = new ServletContextHandler(ServletContextHandler.SESSIONS);
 //        context.setContextPath("/");
         ResourceConfig resourceConfig = new ResourceConfig();
-        resourceConfig.register(new WorkerAPI(worker));
+        resourceConfig.register(new ConnectorAPI(worker));
 //        Server jettyServer = new Server(8080);
 //        jettyServer.setHandler(context);
         ServletContainer servletContainer = new ServletContainer(resourceConfig);
