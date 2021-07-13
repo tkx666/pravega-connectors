@@ -18,7 +18,6 @@ import java.util.concurrent.TimeUnit;
 public class SourceWorker implements Worker {
     private final ExecutorService executor;
     private Map<String, String> pravegaProps;
-//    private Map<String, String> sourceProps;
     private Map<String, List<Task>> tasks;
     private volatile WorkerState workerState;
     public static String SOURCE_CLASS_CONFIG = "class";
@@ -33,7 +32,6 @@ public class SourceWorker implements Worker {
     public SourceWorker(Map<String, String> pravegaProps, Map<String, String> sourceProps, WorkerState workerState) {
         this.executor = new ThreadPoolExecutor(20, 200, 60L, TimeUnit.SECONDS, new LinkedBlockingDeque<Runnable>());
         this.pravegaProps = pravegaProps;
-//        this.sourceProps = sourceProps;
         this.workerState = workerState;
         this.tasks = new HashMap<>();
     }
@@ -44,7 +42,6 @@ public class SourceWorker implements Worker {
             int threadNum = Integer.valueOf(connectorProps.get(TASK_NUM_CONFIG));
             List<Source> sourceGroup = new ArrayList<>();
             String workerName = connectorProps.get("name");
-//            PravegaWriter.init(pravegaProps);
             initializePravega(pravegaProps);
             for (int i = 0; i < threadNum; i++) {
                 sourceClass = Class.forName(connectorProps.get(SOURCE_CLASS_CONFIG));
