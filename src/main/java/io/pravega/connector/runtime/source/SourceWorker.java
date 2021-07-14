@@ -21,12 +21,15 @@ public class SourceWorker implements Worker {
     private Map<String, List<Task>> tasks;
     private volatile WorkerState workerState;
     public static String SOURCE_CLASS_CONFIG = "class";
+    public static String CONNECT_NAME_CONFIG = "name";
     public static String TASK_NUM_CONFIG = "tasks.max";
     public static String SCOPE_CONFIG = "scope";
     public static String STREAM_NAME_CONFIG = "streamName";
     public static String URI_CONFIG = "uri";
     public static String SERIALIZER_CONFIG = "serializer";
     public static String SEGMENTS_NUM_CONFIG = "segments";
+    public static String TRANSACTION_ENABLE_CONFIG = "transaction.enable";
+
 
 
     public SourceWorker(Map<String, String> pravegaProps, Map<String, String> sourceProps, WorkerState workerState) {
@@ -41,7 +44,6 @@ public class SourceWorker implements Worker {
             Class<?> sourceClass = null;
             int threadNum = Integer.valueOf(connectorProps.get(TASK_NUM_CONFIG));
             List<Source> sourceGroup = new ArrayList<>();
-            String workerName = connectorProps.get("name");
             initializePravega(pravegaProps);
             for (int i = 0; i < threadNum; i++) {
                 sourceClass = Class.forName(connectorProps.get(SOURCE_CLASS_CONFIG));
@@ -50,11 +52,15 @@ public class SourceWorker implements Worker {
                 sourceGroup.add(source);
             }
             for (int i = 0; i < threadNum; i++) {
-                PravegaWriter pravegaWriter = new PravegaWriter(pravegaProps);
-                pravegaWriter.initialize(pravegaProps);
-                SourceTask sourceTask = new SourceTask(pravegaWriter, sourceGroup.get(i), pravegaProps, WorkerState.Started);
-                tasks.putIfAbsent(connectorProps.get("name"), new ArrayList<>());
-                tasks.get(connectorProps.get("name")).add(sourceTask);
+                Writer writer = null;
+                if(connectorProps.containsKey(TRANSACTION_ENABLE_CONFIG) && connectorProps.get(TRANSACTION_ENABLE_CONFIG).equals("true")) {
+                    writer = new PravegaTransactionalWriter(pravegaProps);
+                }
+                else writer = new PravegaWriter(pravegaProps);
+                writer.initialize();
+                SourceTask sourceTask = new SourceTask(writer, sourceGroup.get(i), pravegaProps, WorkerState.Started);
+                tasks.putIfAbsent(connectorProps.get(CONNECT_NAME_CONFIG), new ArrayList<>());
+                tasks.get(connectorProps.get(CONNECT_NAME_CONFIG)).add(sourceTask);
                 executor.submit(sourceTask);
             }
 //        executor.shutdown();

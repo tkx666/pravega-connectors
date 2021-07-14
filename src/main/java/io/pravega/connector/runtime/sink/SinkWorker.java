@@ -162,7 +162,7 @@ public class SinkWorker implements Worker {
                 }
 
             }
-        }, 15, Long.parseLong(CHECK_POINT_INTERVAL), TimeUnit.SECONDS);
+        }, 0, Long.parseLong(CHECK_POINT_INTERVAL), TimeUnit.SECONDS);
     }
 
     public void shutdownScheduledService() {
