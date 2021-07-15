@@ -7,12 +7,16 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import javax.ws.rs.*;
+import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
+
 import java.util.Map;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
 @Path("connector")
+@Produces(MediaType.APPLICATION_JSON)
+@Consumes(MediaType.APPLICATION_JSON)
 public class ConnectorAPI {
     private Worker worker;
     private static final Logger log = LoggerFactory.getLogger(ConnectorAPI.class);
@@ -26,7 +30,7 @@ public class ConnectorAPI {
     public Response pauseConnector(@PathParam("connector") String connectorName) {
         log.info("pause start");
         worker.setWorkerState(WorkerState.Paused, connectorName);
-        return Response.accepted().build();
+        return Response.ok().build();
     }
 
     @GET
@@ -34,7 +38,7 @@ public class ConnectorAPI {
     public Response resumeConnector(@PathParam("connector") String connectorName) {
         log.info("resume start");
         worker.setWorkerState(WorkerState.Started, connectorName);
-        return Response.accepted().build();
+        return Response.ok().build();
     }
 
     @GET
@@ -45,7 +49,7 @@ public class ConnectorAPI {
         worker.deleteTasksConfig(connectorName);
         worker.deleteConnectorConfig(connectorName);
 //        worker.shutdownScheduledService();
-        return Response.accepted().build();
+        return Response.ok().build();
     }
 
     @GET
@@ -56,7 +60,19 @@ public class ConnectorAPI {
         Map<String, String> connectorProps = worker.getConnectorConfig(connectorName);
         threadPool.submit(() -> worker.startConnector(connectorProps));
 //        worker.startConnector();
-        return Response.accepted().build();
+        return Response.ok().build();
+    }
+
+    @PUT
+    @Path("{connector}/config")
+//    @Consumes({MediaType.APPLICATION_FORM_URLENCODED})
+    public Response updateConfiguration(@PathParam("connector") String connectorName,
+                                        Map<String, String> connectorProps) {
+        for(String s: connectorProps.keySet()) {
+            System.out.println(s);
+        }
+        return Response.ok().build();
+
     }
 
 

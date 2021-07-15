@@ -44,12 +44,14 @@ public class PravegaWriter implements Writer {
 
     public void write(List<SourceRecord> records) {
         try {
+            RoutingKeyGenerator generator = null;
+            if (pravegaProps.containsKey(ROUTING_KEY_CLASS_CONFIG)) {
+                Class routingKeyGeneratorClass = Class.forName(pravegaProps.get(ROUTING_KEY_CLASS_CONFIG));
+                generator = (RoutingKeyGenerator) routingKeyGeneratorClass.newInstance();
+            }
             for(SourceRecord record: records) {
                 Object message = record.getValue();
                 if (pravegaProps.containsKey(ROUTING_KEY_CLASS_CONFIG)) {
-
-                    Class routingKeyGeneratorClass = Class.forName(pravegaProps.get(ROUTING_KEY_CLASS_CONFIG));
-                    RoutingKeyGenerator generator = (RoutingKeyGenerator) routingKeyGeneratorClass.newInstance();
                     String routingKey = generator.generateRoutingKey(message);
                     final CompletableFuture writeFuture = writer.writeEvent(routingKey, message);
                 } else {
