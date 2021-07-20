@@ -25,6 +25,11 @@ public class SinkTask extends Task {
         try {
             List<SinkRecord> readList = null;
             while (!isStopped()) {
+                if (hasPaused()) {
+                    System.out.println(Thread.currentThread().getName() + " has paused");
+                    awaitResume();
+                    continue;
+                }
                 readList = pravegaReader.readEvent();
                 System.out.println(Thread.currentThread() + "  size: " + readList.size());
                 if (readList.size() == 0) continue;
@@ -49,6 +54,19 @@ public class SinkTask extends Task {
             this.workerState = state;
             this.notifyAll();
         }
+    }
+    public boolean hasPaused() {
+        return workerState == WorkerState.Paused;
+    }
+
+    public boolean awaitResume() throws InterruptedException {
+        synchronized (this) {
+            while (workerState == WorkerState.Paused) {
+                this.wait();
+            }
+            return true;
+        }
+
     }
 
     public boolean isStopped() {

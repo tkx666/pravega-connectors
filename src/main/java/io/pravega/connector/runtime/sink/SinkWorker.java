@@ -182,6 +182,13 @@ public class SinkWorker implements Worker {
     }
 
     @Override
+    public synchronized void stopConnector(String connectorName) {
+        setWorkerState(WorkerState.Stopped, connectorName);
+        deleteTasksConfig(connectorName);
+        deleteConnectorConfig(connectorName);
+    }
+
+    @Override
     public Map<String, String> getConnectorConfig(String connectorName) {
         return connectors.getOrDefault(connectorName, null);
     }

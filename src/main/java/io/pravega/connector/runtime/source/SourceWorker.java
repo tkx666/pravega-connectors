@@ -103,13 +103,22 @@ public class SourceWorker implements Worker {
     }
 
     @Override
-    public void deleteTasksConfig(String worker) {
-
+    public void deleteTasksConfig(String connectorName) {
+        if (tasks.containsKey(connectorName)) tasks.remove(connectorName);
+        return;
     }
 
     @Override
     public void deleteConnectorConfig(String connectorName) {
+//        if (connectors.containsKey(connectorName)) connectors.remove(connectorName);
+        return;
+    }
 
+    @Override
+    public synchronized void stopConnector(String connectorName) {
+        setWorkerState(WorkerState.Stopped, connectorName);
+        deleteTasksConfig(connectorName);
+        deleteConnectorConfig(connectorName);
     }
 
     @Override

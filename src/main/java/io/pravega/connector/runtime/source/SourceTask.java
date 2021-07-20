@@ -29,7 +29,7 @@ public class SourceTask extends Task {
     protected void execute() {
         try {
             List<SourceRecord> records;
-            while (true) {
+            while (!isStopped()) {
                 if (hasPaused()) {
                     System.out.println(Thread.currentThread().getName() + " has paused");
                     awaitResume();
@@ -82,5 +82,7 @@ public class SourceTask extends Task {
         }
     }
 
-
+    public boolean isStopped() {
+        return this.workerState == WorkerState.Stopped;
+    }
 }

@@ -13,6 +13,7 @@ public interface Worker {
     void shutdownScheduledService();
     void deleteTasksConfig(String connectorName);
     void deleteConnectorConfig(String connectorName);
+    void stopConnector(String connectorName);
     Map<String, String> getConnectorConfig(String connectorName);
 
 

@@ -20,6 +20,8 @@ import java.util.concurrent.Executors;
 public class ConnectorAPI {
     private Worker worker;
     private static final Logger log = LoggerFactory.getLogger(ConnectorAPI.class);
+    private ExecutorService threadPool = Executors.newCachedThreadPool();
+
 
     public ConnectorAPI(Worker worker) {
         this.worker = worker;
@@ -45,9 +47,7 @@ public class ConnectorAPI {
     @Path("{connector}/stop")
     public Response stopConnector(@PathParam("connector") String connectorName) {
         log.info("stop worker");
-        worker.setWorkerState(WorkerState.Stopped, connectorName);
-        worker.deleteTasksConfig(connectorName);
-        worker.deleteConnectorConfig(connectorName);
+        worker.stopConnector(connectorName);
 //        worker.shutdownScheduledService();
         return Response.ok().build();
     }
@@ -56,7 +56,6 @@ public class ConnectorAPI {
     @Path("{connector}/restart")
     public Response restartConnector(@PathParam("connector") String connectorName) {
         log.info("restart worker not complete");
-        ExecutorService threadPool = Executors.newCachedThreadPool();
         Map<String, String> connectorProps = worker.getConnectorConfig(connectorName);
         threadPool.submit(() -> worker.startConnector(connectorProps));
 //        worker.startConnector();
@@ -65,16 +64,13 @@ public class ConnectorAPI {
 
     @PUT
     @Path("{connector}/config")
-//    @Consumes({MediaType.APPLICATION_FORM_URLENCODED})
     public Response updateConfiguration(@PathParam("connector") String connectorName,
                                         Map<String, String> connectorProps) {
-        for(String s: connectorProps.keySet()) {
-            System.out.println(s);
-        }
+
+        worker.stopConnector(connectorName);
+        threadPool.submit(() -> worker.startConnector(connectorProps));
+
         return Response.ok().build();
 
     }
-
-
-
 }
