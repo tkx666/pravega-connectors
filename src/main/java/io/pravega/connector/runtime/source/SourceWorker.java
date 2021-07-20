@@ -15,7 +15,7 @@ import java.util.concurrent.LinkedBlockingDeque;
 import java.util.concurrent.ThreadPoolExecutor;
 import java.util.concurrent.TimeUnit;
 
-public class SourceWorker implements Worker {
+public class SourceWorker implements Workers {
     private final ExecutorService executor;
     private Map<String, String> pravegaProps;
     private Map<String, List<Task>> tasks;

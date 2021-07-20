@@ -1,6 +1,6 @@
 package io.pravega.connector.runtime.cli;
 
-import io.pravega.connector.runtime.Worker;
+import io.pravega.connector.runtime.Workers;
 import io.pravega.connector.runtime.rest.RestServer;
 import io.pravega.connector.utils.Utils;
 import org.apache.commons.cli.*;
@@ -37,12 +37,12 @@ public class ConnectStandalone {
 
             Map<String, String> pravegaMap = Utils.propsToMap(pravegaProps);
             Map<String, String> connectorMap = Utils.propsToMap(connectorProps);
-            Worker worker = Worker.getWorkerByType(connectorMap, pravegaMap);
+            Workers workers = Workers.getWorkerByType(connectorMap, pravegaMap);
 
             RestServer server = new RestServer(pravegaMap);
             server.initializeServer();
-            server.initializeResource(worker);
-            connectorsThreadPool.submit(() -> worker.startConnector(connectorMap));
+            server.initializeResource(workers);
+            connectorsThreadPool.submit(() -> workers.startConnector(connectorMap));
 
         } catch (Exception e) {
             e.printStackTrace();
