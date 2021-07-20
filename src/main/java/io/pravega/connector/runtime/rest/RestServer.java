@@ -1,7 +1,7 @@
 package io.pravega.connector.runtime.rest;
 
 import com.fasterxml.jackson.jaxrs.json.JacksonJsonProvider;
-import io.pravega.connector.runtime.Workers;
+import io.pravega.connector.runtime.Worker;
 import org.eclipse.jetty.server.Handler;
 import org.eclipse.jetty.server.Server;
 import org.eclipse.jetty.server.handler.ContextHandlerCollection;
@@ -35,14 +35,14 @@ public class RestServer {
 
     }
 
-    public void initializeResource(Workers workers) throws Exception {
+    public void initializeResource(Worker worker) throws Exception {
 
 //        ServletContextHandler context = new ServletContextHandler(ServletContextHandler.SESSIONS);
 //        context.setContextPath("/");
         ResourceConfig resourceConfig = new ResourceConfig();
         resourceConfig.register(new JacksonJsonProvider());
 
-        resourceConfig.register(new ConnectorAPI(workers));
+        resourceConfig.register(new ConnectorAPI(worker));
 //        Server jettyServer = new Server(8080);
 //        jettyServer.setHandler(context);
         ServletContainer servletContainer = new ServletContainer(resourceConfig);
