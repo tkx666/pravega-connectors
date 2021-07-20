@@ -9,17 +9,45 @@ import java.util.Map;
 
 public class SinkTask extends Task {
     private Sink sink;
-    private PravegaReader pravegaReader;
+    private PravegaReader reader;
     private Map<String, String> pravegaProps;
     private WorkerState workerState;
+    private Map<String, String> sinkProps;
+    private int id;
 
-    public SinkTask(PravegaReader pravegaReader, Sink sink, Map<String, String> pravegaProps, WorkerState state) {
-        this.sink = sink;
-        this.pravegaReader = pravegaReader;
+    public static String SINK_CLASS_CONFIG = "class";
+    public static String SINK_NAME_CONFIG = "name";
+
+
+
+    public SinkTask(Map<String, String> sinkProps, Map<String, String> pravegaProps, WorkerState state, int id) {
+        this.sinkProps = sinkProps;
         this.pravegaProps = pravegaProps;
         this.workerState = state;
+        this.id = id;
+    }
+    public SinkTask(PravegaReader reader, Sink sink, Map<String, String> pravegaProps, WorkerState state, int id) {
+//        this.sinkProps = sinkProps;
+        this.pravegaProps = pravegaProps;
+        this.workerState = state;
+        this.id = id;
+        this.reader = reader;
+        this.sink = sink;
     }
 
+    @Override
+    public void initialize() {
+        try {
+            Class sinkClass = Class.forName(sinkProps.get(SINK_CLASS_CONFIG));
+            this.sink = (Sink) sinkClass.newInstance();
+            sink.open(sinkProps, pravegaProps);
+            this.reader = new PravegaReader(pravegaProps, sinkProps.get(SINK_NAME_CONFIG) + id);
+            reader.initialize(pravegaProps);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
+    }
     @Override
     protected void execute() {
         try {
@@ -30,7 +58,7 @@ public class SinkTask extends Task {
                     awaitResume();
                     continue;
                 }
-                readList = pravegaReader.readEvent();
+                readList = reader.readEvent();
                 System.out.println(Thread.currentThread() + "  size: " + readList.size());
                 if (readList.size() == 0) continue;
                 sink.write(readList);
@@ -40,7 +68,7 @@ public class SinkTask extends Task {
         }
         finally {
             sink.close();
-            pravegaReader.close();
+            reader.close();
         }
 
     }

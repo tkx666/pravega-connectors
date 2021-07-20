@@ -10,4 +10,6 @@ public abstract class Task implements Runnable{
     protected abstract void execute();
 
     public abstract void setState(WorkerState state);
+
+    public abstract void initialize();
 }

@@ -60,8 +60,13 @@ public class Worker {
     }
 
     public void startConnector(Map<String, String> connectorProps) {
-        startTasks(connectorProps);
-        if (connectorProps.get(TYPE_CONFIG).equals("sink")) startCheckPoint(connectorProps);
+        try {
+            startTasks(connectorProps);
+            if (connectorProps.get(TYPE_CONFIG).equals("sink")) startCheckPoint(connectorProps);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
     }
 
     public void startTasks(Map<String, String> connectorProps) {
@@ -73,20 +78,25 @@ public class Worker {
                 List<Source> sourceGroup = new ArrayList<>();
                 createScopeAndStream();
 
+//                for (int i = 0; i < threadNum; i++) {
+//                    sourceClass = Class.forName(connectorProps.get(SOURCE_CLASS_CONFIG));
+//                    Source source = (Source) sourceClass.newInstance();
+//                    source.open(connectorProps, pravegaProps);
+//                    sourceGroup.add(source);
+//                }
                 for (int i = 0; i < threadNum; i++) {
-                    sourceClass = Class.forName(connectorProps.get(SOURCE_CLASS_CONFIG));
-                    Source source = (Source) sourceClass.newInstance();
-                    source.open(connectorProps, pravegaProps);
-                    sourceGroup.add(source);
-                }
-                for (int i = 0; i < threadNum; i++) {
-                    Writer writer = null;
-                    if (connectorProps.containsKey(TRANSACTION_ENABLE_CONFIG) && connectorProps.get(TRANSACTION_ENABLE_CONFIG).equals("true")) {
-                        writer = new PravegaTransactionalWriter(pravegaProps);
-                    } else
-                        writer = new PravegaWriter(pravegaProps);
-                    writer.initialize();
-                    SourceTask sourceTask = new SourceTask(writer, sourceGroup.get(i), pravegaProps, WorkerState.Started);
+//                    Writer writer;
+//                    if (connectorProps.containsKey(TRANSACTION_ENABLE_CONFIG) && connectorProps.get(TRANSACTION_ENABLE_CONFIG).equals("true")) {
+//                        writer = new PravegaTransactionalWriter(pravegaProps);
+//                    } else
+//                        writer = new PravegaWriter(pravegaProps);
+//                    writer.initialize();
+//                    sourceClass = Class.forName(connectorProps.get(SOURCE_CLASS_CONFIG));
+//                    Source source = (Source) sourceClass.newInstance();
+//                    source.open(connectorProps, pravegaProps);
+                    int id = i;
+                    SourceTask sourceTask = new SourceTask(connectorProps, pravegaProps, WorkerState.Started, id);
+                    sourceTask.initialize();
                     tasks.putIfAbsent(connectorProps.get(CONNECT_NAME_CONFIG), new ArrayList<>());
                     tasks.get(connectorProps.get(CONNECT_NAME_CONFIG)).add(sourceTask);
                     executor.submit(sourceTask);
@@ -116,14 +126,14 @@ public class Worker {
                 }
                 List<PravegaReader> readerGroupList = new ArrayList<>();
                 for (int i = 0; i < threadNum; i++) {
-                    PravegaReader reader = new PravegaReader(pravegaProps, connectorProps.get(SINK_NAME_CONFIG) + i);
-                    reader.initialize(pravegaProps);
-                    readerGroupList.add(reader);
-                }
-                for (int i = 0; i < threadNum; i++) {
-                    Sink sink = (Sink) sinkClass.newInstance();
-                    sink.open(connectorProps, pravegaProps);
-                    SinkTask sinkTask = new SinkTask(readerGroupList.get(i), sink, pravegaProps, WorkerState.Started);
+//                    Sink sink = (Sink) sinkClass.newInstance();
+//                    sink.open(connectorProps, pravegaProps);
+//                    PravegaReader reader = new PravegaReader(pravegaProps, connectorProps.get(SINK_NAME_CONFIG) + i);
+//                    reader.initialize(pravegaProps);
+                    int id = i;
+//                    SinkTask sinkTask = new SinkTask(reader, sink, pravegaProps, WorkerState.Started, id);
+                    SinkTask sinkTask = new SinkTask(connectorProps, pravegaProps, WorkerState.Started, id);
+                    sinkTask.initialize();
                     tasks.putIfAbsent(connectorProps.get("name"), new ArrayList<>());
                     tasks.get(connectorProps.get("name")).add(sinkTask);
                     executor.submit(sinkTask);

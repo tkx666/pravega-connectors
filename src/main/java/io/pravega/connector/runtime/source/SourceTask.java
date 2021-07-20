@@ -1,9 +1,6 @@
 package io.pravega.connector.runtime.source;
 
-import io.pravega.connector.runtime.PravegaWriter;
-import io.pravega.connector.runtime.Task;
-import io.pravega.connector.runtime.WorkerState;
-import io.pravega.connector.runtime.Writer;
+import io.pravega.connector.runtime.*;
 
 import java.util.List;
 import java.util.Map;
@@ -12,18 +9,42 @@ public class SourceTask extends Task {
     private Source source;
     private Writer pravegaWriter;
     private Map<String, String> pravegaProps;
+    private Map<String, String> sourceProps;
+    private int id;
+
     private volatile WorkerState workerState;
     private boolean stopping;
     public static String ROUTING_KEY_CONFIG = "routingKey";
+    public static String TRANSACTION_ENABLE_CONFIG = "transaction.enable";
+    public static String SOURCE_CLASS_CONFIG = "class";
 
-    public SourceTask(Writer pravegaWriter, Source source, Map<String, String> pravegaProps, WorkerState workerState) {
-        this.source = source;
+
+
+    public SourceTask(Map<String, String> sourceProps, Map<String, String> pravegaProps, WorkerState workerState, int id) {
         this.pravegaProps = pravegaProps;
-        this.pravegaWriter = pravegaWriter;
         this.workerState = workerState;
         this.stopping = false;
+        this.sourceProps = sourceProps;
+        this.id = id;
     }
 
+
+    @Override
+    public void initialize() {
+        try {
+            if (sourceProps.containsKey(TRANSACTION_ENABLE_CONFIG) && sourceProps.get(TRANSACTION_ENABLE_CONFIG).equals("true")) {
+                pravegaWriter = new PravegaTransactionalWriter(pravegaProps);
+            } else
+                pravegaWriter = new PravegaWriter(pravegaProps);
+            pravegaWriter.initialize();
+            Class sourceClass = Class.forName(sourceProps.get(SOURCE_CLASS_CONFIG));
+            this.source = (Source) sourceClass.newInstance();
+            source.open(sourceProps, pravegaProps);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
+    }
 
     @Override
     protected void execute() {
@@ -81,6 +102,8 @@ public class SourceTask extends Task {
             this.notifyAll();
         }
     }
+
+
 
     public boolean isStopped() {
         return this.workerState == WorkerState.Stopped;

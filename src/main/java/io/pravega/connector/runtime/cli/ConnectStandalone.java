@@ -42,7 +42,7 @@ public class ConnectStandalone {
             RestServer server = new RestServer(pravegaMap);
             server.initializeServer();
             server.initializeResource(worker);
-            connectorsThreadPool.submit(() -> worker.startConnector(connectorMap));
+            connectorsThreadPool.submit(() -> { worker.startConnector(connectorMap); });
 
         } catch (Exception e) {
             e.printStackTrace();
