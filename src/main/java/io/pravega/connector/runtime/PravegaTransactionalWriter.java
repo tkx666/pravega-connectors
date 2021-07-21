@@ -52,17 +52,20 @@ public class PravegaTransactionalWriter implements Writer {
     @Override
     public void write(List<SourceRecord> records) {
         Transaction<Object> transaction = writer.beginTxn();
+        int count = 0;
         try {
             for (SourceRecord record : records) {
                 Object message = record.getValue();
                 transaction.writeEvent(message);
                 transaction.flush();
+                count++;
             }
             transaction.commit();
             System.out.println(transaction.checkStatus());
         } catch (Exception e) {
             e.printStackTrace();
             transaction.abort();
+            System.out.println(transaction.checkStatus());
         }
     }
 

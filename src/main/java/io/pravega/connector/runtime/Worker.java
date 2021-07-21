@@ -3,9 +3,7 @@ package io.pravega.connector.runtime;
 import io.pravega.client.admin.ReaderGroupManager;
 import io.pravega.client.admin.StreamManager;
 import io.pravega.client.stream.*;
-import io.pravega.connector.runtime.sink.Sink;
 import io.pravega.connector.runtime.sink.SinkTask;
-import io.pravega.connector.runtime.source.Source;
 import io.pravega.connector.runtime.source.SourceTask;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -31,18 +29,13 @@ public class Worker {
     private Map<String, Map<String, String>> connectors;
 
     private volatile WorkerState workerState;
-    public static String SOURCE_CLASS_CONFIG = "class";
     public static String CONNECT_NAME_CONFIG = "name";
     public static String TASK_NUM_CONFIG = "tasks.max";
     public static String SCOPE_CONFIG = "scope";
     public static String STREAM_NAME_CONFIG = "streamName";
     public static String URI_CONFIG = "uri";
-    public static String SERIALIZER_CONFIG = "serializer";
     public static String SEGMENTS_NUM_CONFIG = "segments";
-    public static String TRANSACTION_ENABLE_CONFIG = "transaction.enable";
     public static String TYPE_CONFIG = "type";
-    public static String SINK_CLASS_CONFIG = "class";
-    public static String SINK_NAME_CONFIG = "name";
     public static String CHECK_POINT_INTERVAL = "30";
     public static String READER_GROUP_NAME_CONFIG = "readerGroup";
     public static String CHECK_POINT_NAME = "checkpoint.name";
@@ -73,27 +66,9 @@ public class Worker {
         try {
             connectors.put(connectorProps.get(CONNECT_NAME_CONFIG), connectorProps);
             if (connectorProps.get(TYPE_CONFIG).equals("source")) {
-                Class<?> sourceClass = null;
                 int threadNum = Integer.parseInt(connectorProps.get(TASK_NUM_CONFIG));
-                List<Source> sourceGroup = new ArrayList<>();
                 createScopeAndStream();
-
-//                for (int i = 0; i < threadNum; i++) {
-//                    sourceClass = Class.forName(connectorProps.get(SOURCE_CLASS_CONFIG));
-//                    Source source = (Source) sourceClass.newInstance();
-//                    source.open(connectorProps, pravegaProps);
-//                    sourceGroup.add(source);
-//                }
                 for (int i = 0; i < threadNum; i++) {
-//                    Writer writer;
-//                    if (connectorProps.containsKey(TRANSACTION_ENABLE_CONFIG) && connectorProps.get(TRANSACTION_ENABLE_CONFIG).equals("true")) {
-//                        writer = new PravegaTransactionalWriter(pravegaProps);
-//                    } else
-//                        writer = new PravegaWriter(pravegaProps);
-//                    writer.initialize();
-//                    sourceClass = Class.forName(connectorProps.get(SOURCE_CLASS_CONFIG));
-//                    Source source = (Source) sourceClass.newInstance();
-//                    source.open(connectorProps, pravegaProps);
                     int id = i;
                     SourceTask sourceTask = new SourceTask(connectorProps, pravegaProps, WorkerState.Started, id);
                     sourceTask.initialize();
@@ -102,9 +77,7 @@ public class Worker {
                     executor.submit(sourceTask);
                 }
             } else if (connectorProps.get(TYPE_CONFIG).equals("sink")) {
-                Class<?> sinkClass = null;
                 int threadNum = Integer.parseInt(connectorProps.get(TASK_NUM_CONFIG));
-                sinkClass = Class.forName(connectorProps.get(SINK_CLASS_CONFIG));
                 String scope = pravegaProps.get(SCOPE_CONFIG);
                 URI controllerURI = URI.create(pravegaProps.get(URI_CONFIG));
                 String readerGroup = pravegaProps.get(READER_GROUP_NAME_CONFIG);
@@ -124,14 +97,8 @@ public class Worker {
                             .startFromCheckpoint(checkpoint)
                             .build());
                 }
-                List<PravegaReader> readerGroupList = new ArrayList<>();
                 for (int i = 0; i < threadNum; i++) {
-//                    Sink sink = (Sink) sinkClass.newInstance();
-//                    sink.open(connectorProps, pravegaProps);
-//                    PravegaReader reader = new PravegaReader(pravegaProps, connectorProps.get(SINK_NAME_CONFIG) + i);
-//                    reader.initialize(pravegaProps);
                     int id = i;
-//                    SinkTask sinkTask = new SinkTask(reader, sink, pravegaProps, WorkerState.Started, id);
                     SinkTask sinkTask = new SinkTask(connectorProps, pravegaProps, WorkerState.Started, id);
                     sinkTask.initialize();
                     tasks.putIfAbsent(connectorProps.get("name"), new ArrayList<>());
@@ -167,6 +134,7 @@ public class Worker {
                 .stream(Stream.of(scope, streamName))
                 .build();
         try (ReaderGroupManager readerGroupManager = ReaderGroupManager.withScope(scope, controllerURI)) {
+//            if(readerGroupManager.getReaderGroup(readerGroup) != null) readerGroupManager.deleteReaderGroup(readerGroup);
             readerGroupManager.createReaderGroup(readerGroup, readerGroupConfig);
         }
     }

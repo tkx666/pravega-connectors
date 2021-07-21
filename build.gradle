@@ -2,35 +2,14 @@
 apply plugin: "java"
 apply plugin: "application"
 
-
-
 version '1.0-SNAPSHOT'
 
 sourceCompatibility = 1.8
 
 repositories {
     maven{url 'http://maven.aliyun.com/nexus/content/groups/public/'}
-
     mavenCentral()
 }
-//distributions {
-//    main {
-//        distributionBaseName = 'someName'
-//        contents {
-//            from '/src'
-//        }
-//    }
-//}
-
-
-//jar {
-//    baseName = 'xxx'
-//    version = '0.0.1'
-//    manifest {
-//        attributes "Manifest-Version": 1.0,
-//                'Main-Class': 'io.pravega.connecter.runtime.cli.ConnectSourceStandalone'
-//    }
-//}
 
 dependencies {
     implementation "org.slf4j:slf4j-simple:1.6.1"
@@ -49,4 +28,4 @@ dependencies {
     implementation group: 'org.apache.kafka', name: 'kafka-clients', version: '2.6.0'
     implementation group: 'org.apache.kafka', name: 'kafka_2.13', version: '2.6.0'
 }
-mainClassName= 'io.pravega.connecter.runtime.cli.ConnectStandalone'
+mainClassName= 'io.pravega.connector.runtime.cli.ConnectStandalone'

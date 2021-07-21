@@ -8,5 +8,4 @@ public interface Writer {
     void write(List<SourceRecord> records);
     void close();
     boolean initialize();
-
 }
