@@ -40,6 +40,8 @@ public class Worker {
     public static String READER_GROUP_NAME_CONFIG = "readerGroup";
     public static String CHECK_POINT_NAME = "checkpoint.name";
     public static String CHECK_POINT_PATH_CONFIG = "checkpoint.persist.path";
+    public static String CHECK_POINT_ENABLE_CONFIG = "checkpoint.enable";
+
 
 
     public Worker(Map<String, String> pravegaProps) {
@@ -55,6 +57,7 @@ public class Worker {
     public void startConnector(Map<String, String> connectorProps) {
         try {
             startTasks(connectorProps);
+
             if (connectorProps.get(TYPE_CONFIG).equals("sink")) startCheckPoint(connectorProps);
         } catch (Exception e) {
             e.printStackTrace();
@@ -64,8 +67,9 @@ public class Worker {
 
     public void startTasks(Map<String, String> connectorProps) {
         try {
-            connectors.put(connectorProps.get(CONNECT_NAME_CONFIG), connectorProps);
             if (connectorProps.get(TYPE_CONFIG).equals("source")) {
+                SourceBasicConfig.basicConfig.validate(connectorProps);
+                connectors.put(connectorProps.get(CONNECT_NAME_CONFIG), connectorProps);
                 int threadNum = Integer.parseInt(connectorProps.get(TASK_NUM_CONFIG));
                 createScopeAndStream();
                 for (int i = 0; i < threadNum; i++) {
@@ -77,6 +81,8 @@ public class Worker {
                     executor.submit(sourceTask);
                 }
             } else if (connectorProps.get(TYPE_CONFIG).equals("sink")) {
+                SinkBasicConfig.basicConfig.validate(connectorProps);
+                connectors.put(connectorProps.get(CONNECT_NAME_CONFIG), connectorProps);
                 int threadNum = Integer.parseInt(connectorProps.get(TASK_NUM_CONFIG));
                 String scope = pravegaProps.get(SCOPE_CONFIG);
                 URI controllerURI = URI.create(pravegaProps.get(URI_CONFIG));
@@ -141,11 +147,13 @@ public class Worker {
 
     private boolean hasCheckPoint(Map<String, String> connectorProps) {
         File file = new File(connectorProps.get(CHECK_POINT_PATH_CONFIG));
-        return file.exists();
+        String enable = connectorProps.get(CHECK_POINT_ENABLE_CONFIG);
+        return enable.equals("true") && file.exists();
     }
 
 
     public void startCheckPoint(Map<String, String> sinkProps) {
+        if(!sinkProps.containsKey(CHECK_POINT_ENABLE_CONFIG) || !sinkProps.get(CHECK_POINT_ENABLE_CONFIG).equals("true")) return;
         ReaderGroupManager readerGroupManager = ReaderGroupManager.withScope(pravegaProps.get(SCOPE_CONFIG), URI.create(pravegaProps.get(URI_CONFIG)));
         ReaderGroup group = readerGroupManager.getReaderGroup(pravegaProps.get(READER_GROUP_NAME_CONFIG));
         ScheduledFuture<?> future = scheduledExecutorService.scheduleAtFixedRate(new Runnable() {

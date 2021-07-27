@@ -1,5 +1,6 @@
 package io.pravega.connector.file.sink;
 
+import io.pravega.connector.runtime.Config;
 import io.pravega.connector.runtime.sink.Sink;
 import io.pravega.connector.runtime.sink.SinkRecord;
 
@@ -10,13 +11,16 @@ import java.util.Map;
 public class FileSink implements Sink {
     public static String WRITE_PATH_CONFIG = "writePath";
     Map<String, String> sinkProps;
-    Map<String, String> pravegaProps;
     BufferedWriter out;
 
     @Override
-    public void open(Map<String, String> sinkProps, Map<String, String> pravegaProps) {
+    public Config config() {
+        return null;
+    }
+
+    @Override
+    public void open(Map<String, String> sinkProps) {
         this.sinkProps = sinkProps;
-        this.pravegaProps = pravegaProps;
         try {
             this.out = new BufferedWriter(new FileWriter(sinkProps.get(WRITE_PATH_CONFIG), true));
         } catch (FileNotFoundException e) {

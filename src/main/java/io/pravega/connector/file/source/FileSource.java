@@ -1,5 +1,6 @@
 package io.pravega.connector.file.source;
 
+import io.pravega.connector.runtime.Config;
 import io.pravega.connector.runtime.source.Source;
 import io.pravega.connector.runtime.source.SourceRecord;
 
@@ -15,14 +16,17 @@ public class FileSource implements Source {
     public static String READ_PATH_CONFIG = "readPath";
 
     Map<String, String> sourceProps;
-    Map<String, String> pravegaProps;
     BufferedReader in;
 
 
     @Override
-    public void open(Map<String, String> sourceProps, Map<String, String> pravegaProps) {
+    public Config config() {
+        return null;
+    }
+
+    @Override
+    public void open(Map<String, String> sourceProps) {
         this.sourceProps = sourceProps;
-        this.pravegaProps = pravegaProps;
         try {
             this.in = new BufferedReader(new FileReader(sourceProps.get(READ_PATH_CONFIG)));
         } catch (FileNotFoundException e) {

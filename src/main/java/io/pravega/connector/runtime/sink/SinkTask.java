@@ -40,7 +40,8 @@ public class SinkTask extends Task {
         try {
             Class sinkClass = Class.forName(sinkProps.get(SINK_CLASS_CONFIG));
             this.sink = (Sink) sinkClass.newInstance();
-            sink.open(sinkProps, pravegaProps);
+            sink.config().validate(sinkProps);
+            sink.open(sinkProps);
             this.reader = new PravegaReader(pravegaProps, sinkProps.get(SINK_NAME_CONFIG) + id);
             reader.initialize(pravegaProps);
         } catch (Exception e) {

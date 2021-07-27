@@ -30,10 +30,6 @@ public class PravegaReader {
 
     public PravegaReader(Map<String, String> pravegaProps, String readerName) throws IllegalAccessException, InstantiationException {
         this.readerName = readerName;
-//        this.reader = clientFactory.createReader(readerName,
-//                readerGroup,
-//                (Serializer) serializerClass.newInstance(),
-//                ReaderConfig.builder().build());
         this.pravegaProps = pravegaProps;
 
     }

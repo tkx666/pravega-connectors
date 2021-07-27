@@ -39,7 +39,8 @@ public class SourceTask extends Task {
             pravegaWriter.initialize();
             Class sourceClass = Class.forName(sourceProps.get(SOURCE_CLASS_CONFIG));
             this.source = (Source) sourceClass.newInstance();
-            source.open(sourceProps, pravegaProps);
+            source.config().validate(sourceProps);
+            source.open(sourceProps);
         } catch (Exception e) {
             e.printStackTrace();
         }
