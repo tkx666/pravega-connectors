@@ -2,7 +2,7 @@ package io.pravega.connector.runtime.sink;
 
 import io.pravega.connector.runtime.PravegaReader;
 import io.pravega.connector.runtime.Task;
-import io.pravega.connector.runtime.WorkerState;
+import io.pravega.connector.runtime.ConnectorState;
 
 import java.util.List;
 import java.util.Map;
@@ -11,7 +11,7 @@ public class SinkTask extends Task {
     private Sink sink;
     private PravegaReader reader;
     private Map<String, String> pravegaProps;
-    private WorkerState workerState;
+    private ConnectorState connectorState;
     private Map<String, String> sinkProps;
     private int id;
 
@@ -20,16 +20,16 @@ public class SinkTask extends Task {
 
 
 
-    public SinkTask(Map<String, String> sinkProps, Map<String, String> pravegaProps, WorkerState state, int id) {
+    public SinkTask(Map<String, String> sinkProps, Map<String, String> pravegaProps, ConnectorState state, int id) {
         this.sinkProps = sinkProps;
         this.pravegaProps = pravegaProps;
-        this.workerState = state;
+        this.connectorState = state;
         this.id = id;
     }
-    public SinkTask(PravegaReader reader, Sink sink, Map<String, String> pravegaProps, WorkerState state, int id) {
+    public SinkTask(PravegaReader reader, Sink sink, Map<String, String> pravegaProps, ConnectorState state, int id) {
 //        this.sinkProps = sinkProps;
         this.pravegaProps = pravegaProps;
-        this.workerState = state;
+        this.connectorState = state;
         this.id = id;
         this.reader = reader;
         this.sink = sink;
@@ -75,22 +75,22 @@ public class SinkTask extends Task {
     }
 
     @Override
-    public void setState(WorkerState state) {
+    public void setState(ConnectorState state) {
         synchronized (this) {
-            if (workerState == WorkerState.Stopped)
+            if (connectorState == ConnectorState.Stopped)
                 return;
 
-            this.workerState = state;
+            this.connectorState = state;
             this.notifyAll();
         }
     }
     public boolean hasPaused() {
-        return workerState == WorkerState.Paused;
+        return connectorState == ConnectorState.Paused;
     }
 
     public boolean awaitResume() throws InterruptedException {
         synchronized (this) {
-            while (workerState == WorkerState.Paused) {
+            while (connectorState == ConnectorState.Paused) {
                 this.wait();
             }
             return true;
@@ -99,6 +99,6 @@ public class SinkTask extends Task {
     }
 
     public boolean isStopped() {
-        return this.workerState == WorkerState.Stopped;
+        return this.connectorState == ConnectorState.Stopped;
     }
 }

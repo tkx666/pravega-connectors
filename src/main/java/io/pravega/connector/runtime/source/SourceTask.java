@@ -12,7 +12,7 @@ public class SourceTask extends Task {
     private Map<String, String> sourceProps;
     private int id;
 
-    private volatile WorkerState workerState;
+    private volatile ConnectorState connectorState;
     private boolean stopping;
     public static String ROUTING_KEY_CONFIG = "routingKey";
     public static String TRANSACTION_ENABLE_CONFIG = "transaction.enable";
@@ -20,9 +20,9 @@ public class SourceTask extends Task {
 
 
 
-    public SourceTask(Map<String, String> sourceProps, Map<String, String> pravegaProps, WorkerState workerState, int id) {
+    public SourceTask(Map<String, String> sourceProps, Map<String, String> pravegaProps, ConnectorState connectorState, int id) {
         this.pravegaProps = pravegaProps;
-        this.workerState = workerState;
+        this.connectorState = connectorState;
         this.stopping = false;
         this.sourceProps = sourceProps;
         this.id = id;
@@ -82,12 +82,12 @@ public class SourceTask extends Task {
     }
 
     public boolean hasPaused() {
-        return workerState == WorkerState.Paused;
+        return connectorState == ConnectorState.Paused;
     }
 
     public boolean awaitResume() throws InterruptedException {
         synchronized (this) {
-            while (workerState == WorkerState.Paused) {
+            while (connectorState == ConnectorState.Paused) {
                 this.wait();
             }
             return true;
@@ -95,11 +95,11 @@ public class SourceTask extends Task {
 
     }
     @Override
-    public void setState(WorkerState state) {
+    public void setState(ConnectorState state) {
         synchronized (this) {
-            if (workerState == WorkerState.Stopped)
+            if (connectorState == ConnectorState.Stopped)
                 return;
-            this.workerState = state;
+            this.connectorState = state;
             this.notifyAll();
         }
     }
@@ -107,6 +107,6 @@ public class SourceTask extends Task {
 
 
     public boolean isStopped() {
-        return this.workerState == WorkerState.Stopped;
+        return this.connectorState == ConnectorState.Stopped;
     }
 }

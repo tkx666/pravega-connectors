@@ -28,7 +28,7 @@ public class Worker {
     private Map<String, List<Task>> tasks;
     private Map<String, Map<String, String>> connectors;
 
-    private volatile WorkerState workerState;
+    private volatile ConnectorState state;
     public static String CONNECT_NAME_CONFIG = "name";
     public static String TASK_NUM_CONFIG = "tasks.max";
     public static String SCOPE_CONFIG = "scope";
@@ -47,7 +47,7 @@ public class Worker {
     public Worker(Map<String, String> pravegaProps) {
         this.pravegaProps = pravegaProps;
         this.executor = new ThreadPoolExecutor(20, 200, 60L, TimeUnit.SECONDS, new LinkedBlockingDeque<Runnable>());
-        this.workerState = workerState;
+        this.state = state;
         this.tasks = new HashMap<>();
         this.scheduledExecutorService = Executors.newScheduledThreadPool(10);
         this.connectors = new HashMap<>();
@@ -56,8 +56,8 @@ public class Worker {
 
     public void startConnector(Map<String, String> connectorProps) {
         try {
+            WorkerConfig.config.validate(pravegaProps);
             startTasks(connectorProps);
-
             if (connectorProps.get(TYPE_CONFIG).equals("sink")) startCheckPoint(connectorProps);
         } catch (Exception e) {
             e.printStackTrace();
@@ -69,12 +69,11 @@ public class Worker {
         try {
             if (connectorProps.get(TYPE_CONFIG).equals("source")) {
                 SourceBasicConfig.basicConfig.validate(connectorProps);
-                connectors.put(connectorProps.get(CONNECT_NAME_CONFIG), connectorProps);
                 int threadNum = Integer.parseInt(connectorProps.get(TASK_NUM_CONFIG));
                 createScopeAndStream();
                 for (int i = 0; i < threadNum; i++) {
                     int id = i;
-                    SourceTask sourceTask = new SourceTask(connectorProps, pravegaProps, WorkerState.Started, id);
+                    SourceTask sourceTask = new SourceTask(connectorProps, pravegaProps, ConnectorState.Started, id);
                     sourceTask.initialize();
                     tasks.putIfAbsent(connectorProps.get(CONNECT_NAME_CONFIG), new ArrayList<>());
                     tasks.get(connectorProps.get(CONNECT_NAME_CONFIG)).add(sourceTask);
@@ -82,7 +81,6 @@ public class Worker {
                 }
             } else if (connectorProps.get(TYPE_CONFIG).equals("sink")) {
                 SinkBasicConfig.basicConfig.validate(connectorProps);
-                connectors.put(connectorProps.get(CONNECT_NAME_CONFIG), connectorProps);
                 int threadNum = Integer.parseInt(connectorProps.get(TASK_NUM_CONFIG));
                 String scope = pravegaProps.get(SCOPE_CONFIG);
                 URI controllerURI = URI.create(pravegaProps.get(URI_CONFIG));
@@ -105,13 +103,14 @@ public class Worker {
                 }
                 for (int i = 0; i < threadNum; i++) {
                     int id = i;
-                    SinkTask sinkTask = new SinkTask(connectorProps, pravegaProps, WorkerState.Started, id);
+                    SinkTask sinkTask = new SinkTask(connectorProps, pravegaProps, ConnectorState.Started, id);
                     sinkTask.initialize();
                     tasks.putIfAbsent(connectorProps.get("name"), new ArrayList<>());
                     tasks.get(connectorProps.get("name")).add(sinkTask);
                     executor.submit(sinkTask);
                 }
             }
+            connectors.put(connectorProps.get(CONNECT_NAME_CONFIG), connectorProps);
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -178,12 +177,12 @@ public class Worker {
         }, 0, Long.parseLong(CHECK_POINT_INTERVAL), TimeUnit.SECONDS);
     }
 
-    public void setWorkerState(WorkerState workerState, String workerName) {
-        this.workerState = workerState;
+    public void setConnectorState(ConnectorState connectorState, String workerName) {
+        this.state = connectorState;
         List<Task> tasksList = tasks.get(workerName);
         if (tasksList == null) return;
         for (Task task : tasksList) {
-            task.setState(workerState);
+            task.setState(connectorState);
         }
     }
 
@@ -196,12 +195,20 @@ public class Worker {
     }
 
     public void stopConnector(String connectorName) {
-        setWorkerState(WorkerState.Stopped, connectorName);
+        setConnectorState(ConnectorState.Stopped, connectorName);
         deleteTasksConfig(connectorName);
         deleteConnectorConfig(connectorName);
     }
 
     public Map<String, String> getConnectorConfig(String connectorName) {
         return connectors.get(connectorName);
+    }
+    public void addShutDownHook() {
+        Runtime.getRuntime().addShutdownHook(new Thread(() -> {
+            logger.info("shutdown connector");
+            for(String connector : connectors.keySet()) {
+                stopConnector(connector);
+            }
+        }));
     }
 }
