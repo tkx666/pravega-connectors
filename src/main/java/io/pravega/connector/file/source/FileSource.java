@@ -3,6 +3,8 @@ package io.pravega.connector.file.source;
 import io.pravega.connector.runtime.Config;
 import io.pravega.connector.runtime.source.Source;
 import io.pravega.connector.runtime.source.SourceRecord;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.io.BufferedReader;
 import java.io.FileNotFoundException;
@@ -13,12 +15,10 @@ import java.util.List;
 import java.util.Map;
 
 public class FileSource implements Source {
+    private static final Logger logger = LoggerFactory.getLogger(FileSource.class);
     public static String READ_PATH_CONFIG = "readPath";
-
     Map<String, String> sourceProps;
     BufferedReader in;
-
-
     @Override
     public Config config() {
         return null;
@@ -30,7 +30,7 @@ public class FileSource implements Source {
         try {
             this.in = new BufferedReader(new FileReader(sourceProps.get(READ_PATH_CONFIG)));
         } catch (FileNotFoundException e) {
-            e.printStackTrace();
+            logger.error("", e);
         }
     }
 
@@ -39,7 +39,7 @@ public class FileSource implements Source {
         try {
             in.close();
         } catch (IOException e) {
-            e.printStackTrace();
+            logger.error("", e);
         }
     }
 
@@ -49,12 +49,11 @@ public class FileSource implements Source {
         List<SourceRecord> list = new ArrayList<>();
         try {
             if ((str = in.readLine()) != null) {
-                System.out.println(str);
                 list.add(new SourceRecord(str));
                 return list;
             }
         } catch (IOException e) {
-            e.printStackTrace();
+            logger.error("", e);
         }
         return list;
     }

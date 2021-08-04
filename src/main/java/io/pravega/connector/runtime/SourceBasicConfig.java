@@ -1,6 +1,8 @@
 package io.pravega.connector.runtime;
 
-public class SourceBasicConfig {
+import java.util.Map;
+
+public class SourceBasicConfig extends AbstractConfig{
     public static String TYPE_CONFIG = "type";
     public static String TASKS_NUM_CONFIG = "tasks.max";
     public static String NAME_CONFIG = "name";
@@ -17,4 +19,8 @@ public class SourceBasicConfig {
             .add(CLASS_CONFIG, Config.Type.STRING, null, null)
             .add(ROUTING_KEY_CLASS_CONFIG, Config.Type.STRING, "io.pravega.connector.runtime.DefaultRoutingKeyGenerator", validator)
             .add(TRANSACTION_ENABLE_CONFIG, Config.Type.STRING, "false", validator);
+
+    public SourceBasicConfig(Map<String, String> props) {
+        super(basicConfig,  props);
+    }
 }

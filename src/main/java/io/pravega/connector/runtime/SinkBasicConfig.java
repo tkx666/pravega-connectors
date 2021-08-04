@@ -1,6 +1,8 @@
 package io.pravega.connector.runtime;
 
-public class SinkBasicConfig {
+import java.util.Map;
+
+public class SinkBasicConfig extends AbstractConfig{
     public static String TYPE_CONFIG = "type";
     public static String TASKS_NUM_CONFIG = "tasks.max";
     public static String NAME_CONFIG = "name";
@@ -19,6 +21,8 @@ public class SinkBasicConfig {
             .add(CHECKPOINT_PERSIST_PATH_CONFIG, Config.Type.STRING, null, null)
             .add(CHECKPOINT_NAME_CONFIG, Config.Type.STRING, null, null)
             .add(CHECKPOINT_ENABLE_CONFIG, Config.Type.STRING, "true", validator);
-
+    public SinkBasicConfig(Map<String, String> props) {
+        super(basicConfig,  props);
+    }
 
 }

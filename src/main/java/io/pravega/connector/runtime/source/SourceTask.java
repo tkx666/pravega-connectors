@@ -1,11 +1,14 @@
 package io.pravega.connector.runtime.source;
 
 import io.pravega.connector.runtime.*;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.util.List;
 import java.util.Map;
 
 public class SourceTask extends Task {
+    private static final Logger logger = LoggerFactory.getLogger(SourceTask.class);
     private Source source;
     private Writer pravegaWriter;
     private Map<String, String> pravegaProps;
@@ -20,8 +23,8 @@ public class SourceTask extends Task {
 
 
 
-    public SourceTask(Map<String, String> sourceProps, Map<String, String> pravegaProps, ConnectorState connectorState, int id) {
-        this.pravegaProps = pravegaProps;
+    public SourceTask(Map<String, String> sourceProps, WorkerConfig workerConfig, ConnectorState connectorState, int id) {
+        this.pravegaProps = workerConfig.getStringConfig();
         this.connectorState = connectorState;
         this.stopping = false;
         this.sourceProps = sourceProps;
@@ -39,10 +42,10 @@ public class SourceTask extends Task {
             pravegaWriter.initialize();
             Class sourceClass = Class.forName(sourceProps.get(SOURCE_CLASS_CONFIG));
             this.source = (Source) sourceClass.newInstance();
-            source.config().validate(sourceProps);
+//            source.config().validate(sourceProps);
             source.open(sourceProps);
         } catch (Exception e) {
-            e.printStackTrace();
+            logger.error("source task initialize error", e);
         }
 
     }
@@ -53,18 +56,18 @@ public class SourceTask extends Task {
             List<SourceRecord> records;
             while (!isStopped()) {
                 if (hasPaused()) {
-                    System.out.println(Thread.currentThread().getName() + " has paused");
+                    logger.info(Thread.currentThread().getName() + " source task has paused");
                     awaitResume();
                     continue;
                 }
                 records = source.read();
-                System.out.println(Thread.currentThread().getName() + " sourceRecord sizes: " + records.size());
+                logger.info(Thread.currentThread().getName() + " sourceRecord size: " + records.size());
                 if (records.size() == 0) continue;
                 sendRecord(records);
 
             }
         } catch (InterruptedException e) {
-            e.printStackTrace();
+            logger.error("source task execute error", e);
         } finally {
             source.close();
             pravegaWriter.close();
@@ -77,7 +80,7 @@ public class SourceTask extends Task {
         try {
             pravegaWriter.write(records);
         } catch (Exception e) {
-            e.printStackTrace();
+            logger.error("write to pravega fail", e);
         }
     }
 

@@ -1,6 +1,8 @@
 package io.pravega.connector.runtime;
 
-public class WorkerConfig {
+import java.util.Map;
+
+public class WorkerConfig extends AbstractConfig {
     public static String SCOPE_CONFIG = "scope";
     public static String STREAM_NAME_CONFIG = "streamName";
     public static String URI_CONFIG = "uri";
@@ -17,8 +19,12 @@ public class WorkerConfig {
             .add(STREAM_NAME_CONFIG, Config.Type.STRING, null, null)
             .add(URI_CONFIG, Config.Type.STRING, "tcp://127.0.0.1:9090", validator)
             .add(SERIALIZER_CONFIG, Config.Type.STRING, "io.pravega.client.stream.impl.UTF8StringSerializer", validator)
-            .add(SEGMENTS_NUM_CONFIG, Config.Type.STRING, "5", validator)
+            .add(SEGMENTS_NUM_CONFIG, Config.Type.INT, "5", null)
             .add(READER_GROUP_CONFIG, Config.Type.STRING, null, null)
-            .add(REST_PORT_CONFIG, Config.Type.STRING, "8091", validator);
+            .add(REST_PORT_CONFIG, Config.Type.INT, "8091", null);
+
+    public WorkerConfig(Map<String, String> props) {
+        super(config, props);
+    }
 
 }

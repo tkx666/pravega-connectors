@@ -1,13 +1,17 @@
 package io.pravega.connector.runtime.sink;
 
+import io.pravega.connector.runtime.ConnectorState;
 import io.pravega.connector.runtime.PravegaReader;
 import io.pravega.connector.runtime.Task;
-import io.pravega.connector.runtime.ConnectorState;
+import io.pravega.connector.runtime.WorkerConfig;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.util.List;
 import java.util.Map;
 
 public class SinkTask extends Task {
+    private static final Logger logger = LoggerFactory.getLogger(SinkTask.class);
     private Sink sink;
     private PravegaReader reader;
     private Map<String, String> pravegaProps;
@@ -20,9 +24,9 @@ public class SinkTask extends Task {
 
 
 
-    public SinkTask(Map<String, String> sinkProps, Map<String, String> pravegaProps, ConnectorState state, int id) {
+    public SinkTask(Map<String, String> sinkProps, WorkerConfig workerConfig, ConnectorState state, int id) {
         this.sinkProps = sinkProps;
-        this.pravegaProps = pravegaProps;
+        this.pravegaProps = workerConfig.getStringConfig();
         this.connectorState = state;
         this.id = id;
     }
@@ -40,12 +44,12 @@ public class SinkTask extends Task {
         try {
             Class sinkClass = Class.forName(sinkProps.get(SINK_CLASS_CONFIG));
             this.sink = (Sink) sinkClass.newInstance();
-            sink.config().validate(sinkProps);
+//            sink.config().validate(sinkProps);
             sink.open(sinkProps);
             this.reader = new PravegaReader(pravegaProps, sinkProps.get(SINK_NAME_CONFIG) + id);
             reader.initialize(pravegaProps);
         } catch (Exception e) {
-            e.printStackTrace();
+            logger.error("sink task initialize error", e);
         }
 
     }
@@ -55,17 +59,17 @@ public class SinkTask extends Task {
             List<SinkRecord> readList = null;
             while (!isStopped()) {
                 if (hasPaused()) {
-                    System.out.println(Thread.currentThread().getName() + " has paused");
+                    logger.info(Thread.currentThread().getName() + " sink task has paused");
                     awaitResume();
                     continue;
                 }
                 readList = reader.readEvent();
-                System.out.println(Thread.currentThread() + "  size: " + readList.size());
+                logger.info(Thread.currentThread() + "  sinkRecord size: " + readList.size());
                 if (readList.size() == 0) continue;
                 sink.write(readList);
             }
         } catch (Exception e){
-            e.printStackTrace();
+            logger.error("sink task running error", e);
         }
         finally {
             sink.close();

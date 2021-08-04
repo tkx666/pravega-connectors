@@ -6,10 +6,13 @@ import io.pravega.connector.runtime.source.SourceRecord;
 import org.apache.kafka.clients.consumer.ConsumerRecord;
 import org.apache.kafka.clients.consumer.ConsumerRecords;
 import org.apache.kafka.clients.consumer.KafkaConsumer;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.util.*;
 
 public class kafkaSource implements Source {
+    private static final Logger logger = LoggerFactory.getLogger(kafkaSource.class);
     private KafkaConsumer<String, String> consumer;
     public static final String SERVER_SERVERS_CONFIG = "bootstrap.servers";
     public static final String KEY_DESERIALIZER_CONFIG = "key.deserializer";
@@ -25,7 +28,6 @@ public class kafkaSource implements Source {
     @Override
     public Config config() {
         return config;
-
     }
 
     @Override

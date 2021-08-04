@@ -4,16 +4,18 @@ import io.pravega.client.ClientConfig;
 import io.pravega.client.EventStreamClientFactory;
 import io.pravega.client.stream.*;
 import io.pravega.connector.runtime.sink.SinkRecord;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
-import java.io.File;
 import java.net.URI;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
 public class PravegaReader {
+    private static final Logger logger = LoggerFactory.getLogger(PravegaReader.class);
     private static final int READER_TIMEOUT_MS = 5000;
-    private static EventStreamClientFactory clientFactory;
+    private EventStreamClientFactory clientFactory;
     private String readerName;
     private EventStreamReader<Object> reader;
     private Map<String, String> pravegaProps;
@@ -40,7 +42,7 @@ public class PravegaReader {
         String scope = pravegaProps.get(SCOPE_CONFIG);
         URI controllerURI = URI.create(pravegaProps.get(URI_CONFIG));
 
-        EventStreamClientFactory clientFactory = EventStreamClientFactory.withScope(scope,
+        clientFactory = EventStreamClientFactory.withScope(scope,
                 ClientConfig.builder().controllerURI(controllerURI).build());
         this.reader = clientFactory.createReader(readerName,
                 readerGroup,
@@ -49,7 +51,7 @@ public class PravegaReader {
         return true;
     }
 
-    public List<SinkRecord> readEvent() throws IllegalAccessException, InstantiationException {
+    public List<SinkRecord> readEvent() {
 
         List<SinkRecord> readList = new ArrayList<>();
         EventRead<Object> event = null;
@@ -58,11 +60,9 @@ public class PravegaReader {
                 event = reader.readNextEvent(READER_TIMEOUT_MS);
                 if (event.getEvent() != null) {
                     readList.add(new SinkRecord(event.getEvent()));
-//                    System.out.format("Read event '%s %s %s'%n", Thread.currentThread().getName(), event.getEvent(), event.getPosition());
                 }
             } catch (ReinitializationRequiredException e) {
-                e.printStackTrace();
-
+                logger.error("Read event error", e);
             }
         } while (event.getEvent() != null);
 
@@ -72,11 +72,7 @@ public class PravegaReader {
 
     public void close() {
         reader.close();
-    }
-
-    public static boolean hasCheckPoint(Map<String, String> connectorProps) {
-        File file = new File(connectorProps.get(CHECK_POINT_PATH_CONFIG));
-        return file.exists();
+        clientFactory.close();
     }
 
 
