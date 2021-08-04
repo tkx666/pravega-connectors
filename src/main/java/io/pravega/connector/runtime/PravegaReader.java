@@ -19,16 +19,6 @@ public class PravegaReader {
     private String readerName;
     private EventStreamReader<Object> reader;
     private Map<String, String> pravegaProps;
-    private ReaderGroupConfig readerGroupConfig;
-
-    public static String SCOPE_CONFIG = "scope";
-    public static String STREAM_NAME_CONFIG = "streamName";
-    public static String URI_CONFIG = "uri";
-    public static String SERIALIZER_CONFIG = "serializer";
-    public static String SEGMENTS_NUM_CONFIG = "segments";
-    public static String READER_GROUP_NAME_CONFIG = "readerGroup";
-    public static String CHECK_POINT_PATH_CONFIG = "checkpoint.persist.path";
-
 
     public PravegaReader(Map<String, String> pravegaProps, String readerName) throws IllegalAccessException, InstantiationException {
         this.readerName = readerName;
@@ -37,10 +27,10 @@ public class PravegaReader {
     }
 
     public boolean initialize(Map<String, String> pravegaProps) throws ClassNotFoundException, IllegalAccessException, InstantiationException {
-        Class serializerClass = Class.forName(pravegaProps.get(SERIALIZER_CONFIG));
-        String readerGroup = pravegaProps.get(READER_GROUP_NAME_CONFIG);
-        String scope = pravegaProps.get(SCOPE_CONFIG);
-        URI controllerURI = URI.create(pravegaProps.get(URI_CONFIG));
+        Class serializerClass = Class.forName(pravegaProps.get(WorkerConfig.SERIALIZER_CONFIG));
+        String readerGroup = pravegaProps.get(WorkerConfig.READER_GROUP_CONFIG);
+        String scope = pravegaProps.get(WorkerConfig.SCOPE_CONFIG);
+        URI controllerURI = URI.create(pravegaProps.get(WorkerConfig.URI_CONFIG));
 
         clientFactory = EventStreamClientFactory.withScope(scope,
                 ClientConfig.builder().controllerURI(controllerURI).build());

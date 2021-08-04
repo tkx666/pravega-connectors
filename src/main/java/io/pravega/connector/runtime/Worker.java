@@ -29,18 +29,7 @@ public class Worker {
     private Map<String, Map<String, String>> connectors;
 
     private volatile ConnectorState state;
-    public static String CONNECT_NAME_CONFIG = "name";
-    public static String TASK_NUM_CONFIG = "tasks.max";
-    public static String SCOPE_CONFIG = "scope";
-    public static String STREAM_NAME_CONFIG = "streamName";
-    public static String URI_CONFIG = "uri";
-    public static String SEGMENTS_NUM_CONFIG = "segments";
-    public static String TYPE_CONFIG = "type";
     public static String CHECK_POINT_INTERVAL = "30";
-    public static String READER_GROUP_NAME_CONFIG = "readerGroup";
-    public static String CHECK_POINT_NAME = "checkpoint.name";
-    public static String CHECK_POINT_PATH_CONFIG = "checkpoint.persist.path";
-    public static String CHECK_POINT_ENABLE_CONFIG = "checkpoint.enable";
 
 
     public Worker(WorkerConfig workerConfig) {
@@ -57,7 +46,9 @@ public class Worker {
         try {
 //            WorkerConfig.config.validate(pravegaProps);
             startTasks(connectorProps);
-            if (connectorProps.get(TYPE_CONFIG).equals("sink")) startCheckPoint(connectorProps);
+            if (connectorProps.get(ConnectorConfig.TYPE_CONFIG).equals("sink")) {
+                startCheckPoint(connectorProps);
+            }
         } catch (Exception e) {
             logger.error("start connector error", e);
         }
@@ -66,52 +57,54 @@ public class Worker {
 
     public void startTasks(Map<String, String> connectorProps) {
         try {
-            if (connectorProps.get(TYPE_CONFIG).equals("source")) {
+            if (connectorProps.get(ConnectorConfig.TYPE_CONFIG).equals("source")) {
 //                SourceBasicConfig.basicConfig.validate(connectorProps);
-                SourceBasicConfig sourceBasicConfig = new SourceBasicConfig(connectorProps);
-                int threadNum = Integer.parseInt(connectorProps.get(TASK_NUM_CONFIG));
+                SourceConfig sourceConfig = new SourceConfig(connectorProps);
+                int threadNum = sourceConfig.getInt(SourceConfig.TASKS_NUM_CONFIG);
                 createScopeAndStream();
                 for (int i = 0; i < threadNum; i++) {
                     int id = i;
-                    SourceTask sourceTask = new SourceTask(connectorProps, workerConfig, ConnectorState.Started, id);
+                    SourceTask sourceTask = new SourceTask(sourceConfig, workerConfig, ConnectorState.Started, id);
                     sourceTask.initialize();
-                    tasks.putIfAbsent(connectorProps.get(CONNECT_NAME_CONFIG), new ArrayList<>());
-                    tasks.get(connectorProps.get(CONNECT_NAME_CONFIG)).add(sourceTask);
+                    tasks.putIfAbsent(sourceConfig.getString(SourceConfig.NAME_CONFIG), new ArrayList<>());
+                    tasks.get(sourceConfig.getString(SourceConfig.NAME_CONFIG)).add(sourceTask);
                     executor.submit(sourceTask);
                 }
-            } else if (connectorProps.get(TYPE_CONFIG).equals("sink")) {
+            } else if (connectorProps.get(ConnectorConfig.TYPE_CONFIG).equals("sink")) {
 //                SinkBasicConfig.basicConfig.validate(connectorProps);
-                int threadNum = Integer.parseInt(connectorProps.get(TASK_NUM_CONFIG));
-                String scope = workerConfig.getString(SCOPE_CONFIG);
-                URI controllerURI = URI.create(workerConfig.getString(URI_CONFIG));
-                String readerGroup = workerConfig.getString(READER_GROUP_NAME_CONFIG);
+                SinkConfig sinkConfig = new SinkConfig(connectorProps);
+                int threadNum = sinkConfig.getInt(SinkConfig.TASKS_NUM_CONFIG);
+                String scope = workerConfig.getString(WorkerConfig.SCOPE_CONFIG);
+                URI controllerURI = URI.create(workerConfig.getString(WorkerConfig.URI_CONFIG));
+                String readerGroup = workerConfig.getString(WorkerConfig.READER_GROUP_CONFIG);
                 createScopeAndStream();
                 createReaderGroup();
                 if (hasCheckPoint(connectorProps)) {
-                    FileChannel fileChannel = new FileInputStream(connectorProps.get(CHECK_POINT_PATH_CONFIG)).getChannel();
+                    FileChannel fileChannel = new FileInputStream(sinkConfig.getString(SinkConfig.CHECKPOINT_PERSIST_PATH_CONFIG)).getChannel();
                     ByteBuffer buffer = ByteBuffer.allocate(1024);
                     fileChannel.read(buffer);
                     buffer.flip();
                     Checkpoint checkpoint = Checkpoint.fromBytes(buffer);
                     logger.info("check point recover: " + checkpoint.getName());
-                    try (ReaderGroupManager readerGroupManager = ReaderGroupManager.withScope(scope, controllerURI)) {
-                        ReaderGroup existingGroup = readerGroupManager.getReaderGroup(readerGroup);
-                        existingGroup.resetReaderGroup(ReaderGroupConfig
-                                .builder()
-                                .startFromCheckpoint(checkpoint)
-                                .build());
-                    }
+                    ReaderGroupManager readerGroupManager = ReaderGroupManager.withScope(scope, controllerURI);
+                    ReaderGroup existingGroup = readerGroupManager.getReaderGroup(readerGroup);
+                    existingGroup.resetReaderGroup(ReaderGroupConfig
+                            .builder()
+                            .startFromCheckpoint(checkpoint)
+                            .build());
+                    existingGroup.close();
+                    readerGroupManager.close();
                 }
                 for (int i = 0; i < threadNum; i++) {
                     int id = i;
-                    SinkTask sinkTask = new SinkTask(connectorProps, workerConfig, ConnectorState.Started, id);
+                    SinkTask sinkTask = new SinkTask(sinkConfig, workerConfig, ConnectorState.Started, id);
                     sinkTask.initialize();
-                    tasks.putIfAbsent(connectorProps.get("name"), new ArrayList<>());
-                    tasks.get(connectorProps.get("name")).add(sinkTask);
+                    tasks.putIfAbsent(sinkConfig.getString(SinkConfig.NAME_CONFIG), new ArrayList<>());
+                    tasks.get(sinkConfig.getString(SinkConfig.NAME_CONFIG)).add(sinkTask);
                     executor.submit(sinkTask);
                 }
             }
-            connectors.put(connectorProps.get(CONNECT_NAME_CONFIG), connectorProps);
+            connectors.put(connectorProps.get(ConnectorConfig.NAME_CONFIG), connectorProps);
         } catch (Exception e) {
             logger.error("start task error", e);
         }
@@ -119,23 +112,23 @@ public class Worker {
     }
 
     private void createScopeAndStream() {
-        String scope = workerConfig.getString(SCOPE_CONFIG);
-        String streamName = workerConfig.getString(STREAM_NAME_CONFIG);
-        URI controllerURI = URI.create(workerConfig.getString(URI_CONFIG));
+        String scope = workerConfig.getString(WorkerConfig.SCOPE_CONFIG);
+        String streamName = workerConfig.getString(WorkerConfig.STREAM_NAME_CONFIG);
+        URI controllerURI = URI.create(workerConfig.getString(WorkerConfig.URI_CONFIG));
         StreamManager streamManager = StreamManager.create(controllerURI);
         streamManager.createScope(scope);
         StreamConfiguration streamConfig = StreamConfiguration.builder()
-                .scalingPolicy(ScalingPolicy.fixed(Integer.parseInt(workerConfig.getString(SEGMENTS_NUM_CONFIG))))
+                .scalingPolicy(ScalingPolicy.fixed(workerConfig.getInt(WorkerConfig.SEGMENTS_NUM_CONFIG)))
                 .build();
         streamManager.createStream(scope, streamName, streamConfig);
         streamManager.close();
     }
 
     private void createReaderGroup() {
-        String scope = workerConfig.getString(SCOPE_CONFIG);
-        String streamName = workerConfig.getString(STREAM_NAME_CONFIG);
-        URI controllerURI = URI.create(workerConfig.getString(URI_CONFIG));
-        String readerGroup = workerConfig.getString(READER_GROUP_NAME_CONFIG);
+        String scope = workerConfig.getString(WorkerConfig.SCOPE_CONFIG);
+        String streamName = workerConfig.getString(WorkerConfig.STREAM_NAME_CONFIG);
+        URI controllerURI = URI.create(workerConfig.getString(WorkerConfig.URI_CONFIG));
+        String readerGroup = workerConfig.getString(WorkerConfig.READER_GROUP_CONFIG);
         final ReaderGroupConfig readerGroupConfig = ReaderGroupConfig.builder()
                 .stream(Stream.of(scope, streamName))
                 .build();
@@ -145,37 +138,37 @@ public class Worker {
     }
 
     private boolean hasCheckPoint(Map<String, String> connectorProps) {
-        File file = new File(connectorProps.get(CHECK_POINT_PATH_CONFIG));
-        String enable = connectorProps.get(CHECK_POINT_ENABLE_CONFIG);
+        File file = new File(connectorProps.get(SinkConfig.CHECKPOINT_PERSIST_PATH_CONFIG));
+        String enable = connectorProps.get(SinkConfig.CHECKPOINT_ENABLE_CONFIG);
         return enable.equals("true") && file.exists();
     }
 
 
     public void startCheckPoint(Map<String, String> sinkProps) {
-        if (!sinkProps.containsKey(CHECK_POINT_ENABLE_CONFIG) || !sinkProps.get(CHECK_POINT_ENABLE_CONFIG).equals("true"))
+        if (!sinkProps.containsKey(SinkConfig.CHECKPOINT_ENABLE_CONFIG) || !sinkProps.get(SinkConfig.CHECKPOINT_ENABLE_CONFIG).equals("true"))
             return;
-        try(ReaderGroupManager readerGroupManager = ReaderGroupManager.withScope(workerConfig.getString(SCOPE_CONFIG), URI.create(workerConfig.getString(URI_CONFIG)))) {
-            ReaderGroup group = readerGroupManager.getReaderGroup(workerConfig.getString(READER_GROUP_NAME_CONFIG));
-            ScheduledFuture<?> future = scheduledExecutorService.scheduleAtFixedRate(new Runnable() {
-                @Override
-                public void run() {
-                    CompletableFuture<Checkpoint> checkpointResult =
-                            group.initiateCheckpoint(sinkProps.get(CHECK_POINT_NAME), Executors.newScheduledThreadPool(5));
-                    try {
-                        Checkpoint checkpoint = checkpointResult.get(10, TimeUnit.SECONDS);
-                        logger.info("check point start {}", checkpoint);
-                        ByteBuffer serializedCheckPoint = checkpoint.toBytes();
-                        FileChannel fileChannel = new FileOutputStream(sinkProps.get(CHECK_POINT_PATH_CONFIG)).getChannel();
+        ReaderGroupManager readerGroupManager = ReaderGroupManager.withScope(workerConfig.getString(WorkerConfig.SCOPE_CONFIG), URI.create(workerConfig.getString(WorkerConfig.URI_CONFIG)));
+        ReaderGroup group = readerGroupManager.getReaderGroup(workerConfig.getString(WorkerConfig.READER_GROUP_CONFIG));
+        ScheduledFuture<?> future = scheduledExecutorService.scheduleAtFixedRate(new Runnable() {
+            @Override
+            public void run() {
+                logger.info("reader group {}", group.getOnlineReaders());
+                CompletableFuture<Checkpoint> checkpointResult =
+                        group.initiateCheckpoint(sinkProps.get(SinkConfig.CHECKPOINT_NAME_CONFIG), Executors.newScheduledThreadPool(5));
+                try {
+                    Checkpoint checkpoint = checkpointResult.get(10, TimeUnit.SECONDS);
+                    logger.info("check point start {}", checkpoint);
+                    ByteBuffer serializedCheckPoint = checkpoint.toBytes();
+                    FileChannel fileChannel = new FileOutputStream(sinkProps.get(SinkConfig.CHECKPOINT_PERSIST_PATH_CONFIG)).getChannel();
 
-                        fileChannel.write(serializedCheckPoint);
-                        fileChannel.close();
-                    } catch (Exception e) {
-                        logger.error("check point create error", e);
-                    }
-
+                    fileChannel.write(serializedCheckPoint);
+                    fileChannel.close();
+                } catch (Exception e) {
+                    e.printStackTrace();
                 }
-            }, 0, Long.parseLong(CHECK_POINT_INTERVAL), TimeUnit.SECONDS);
-        }
+
+            }
+        }, 0, Long.parseLong(CHECK_POINT_INTERVAL), TimeUnit.SECONDS);
 
     }
 

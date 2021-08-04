@@ -19,11 +19,6 @@ public class PravegaWriter implements Writer {
     private EventStreamWriter<Object> writer;
     private Map<String, String> pravegaProps;
     private EventStreamClientFactory clientFactory;
-    public static String SCOPE_CONFIG = "scope";
-    public static String STREAM_NAME_CONFIG = "streamName";
-    public static String URI_CONFIG = "uri";
-    public static String SERIALIZER_CONFIG = "serializer";
-    public static String ROUTING_KEY_CLASS_CONFIG = "routingKey.class";
 
     public PravegaWriter(Map<String, String> pravegaProps) throws IllegalAccessException, InstantiationException {
         this.pravegaProps = pravegaProps;
@@ -31,10 +26,10 @@ public class PravegaWriter implements Writer {
 
     public boolean initialize() {
         try {
-            Class<?> serializerClass = Class.forName(pravegaProps.get(SERIALIZER_CONFIG));
-            String scope = pravegaProps.get(SCOPE_CONFIG);
-            URI controllerURI = URI.create(pravegaProps.get(URI_CONFIG));
-            String streamName = pravegaProps.get(STREAM_NAME_CONFIG);
+            Class<?> serializerClass = Class.forName(pravegaProps.get(WorkerConfig.SERIALIZER_CONFIG));
+            String scope = pravegaProps.get(WorkerConfig.SCOPE_CONFIG);
+            URI controllerURI = URI.create(pravegaProps.get(WorkerConfig.URI_CONFIG));
+            String streamName = pravegaProps.get(WorkerConfig.STREAM_NAME_CONFIG);
             clientFactory = EventStreamClientFactory.withScope(scope,
                     ClientConfig.builder().controllerURI(controllerURI).build());
             this.writer = clientFactory.createEventWriter(streamName,
@@ -50,15 +45,20 @@ public class PravegaWriter implements Writer {
     public void write(List<SourceRecord> records) {
         try {
             RoutingKeyGenerator generator = null;
-            if (pravegaProps.containsKey(ROUTING_KEY_CLASS_CONFIG)) {
-                Class<?> routingKeyGeneratorClass = Class.forName(pravegaProps.get(ROUTING_KEY_CLASS_CONFIG));
+            if (pravegaProps.containsKey(WorkerConfig.ROUTING_KEY_CLASS_CONFIG)) {
+                Class<?> routingKeyGeneratorClass = Class.forName(pravegaProps.get(WorkerConfig.ROUTING_KEY_CLASS_CONFIG));
                 generator = (RoutingKeyGenerator) routingKeyGeneratorClass.newInstance();
             }
             for(SourceRecord record: records) {
                 Object message = record.getValue();
-                if (pravegaProps.containsKey(ROUTING_KEY_CLASS_CONFIG)) {
+                if (pravegaProps.containsKey(WorkerConfig.ROUTING_KEY_CLASS_CONFIG)) {
                     String routingKey = generator.generateRoutingKey(message);
-                    final CompletableFuture writeFuture = writer.writeEvent(routingKey, message);
+                    if(routingKey == null)  {
+                        final CompletableFuture writeFuture = writer.writeEvent(message);
+                    }
+                    else{
+                        final CompletableFuture writeFuture = writer.writeEvent(routingKey, message);
+                    }
                 } else {
                     final CompletableFuture writeFuture = writer.writeEvent(message);
                 }

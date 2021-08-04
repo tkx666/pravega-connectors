@@ -1,9 +1,6 @@
 package io.pravega.connector.runtime.sink;
 
-import io.pravega.connector.runtime.ConnectorState;
-import io.pravega.connector.runtime.PravegaReader;
-import io.pravega.connector.runtime.Task;
-import io.pravega.connector.runtime.WorkerConfig;
+import io.pravega.connector.runtime.*;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -19,19 +16,14 @@ public class SinkTask extends Task {
     private Map<String, String> sinkProps;
     private int id;
 
-    public static String SINK_CLASS_CONFIG = "class";
-    public static String SINK_NAME_CONFIG = "name";
-
-
-
-    public SinkTask(Map<String, String> sinkProps, WorkerConfig workerConfig, ConnectorState state, int id) {
-        this.sinkProps = sinkProps;
+    public SinkTask(SinkConfig sinkConfig, WorkerConfig workerConfig, ConnectorState state, int id) {
+        this.sinkProps = sinkConfig.getStringConfig();
         this.pravegaProps = workerConfig.getStringConfig();
         this.connectorState = state;
         this.id = id;
     }
+
     public SinkTask(PravegaReader reader, Sink sink, Map<String, String> pravegaProps, ConnectorState state, int id) {
-//        this.sinkProps = sinkProps;
         this.pravegaProps = pravegaProps;
         this.connectorState = state;
         this.id = id;
@@ -42,17 +34,18 @@ public class SinkTask extends Task {
     @Override
     public void initialize() {
         try {
-            Class sinkClass = Class.forName(sinkProps.get(SINK_CLASS_CONFIG));
+            Class sinkClass = Class.forName(sinkProps.get(ConnectorConfig.CLASS_CONFIG));
             this.sink = (Sink) sinkClass.newInstance();
 //            sink.config().validate(sinkProps);
             sink.open(sinkProps);
-            this.reader = new PravegaReader(pravegaProps, sinkProps.get(SINK_NAME_CONFIG) + id);
+            this.reader = new PravegaReader(pravegaProps, sinkProps.get(ConnectorConfig.NAME_CONFIG) + id);
             reader.initialize(pravegaProps);
         } catch (Exception e) {
             logger.error("sink task initialize error", e);
         }
 
     }
+
     @Override
     protected void execute() {
         try {
@@ -68,10 +61,9 @@ public class SinkTask extends Task {
                 if (readList.size() == 0) continue;
                 sink.write(readList);
             }
-        } catch (Exception e){
+        } catch (Exception e) {
             logger.error("sink task running error", e);
-        }
-        finally {
+        } finally {
             sink.close();
             reader.close();
         }
@@ -88,6 +80,7 @@ public class SinkTask extends Task {
             this.notifyAll();
         }
     }
+
     public boolean hasPaused() {
         return connectorState == ConnectorState.Paused;
     }

@@ -17,11 +17,6 @@ import java.util.Map;
 public class PravegaTransactionalWriter implements Writer {
     private static final Logger logger = LoggerFactory.getLogger(PravegaTransactionalWriter.class);
     private TransactionalEventStreamWriter<Object> writer;
-
-    public static String SCOPE_CONFIG = "scope";
-    public static String STREAM_NAME_CONFIG = "streamName";
-    public static String URI_CONFIG = "uri";
-    public static String SERIALIZER_CONFIG = "serializer";
     private Map<String, String> pravegaProps;
     private EventStreamClientFactory clientFactory;
 
@@ -31,10 +26,10 @@ public class PravegaTransactionalWriter implements Writer {
 
     public boolean initialize() {
         try {
-            Class<?> serializerClass = Class.forName(pravegaProps.get(SERIALIZER_CONFIG));
-            String scope = pravegaProps.get(SCOPE_CONFIG);
-            URI controllerURI = URI.create(pravegaProps.get(URI_CONFIG));
-            String streamName = pravegaProps.get(STREAM_NAME_CONFIG);
+            Class<?> serializerClass = Class.forName(pravegaProps.get(WorkerConfig.SERIALIZER_CONFIG));
+            String scope = pravegaProps.get(WorkerConfig.SCOPE_CONFIG);
+            URI controllerURI = URI.create(pravegaProps.get(WorkerConfig.URI_CONFIG));
+            String streamName = pravegaProps.get(WorkerConfig.STREAM_NAME_CONFIG);
             clientFactory = EventStreamClientFactory.withScope(scope,
                     ClientConfig.builder().controllerURI(controllerURI).build());
             writer = clientFactory.createTransactionalEventWriter(streamName,

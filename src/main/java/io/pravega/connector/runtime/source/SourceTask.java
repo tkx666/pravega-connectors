@@ -14,20 +14,14 @@ public class SourceTask extends Task {
     private Map<String, String> pravegaProps;
     private Map<String, String> sourceProps;
     private int id;
-
     private volatile ConnectorState connectorState;
     private boolean stopping;
-    public static String ROUTING_KEY_CONFIG = "routingKey";
-    public static String TRANSACTION_ENABLE_CONFIG = "transaction.enable";
-    public static String SOURCE_CLASS_CONFIG = "class";
 
-
-
-    public SourceTask(Map<String, String> sourceProps, WorkerConfig workerConfig, ConnectorState connectorState, int id) {
+    public SourceTask(SourceConfig sourceConfig, WorkerConfig workerConfig, ConnectorState connectorState, int id) {
         this.pravegaProps = workerConfig.getStringConfig();
         this.connectorState = connectorState;
         this.stopping = false;
-        this.sourceProps = sourceProps;
+        this.sourceProps = sourceConfig.getStringConfig();
         this.id = id;
     }
 
@@ -35,12 +29,12 @@ public class SourceTask extends Task {
     @Override
     public void initialize() {
         try {
-            if (sourceProps.containsKey(TRANSACTION_ENABLE_CONFIG) && sourceProps.get(TRANSACTION_ENABLE_CONFIG).equals("true")) {
+            if (sourceProps.containsKey(SourceConfig.TRANSACTION_ENABLE_CONFIG) && sourceProps.get(SourceConfig.TRANSACTION_ENABLE_CONFIG).equals("true")) {
                 pravegaWriter = new PravegaTransactionalWriter(pravegaProps);
             } else
                 pravegaWriter = new PravegaWriter(pravegaProps);
             pravegaWriter.initialize();
-            Class sourceClass = Class.forName(sourceProps.get(SOURCE_CLASS_CONFIG));
+            Class sourceClass = Class.forName(sourceProps.get(ConnectorConfig.CLASS_CONFIG));
             this.source = (Source) sourceClass.newInstance();
 //            source.config().validate(sourceProps);
             source.open(sourceProps);

@@ -17,8 +17,6 @@ public class ConnectStandalone {
     private static final Logger logger = LoggerFactory.getLogger(ConnectStandalone.class);
     public static String PRAVEGA_OPTION_CONFIG = "pravega";
     public static String CONNECTOR_OPTION_CONFIG = "connector";
-    public static String TASK_NUM_CONFIG = "tasks.max";
-
 
     public static void main(String[] args) {
         logger.info("start pravega connect standalone");

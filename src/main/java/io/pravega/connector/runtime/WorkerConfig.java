@@ -10,6 +10,7 @@ public class WorkerConfig extends AbstractConfig {
     public static String SEGMENTS_NUM_CONFIG = "segments";
     public static String READER_GROUP_CONFIG = "readerGroup";
     public static String REST_PORT_CONFIG = "rest.port";
+    public static String ROUTING_KEY_CLASS_CONFIG = "routingKey.class";
 
 
     static Config.Validator validator = new Config.NonEmptyStringValidator();
@@ -21,6 +22,7 @@ public class WorkerConfig extends AbstractConfig {
             .add(SERIALIZER_CONFIG, Config.Type.STRING, "io.pravega.client.stream.impl.UTF8StringSerializer", validator)
             .add(SEGMENTS_NUM_CONFIG, Config.Type.INT, "5", null)
             .add(READER_GROUP_CONFIG, Config.Type.STRING, null, null)
+            .add(ROUTING_KEY_CLASS_CONFIG, Config.Type.STRING, "io.pravega.connector.runtime.DefaultRoutingKeyGenerator", validator)
             .add(REST_PORT_CONFIG, Config.Type.INT, "8091", null);
 
     public WorkerConfig(Map<String, String> props) {

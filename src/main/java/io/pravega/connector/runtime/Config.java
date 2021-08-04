@@ -26,36 +26,6 @@ public class Config {
         return add(new ConfigInfo(name, type, defaultValue, validator));
     }
 
-//    public Map<String, String> validate(Map<String, String> props) {
-//        for (String name : configInfoMap.keySet()) {
-//            parse(name, props);
-//        }
-//        return props;
-//    }
-
-//    public Map<String, Object> parse(String name, Map<String, String> props) {
-//        if (!configInfoMap.containsKey(name)) return;
-//        ConfigInfo configInfo = configInfoMap.get(name);
-//        Object value;
-//        //support string only
-//        if (props.containsKey(name)) {
-//            value = parseValue(name, configInfo.type, props.get(name));
-//        } else {
-//            if (configInfo.defaultValue == null) {
-//                throw new ConfigException("the default value of " + name + " is null. Provide the value in properties file");
-//            }
-//            value = configInfo.defaultValue;
-//        }
-//        props.put(name, (String) value);
-//        Validator validator = configInfoMap.get(name).validator;
-//        if (validator != null) {
-//            if (!validator.checkValid(value)) {
-//                throw new ConfigException("key " + name + " has invalid value " + value);
-//            }
-//        }
-//
-//    }
-
     public Map<String, Object> parse(Map<String, String> props) {
         Map<String, Object> parsedConfig = new HashMap<>();
         for(ConfigInfo configInfo: configInfoMap.values()) {
@@ -69,6 +39,9 @@ public class Config {
             parsedValue = parseValue(configInfo.name, configInfo.type, value);
         }
         else {
+            if (configInfo.defaultValue == null) {
+                throw new ConfigException("the default value of " + configInfo.name + " is null. Provide the value in properties file");
+            }
             parsedValue = configInfo.defaultValue;
         }
         if(configInfo.validator != null) {
@@ -98,6 +71,36 @@ public class Config {
         }
 
     }
+
+    //    public Map<String, String> validate(Map<String, String> props) {
+//        for (String name : configInfoMap.keySet()) {
+//            parse(name, props);
+//        }
+//        return props;
+//    }
+
+//    public Map<String, Object> parse(String name, Map<String, String> props) {
+//        if (!configInfoMap.containsKey(name)) return;
+//        ConfigInfo configInfo = configInfoMap.get(name);
+//        Object value;
+//        //support string only
+//        if (props.containsKey(name)) {
+//            value = parseValue(name, configInfo.type, props.get(name));
+//        } else {
+//            if (configInfo.defaultValue == null) {
+//                throw new ConfigException("the default value of " + name + " is null. Provide the value in properties file");
+//            }
+//            value = configInfo.defaultValue;
+//        }
+//        props.put(name, (String) value);
+//        Validator validator = configInfoMap.get(name).validator;
+//        if (validator != null) {
+//            if (!validator.checkValid(value)) {
+//                throw new ConfigException("key " + name + " has invalid value " + value);
+//            }
+//        }
+//
+//    }
 
     public static class ConfigInfo {
         public final String name;
