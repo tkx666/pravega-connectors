@@ -165,6 +165,9 @@ public class Worker {
                     fileChannel.close();
                 } catch (Exception e) {
                     e.printStackTrace();
+                } finally {
+                    group.close();
+                    readerGroupManager.close();
                 }
 
             }
