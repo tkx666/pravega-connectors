@@ -1,6 +1,7 @@
 package io.pravega.connector.runtime.cli;
 
 import io.pravega.connector.runtime.Worker;
+import io.pravega.connector.runtime.WorkerConfig;
 import io.pravega.connector.runtime.rest.RestServer;
 import io.pravega.connector.utils.Utils;
 import org.apache.commons.cli.*;
@@ -13,14 +14,12 @@ import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
 public class ConnectStandalone {
-    private static final Logger log = LoggerFactory.getLogger(ConnectStandalone.class);
+    private static final Logger logger = LoggerFactory.getLogger(ConnectStandalone.class);
     public static String PRAVEGA_OPTION_CONFIG = "pravega";
     public static String CONNECTOR_OPTION_CONFIG = "connector";
-    public static String TASK_NUM_CONFIG = "tasks.max";
-
 
     public static void main(String[] args) {
-        log.info("start pravega connect standalone");
+        logger.info("start pravega connect standalone");
         CommandLineParser commandParser = new DefaultParser();
         Options options = new Options();
 
@@ -37,15 +36,17 @@ public class ConnectStandalone {
 
             Map<String, String> pravegaMap = Utils.propsToMap(pravegaProps);
             Map<String, String> connectorMap = Utils.propsToMap(connectorProps);
-            Worker worker = Worker.getWorkerByType(connectorMap, pravegaMap);
+            WorkerConfig workerConfig = new WorkerConfig(pravegaMap);
+            Worker worker = new Worker(workerConfig);
 
             RestServer server = new RestServer(pravegaMap);
             server.initializeServer();
             server.initializeResource(worker);
-            connectorsThreadPool.submit(() -> worker.startConnector(connectorMap));
+            worker.addShutDownHook();
+            connectorsThreadPool.submit(() -> { worker.startConnector(connectorMap); });
 
         } catch (Exception e) {
-            e.printStackTrace();
+            logger.info("pravega connector running fail", e);
         }
 
     }

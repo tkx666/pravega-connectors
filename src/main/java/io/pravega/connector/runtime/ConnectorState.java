@@ -1,6 +1,6 @@
 package io.pravega.connector.runtime;
 
-public enum WorkerState {
+public enum ConnectorState {
     Started,
     Paused,
     Stopped

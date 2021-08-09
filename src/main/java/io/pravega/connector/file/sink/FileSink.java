@@ -1,28 +1,35 @@
 package io.pravega.connector.file.sink;
 
+import io.pravega.connector.runtime.Config;
 import io.pravega.connector.runtime.sink.Sink;
 import io.pravega.connector.runtime.sink.SinkRecord;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
-import java.io.*;
+import java.io.BufferedWriter;
+import java.io.FileWriter;
+import java.io.IOException;
 import java.util.List;
 import java.util.Map;
 
 public class FileSink implements Sink {
+    private static final Logger logger = LoggerFactory.getLogger(FileSink.class);
     public static String WRITE_PATH_CONFIG = "writePath";
     Map<String, String> sinkProps;
-    Map<String, String> pravegaProps;
     BufferedWriter out;
 
     @Override
-    public void open(Map<String, String> sinkProps, Map<String, String> pravegaProps) {
+    public Config config() {
+        return null;
+    }
+
+    @Override
+    public void open(Map<String, String> sinkProps) {
         this.sinkProps = sinkProps;
-        this.pravegaProps = pravegaProps;
         try {
             this.out = new BufferedWriter(new FileWriter(sinkProps.get(WRITE_PATH_CONFIG), true));
-        } catch (FileNotFoundException e) {
-            e.printStackTrace();
         } catch (IOException e) {
-            e.printStackTrace();
+            logger.error("", e);
         }
     }
 
@@ -31,7 +38,7 @@ public class FileSink implements Sink {
         try {
             out.close();
         } catch (IOException e) {
-            e.printStackTrace();
+            logger.error("", e);
         }
 
     }
@@ -45,12 +52,12 @@ public class FileSink implements Sink {
             }
 
         } catch (IOException e) {
-            e.printStackTrace();
+            logger.error("", e);
         } finally {
             try {
                 out.flush();
             } catch (IOException e) {
-                e.printStackTrace();
+                logger.error("", e);
             }
         }
 

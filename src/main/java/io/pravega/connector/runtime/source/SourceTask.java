@@ -1,47 +1,67 @@
 package io.pravega.connector.runtime.source;
 
-import io.pravega.connector.runtime.PravegaWriter;
-import io.pravega.connector.runtime.Task;
-import io.pravega.connector.runtime.WorkerState;
+import io.pravega.connector.runtime.*;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.util.List;
 import java.util.Map;
 
 public class SourceTask extends Task {
+    private static final Logger logger = LoggerFactory.getLogger(SourceTask.class);
     private Source source;
-    private PravegaWriter pravegaWriter;
+    private Writer pravegaWriter;
     private Map<String, String> pravegaProps;
-    private volatile WorkerState workerState;
+    private Map<String, String> sourceProps;
+    private int id;
+    private volatile ConnectorState connectorState;
     private boolean stopping;
-    public static String ROUTING_KEY_CONFIG = "routingKey";
 
-    public SourceTask(PravegaWriter pravegaWriter, Source source, Map<String, String> pravegaProps, WorkerState workerState) {
-        this.source = source;
-        this.pravegaProps = pravegaProps;
-        this.pravegaWriter = pravegaWriter;
-        this.workerState = workerState;
+    public SourceTask(SourceConfig sourceConfig, WorkerConfig workerConfig, ConnectorState connectorState, int id) {
+        this.pravegaProps = workerConfig.getStringConfig();
+        this.connectorState = connectorState;
         this.stopping = false;
+        this.sourceProps = sourceConfig.getStringConfig();
+        this.id = id;
     }
 
+
+    @Override
+    public void initialize() {
+        try {
+            if (sourceProps.containsKey(SourceConfig.TRANSACTION_ENABLE_CONFIG) && sourceProps.get(SourceConfig.TRANSACTION_ENABLE_CONFIG).equals("true")) {
+                pravegaWriter = new PravegaTransactionalWriter(pravegaProps);
+            } else
+                pravegaWriter = new PravegaWriter(pravegaProps);
+            pravegaWriter.initialize();
+            Class sourceClass = Class.forName(sourceProps.get(ConnectorConfig.CLASS_CONFIG));
+            this.source = (Source) sourceClass.newInstance();
+//            source.config().validate(sourceProps);
+            source.open(sourceProps);
+        } catch (Exception e) {
+            logger.error("source task initialize error", e);
+        }
+
+    }
 
     @Override
     protected void execute() {
         try {
             List<SourceRecord> records;
-            while (true) {
+            while (!isStopped()) {
                 if (hasPaused()) {
-                    System.out.println(Thread.currentThread().getName() + " has paused");
+                    logger.info(Thread.currentThread().getName() + " source task has paused");
                     awaitResume();
                     continue;
                 }
                 records = source.read();
-                System.out.println(Thread.currentThread().getName() + " sourceRecord sizes: " + records.size());
+                logger.info(Thread.currentThread().getName() + " sourceRecord size: " + records.size());
                 if (records.size() == 0) continue;
-                for (int i = 0; i < records.size(); i++)
-                    sendRecord(records.get(i));
+                sendRecord(records);
+
             }
         } catch (InterruptedException e) {
-            e.printStackTrace();
+            logger.error("source task execute error", e);
         } finally {
             source.close();
             pravegaWriter.close();
@@ -50,22 +70,21 @@ public class SourceTask extends Task {
 
     }
 
-
-    public void sendRecord(SourceRecord record) {
+    public void sendRecord(List<SourceRecord> records) {
         try {
-            pravegaWriter.run(record.getValue());
+            pravegaWriter.write(records);
         } catch (Exception e) {
-            e.printStackTrace();
+            logger.error("write to pravega fail", e);
         }
     }
 
     public boolean hasPaused() {
-        return workerState == WorkerState.Paused;
+        return connectorState == ConnectorState.Paused;
     }
 
     public boolean awaitResume() throws InterruptedException {
         synchronized (this) {
-            while (workerState == WorkerState.Paused) {
+            while (connectorState == ConnectorState.Paused) {
                 this.wait();
             }
             return true;
@@ -73,15 +92,18 @@ public class SourceTask extends Task {
 
     }
     @Override
-    public void setState(WorkerState state) {
+    public void setState(ConnectorState state) {
         synchronized (this) {
-            if (workerState == WorkerState.Stopped)
+            if (connectorState == ConnectorState.Stopped)
                 return;
-
-            this.workerState = state;
+            this.connectorState = state;
             this.notifyAll();
         }
     }
 
 
+
+    public boolean isStopped() {
+        return this.connectorState == ConnectorState.Stopped;
+    }
 }
