@@ -1,7 +1,7 @@
 package io.pravega.connector.runtime.cli;
 
 import io.pravega.connector.runtime.Worker;
-import io.pravega.connector.runtime.WorkerConfig;
+import io.pravega.connector.runtime.configs.WorkerConfig;
 import io.pravega.connector.runtime.rest.RestServer;
 import io.pravega.connector.utils.Utils;
 import org.apache.commons.cli.*;
@@ -12,6 +12,10 @@ import java.util.Map;
 import java.util.Properties;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
+
+/**
+ * Start the Pravega Connect process. The class parse the args from the command line and initialize the Worker and RESTful server
+ */
 
 public class ConnectStandalone {
     private static final Logger logger = LoggerFactory.getLogger(ConnectStandalone.class);

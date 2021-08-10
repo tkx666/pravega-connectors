@@ -2,7 +2,7 @@ package io.pravega.connector.runtime.rest;
 
 import com.fasterxml.jackson.jaxrs.json.JacksonJsonProvider;
 import io.pravega.connector.runtime.Worker;
-import io.pravega.connector.runtime.WorkerConfig;
+import io.pravega.connector.runtime.configs.WorkerConfig;
 import org.eclipse.jetty.server.Handler;
 import org.eclipse.jetty.server.Server;
 import org.eclipse.jetty.server.handler.ContextHandlerCollection;
@@ -15,7 +15,9 @@ import org.glassfish.jersey.servlet.ServletContainer;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
-
+/**
+ * Embedded server for the REST API that provides the control plane for worker and tasks.
+ */
 public class RestServer {
     private Server jettyServer;
     private ContextHandlerCollection handlers;
@@ -25,6 +27,11 @@ public class RestServer {
         this.pravegaProps = pravegaProps;
     }
 
+
+    /**
+     * create a REST server
+     * @throws Exception
+     */
     public void initializeServer() throws Exception {
         jettyServer = new Server(Integer.parseInt(pravegaProps.get(WorkerConfig.REST_PORT_CONFIG)));
         handlers = new ContextHandlerCollection();

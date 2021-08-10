@@ -27,6 +27,12 @@ public class ConnectorAPI {
         this.worker = worker;
     }
 
+    /**
+     * Get the configuration of the specific connector
+     *
+     * @param connectorName
+     * @return
+     */
     @GET
     @Path("{connector}/config")
     public Response getConnectorConfig(@PathParam("connector") String connectorName) {
@@ -34,7 +40,13 @@ public class ConnectorAPI {
         return Response.ok(res).build();
     }
 
-    @GET
+    /**
+     * set the state of connector to pause
+     *
+     * @param connectorName
+     * @return
+     */
+    @PUT
     @Path("{connector}/pause")
     public Response pauseConnector(@PathParam("connector") String connectorName) {
         log.info("pause start");
@@ -42,7 +54,13 @@ public class ConnectorAPI {
         return Response.ok().build();
     }
 
-    @GET
+    /**
+     * set the state of connector to resume
+     *
+     * @param connectorName
+     * @return
+     */
+    @PUT
     @Path("{connector}/resume")
     public Response resumeConnector(@PathParam("connector") String connectorName) {
         log.info("resume start");
@@ -50,14 +68,26 @@ public class ConnectorAPI {
         return Response.ok().build();
     }
 
-    @GET
+    /**
+     * set the state of connector to stopped
+     *
+     * @param connectorName
+     * @return
+     */
+    @PUT
     @Path("{connector}/stop")
     public Response stopConnector(@PathParam("connector") String connectorName) {
         log.info("stop worker");
         worker.stopConnector(connectorName);
-//        worker.shutdownScheduledService();
         return Response.ok().build();
     }
+
+    /**
+     * delete the connector
+     *
+     * @param connectorName
+     * @return
+     */
     @DELETE
     @Path("{connector}")
     public Response deleteConnector(@PathParam("connector") String connectorName) {
@@ -66,16 +96,27 @@ public class ConnectorAPI {
         return Response.ok().build();
     }
 
-    @GET
+    /**
+     * restart the connector
+     *
+     * @param connectorName
+     * @return
+     */
+    @POST
     @Path("{connector}/restart")
     public Response restartConnector(@PathParam("connector") String connectorName) {
-        log.info("restart worker not complete");
         Map<String, String> connectorProps = worker.getConnectorConfig(connectorName);
         threadPool.submit(() -> worker.startConnector(connectorProps));
-//        worker.startConnector();
         return Response.ok().build();
     }
 
+    /**
+     * update the connector
+     *
+     * @param connectorName
+     * @param connectorProps the new configuration of connector
+     * @return
+     */
     @PUT
     @Path("{connector}/config")
     public Response updateConfiguration(@PathParam("connector") String connectorName,

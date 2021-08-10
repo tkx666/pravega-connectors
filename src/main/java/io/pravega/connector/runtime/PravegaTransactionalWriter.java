@@ -6,6 +6,7 @@ import io.pravega.client.stream.EventWriterConfig;
 import io.pravega.client.stream.Serializer;
 import io.pravega.client.stream.Transaction;
 import io.pravega.client.stream.TransactionalEventStreamWriter;
+import io.pravega.connector.runtime.configs.WorkerConfig;
 import io.pravega.connector.runtime.source.SourceRecord;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -13,7 +14,9 @@ import org.slf4j.LoggerFactory;
 import java.net.URI;
 import java.util.List;
 import java.util.Map;
-
+/**
+ * PravegaTransactionalWriter encapsulates the TransactionalEventStreamWriter.
+ */
 public class PravegaTransactionalWriter implements Writer {
     private static final Logger logger = LoggerFactory.getLogger(PravegaTransactionalWriter.class);
     private TransactionalEventStreamWriter<Object> writer;

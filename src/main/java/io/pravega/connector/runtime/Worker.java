@@ -3,6 +3,10 @@ package io.pravega.connector.runtime;
 import io.pravega.client.admin.ReaderGroupManager;
 import io.pravega.client.admin.StreamManager;
 import io.pravega.client.stream.*;
+import io.pravega.connector.runtime.configs.ConnectorConfig;
+import io.pravega.connector.runtime.configs.SinkConfig;
+import io.pravega.connector.runtime.configs.SourceConfig;
+import io.pravega.connector.runtime.configs.WorkerConfig;
 import io.pravega.connector.runtime.sink.SinkTask;
 import io.pravega.connector.runtime.source.SourceTask;
 import org.slf4j.Logger;
@@ -41,6 +45,11 @@ public class Worker {
         this.connectors = new HashMap<>();
 
     }
+
+    /**
+     *
+     * @param connectorProps
+     */
 
     public void startConnector(Map<String, String> connectorProps) {
         try {

@@ -1,12 +1,18 @@
 package io.pravega.connector.runtime.sink;
 
 import io.pravega.connector.runtime.*;
+import io.pravega.connector.runtime.configs.ConnectorConfig;
+import io.pravega.connector.runtime.configs.SinkConfig;
+import io.pravega.connector.runtime.configs.WorkerConfig;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.util.List;
 import java.util.Map;
 
+/**
+ * SinkTask that uses PravegaReader to read data from Pravega and uses Sink to write data to other system.
+ */
 public class SinkTask extends Task {
     private static final Logger logger = LoggerFactory.getLogger(SinkTask.class);
     private Sink sink;
@@ -21,14 +27,6 @@ public class SinkTask extends Task {
         this.pravegaProps = workerConfig.getStringConfig();
         this.connectorState = state;
         this.id = id;
-    }
-
-    public SinkTask(PravegaReader reader, Sink sink, Map<String, String> pravegaProps, ConnectorState state, int id) {
-        this.pravegaProps = pravegaProps;
-        this.connectorState = state;
-        this.id = id;
-        this.reader = reader;
-        this.sink = sink;
     }
 
     @Override

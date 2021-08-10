@@ -3,6 +3,7 @@ package io.pravega.connector.runtime;
 import io.pravega.client.ClientConfig;
 import io.pravega.client.EventStreamClientFactory;
 import io.pravega.client.stream.*;
+import io.pravega.connector.runtime.configs.WorkerConfig;
 import io.pravega.connector.runtime.sink.SinkRecord;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -12,6 +13,9 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
+/**
+ * PravegaReader encapsulates the EventStreamReader.
+ */
 public class PravegaReader {
     private static final Logger logger = LoggerFactory.getLogger(PravegaReader.class);
     private static final int READER_TIMEOUT_MS = 5000;

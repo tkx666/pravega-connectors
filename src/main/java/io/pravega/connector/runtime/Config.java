@@ -5,13 +5,15 @@ import io.pravega.connector.runtime.exception.ConfigException;
 import java.util.HashMap;
 import java.util.Map;
 
+/**
+ * Config is used to define a set of expected configuration. You can custom the configuration and set the name, type,
+ * default value and validator. The class can parse and validate the original configuration.
+ */
 public class Config {
     Map<String, ConfigInfo> configInfoMap;
-    Map<String, Object> parsedConfig;
 
     public Config() {
         this.configInfoMap = new HashMap<>();
-        this.parsedConfig = new HashMap<>();
     }
 
     public Config add(ConfigInfo configInfo) {

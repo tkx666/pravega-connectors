@@ -1,4 +1,6 @@
-package io.pravega.connector.runtime;
+package io.pravega.connector.runtime.configs;
+
+import io.pravega.connector.runtime.Config;
 
 import java.util.Map;
 

@@ -1,12 +1,18 @@
 package io.pravega.connector.runtime.source;
 
 import io.pravega.connector.runtime.*;
+import io.pravega.connector.runtime.configs.ConnectorConfig;
+import io.pravega.connector.runtime.configs.SourceConfig;
+import io.pravega.connector.runtime.configs.WorkerConfig;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.util.List;
 import java.util.Map;
 
+/**
+ * SourceTask is a Task that use Source to write data to Pravega
+ */
 public class SourceTask extends Task {
     private static final Logger logger = LoggerFactory.getLogger(SourceTask.class);
     private Source source;
@@ -24,7 +30,6 @@ public class SourceTask extends Task {
         this.sourceProps = sourceConfig.getStringConfig();
         this.id = id;
     }
-
 
     @Override
     public void initialize() {

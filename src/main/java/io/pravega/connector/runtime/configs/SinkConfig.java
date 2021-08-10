@@ -1,12 +1,15 @@
-package io.pravega.connector.runtime;
+package io.pravega.connector.runtime.configs;
+
+import io.pravega.connector.runtime.Config;
 
 import java.util.Map;
 
-public class SinkConfig extends ConnectorConfig{
-    public static String TYPE_CONFIG = "type";
+/**
+ * SinkConfig defines the expected configuration of the Sink task
+ */
+public class SinkConfig extends ConnectorConfig {
     public static String TASKS_NUM_CONFIG = "tasks.max";
     public static String NAME_CONFIG = "name";
-    public static String CLASS_CONFIG = "class";
     public static String CHECKPOINT_PERSIST_PATH_CONFIG = "checkpoint.persist.path";
     public static String CHECKPOINT_NAME_CONFIG = "checkpoint.name";
     public static String CHECKPOINT_ENABLE_CONFIG = "checkpoint.enable";

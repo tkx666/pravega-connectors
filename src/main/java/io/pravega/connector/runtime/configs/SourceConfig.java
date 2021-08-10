@@ -1,12 +1,15 @@
-package io.pravega.connector.runtime;
+package io.pravega.connector.runtime.configs;
+
+import io.pravega.connector.runtime.Config;
 
 import java.util.Map;
 
-public class SourceConfig extends ConnectorConfig{
-    public static String TYPE_CONFIG = "type";
+/**
+ * SourceConfig defines the expected configuration of the Source task
+ */
+public class SourceConfig extends ConnectorConfig {
     public static String TASKS_NUM_CONFIG = "tasks.max";
     public static String NAME_CONFIG = "name";
-    public static String CLASS_CONFIG = "class";
     public static String TRANSACTION_ENABLE_CONFIG = "transaction.enable";
 
     static Config.Validator validator = new Config.NonEmptyStringValidator();

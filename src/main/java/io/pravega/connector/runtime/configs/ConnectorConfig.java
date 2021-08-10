@@ -1,8 +1,13 @@
-package io.pravega.connector.runtime;
+package io.pravega.connector.runtime.configs;
+
+import io.pravega.connector.runtime.Config;
 
 import java.util.Map;
 
-public class ConnectorConfig extends AbstractConfig{
+/**
+ * ConnectorConfig defines the expected configuration of the connector
+ */
+public class ConnectorConfig extends AbstractConfig {
     public static String TYPE_CONFIG = "type";
     public static String TASKS_NUM_CONFIG = "tasks.max";
     public static String NAME_CONFIG = "name";

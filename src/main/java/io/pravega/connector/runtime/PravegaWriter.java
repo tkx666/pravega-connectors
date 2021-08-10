@@ -5,6 +5,7 @@ import io.pravega.client.EventStreamClientFactory;
 import io.pravega.client.stream.EventStreamWriter;
 import io.pravega.client.stream.EventWriterConfig;
 import io.pravega.client.stream.Serializer;
+import io.pravega.connector.runtime.configs.WorkerConfig;
 import io.pravega.connector.runtime.source.SourceRecord;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -14,6 +15,9 @@ import java.util.List;
 import java.util.Map;
 import java.util.concurrent.CompletableFuture;
 
+/**
+ * PravegaWriter encapsulates the EventStreamWriter.
+ */
 public class PravegaWriter implements Writer {
     private static final Logger logger = LoggerFactory.getLogger(PravegaWriter.class);
     private EventStreamWriter<Object> writer;
@@ -67,7 +71,6 @@ public class PravegaWriter implements Writer {
 
         } catch (Exception e) {
             logger.error("write msg error", e);
-
         }
     }
 
