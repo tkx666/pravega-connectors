@@ -8,8 +8,6 @@ import java.util.Map;
  * SinkConfig defines the expected configuration of the Sink task
  */
 public class SinkConfig extends ConnectorConfig {
-    public static String TASKS_NUM_CONFIG = "tasks.max";
-    public static String NAME_CONFIG = "name";
     public static String CHECKPOINT_PERSIST_PATH_CONFIG = "checkpoint.persist.path";
     public static String CHECKPOINT_NAME_CONFIG = "checkpoint.name";
     public static String CHECKPOINT_ENABLE_CONFIG = "checkpoint.enable";

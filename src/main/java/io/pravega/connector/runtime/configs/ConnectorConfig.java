@@ -17,7 +17,7 @@ public class ConnectorConfig extends AbstractConfig {
 
     public static Config config() {
         return new Config()
-                .add(TYPE_CONFIG, Config.Type.STRING, "sink", validator)
+                .add(TYPE_CONFIG, Config.Type.STRING, null, null)
                 .add(TASKS_NUM_CONFIG, Config.Type.INT, "1", null)
                 .add(NAME_CONFIG, Config.Type.STRING, null, null)
                 .add(CLASS_CONFIG, Config.Type.STRING, null, null);

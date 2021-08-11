@@ -8,8 +8,6 @@ import java.util.Map;
  * SourceConfig defines the expected configuration of the Source task
  */
 public class SourceConfig extends ConnectorConfig {
-    public static String TASKS_NUM_CONFIG = "tasks.max";
-    public static String NAME_CONFIG = "name";
     public static String TRANSACTION_ENABLE_CONFIG = "transaction.enable";
 
     static Config.Validator validator = new Config.NonEmptyStringValidator();
