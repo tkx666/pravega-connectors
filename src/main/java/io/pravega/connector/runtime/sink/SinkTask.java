@@ -34,7 +34,6 @@ public class SinkTask extends Task {
         try {
             Class sinkClass = Class.forName(sinkProps.get(ConnectorConfig.CLASS_CONFIG));
             this.sink = (Sink) sinkClass.newInstance();
-//            sink.config().validate(sinkProps);
             sink.open(sinkProps);
             this.reader = new PravegaReader(pravegaProps, sinkProps.get(ConnectorConfig.NAME_CONFIG) + id);
             reader.initialize(pravegaProps);

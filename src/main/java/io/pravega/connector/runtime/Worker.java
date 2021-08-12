@@ -53,7 +53,6 @@ public class Worker {
 
     public void startConnector(Map<String, String> connectorProps) {
         try {
-//            WorkerConfig.config.validate(pravegaProps);
             startTasks(connectorProps);
             if (connectorProps.get(ConnectorConfig.TYPE_CONFIG).equals("sink")) {
                 startCheckPoint(connectorProps);
@@ -67,7 +66,6 @@ public class Worker {
     public void startTasks(Map<String, String> connectorProps) {
         try {
             if (connectorProps.get(ConnectorConfig.TYPE_CONFIG).equals("source")) {
-//                SourceBasicConfig.basicConfig.validate(connectorProps);
                 SourceConfig sourceConfig = new SourceConfig(connectorProps);
                 int threadNum = sourceConfig.getInt(SourceConfig.TASKS_NUM_CONFIG);
                 createScopeAndStream();
@@ -80,7 +78,6 @@ public class Worker {
                     executor.submit(sourceTask);
                 }
             } else if (connectorProps.get(ConnectorConfig.TYPE_CONFIG).equals("sink")) {
-//                SinkBasicConfig.basicConfig.validate(connectorProps);
                 SinkConfig sinkConfig = new SinkConfig(connectorProps);
                 int threadNum = sinkConfig.getInt(SinkConfig.TASKS_NUM_CONFIG);
                 String scope = workerConfig.getString(WorkerConfig.SCOPE_CONFIG);

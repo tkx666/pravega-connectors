@@ -41,7 +41,6 @@ public class SourceTask extends Task {
             pravegaWriter.initialize();
             Class sourceClass = Class.forName(sourceProps.get(ConnectorConfig.CLASS_CONFIG));
             this.source = (Source) sourceClass.newInstance();
-//            source.config().validate(sourceProps);
             source.open(sourceProps);
         } catch (Exception e) {
             logger.error("source task initialize error", e);

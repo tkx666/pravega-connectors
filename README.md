@@ -4,6 +4,7 @@ Pravaga Connect framework enables you to create and manage connectors that strea
 
 ## Features
 - Provide data abstractions to pull or push data to Pravega
+- Support parallelism when reading or writing data
 - Support Checkpoint and Transaction for Pravega
 
 ## How to build
