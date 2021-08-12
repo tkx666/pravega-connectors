@@ -8,7 +8,7 @@ To complete this guide, you need:
 * Use Gradle
 
 ## Basic Concept
-[here](https://github.com/tkx666/pravega-connectors/blob/main/documentations/concept.md)
+click [here](https://github.com/tkx666/pravega-connectors/blob/main/documentations/concept.md) to see the basic concept of the Pravega Connect framework
 
 ## Start Pravega Connect 
 The following command line can start the worker and connector tasks
