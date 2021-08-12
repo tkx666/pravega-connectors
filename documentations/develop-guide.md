@@ -1,4 +1,4 @@
-#How to develop Pravega Connectors
+# How to develop Pravega Connectors
 
 This guide helps you to learn how to develop a Pravega connector to move data between Pravega and external systems.
 
