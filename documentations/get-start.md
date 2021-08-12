@@ -22,6 +22,7 @@ The first parameter is the worker's configuration which contains the pravega and
 The second parameter is the connector task's configuration. You can see the details [here](#source-configuration)
 
 ## Example
+We provide the [worker configuration example](https://github.com/tkx666/pravega-connectors/blob/main/worker.properties)
 
 We provide the [Kafka Connector](https://github.com/tkx666/pravega-connectors/tree/main/src/main/java/io/pravega/connector/kafka) with its source [configurations](https://github.com/tkx666/pravega-connectors/blob/main/kafkaSource.properties) and sink [configuration](https://github.com/tkx666/pravega-connectors/blob/main/kafkaSink.properties).
 

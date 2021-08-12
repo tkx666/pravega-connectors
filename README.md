@@ -8,11 +8,9 @@ Pravaga Connect framework enables you to create and manage connectors that strea
 - Support Checkpoint and Transaction for Pravega
 
 ## How to build
-Building the Pravega Connect from the source is only necessary when we want to use or contribute to the latest (unreleased) version of the Pravega Connect.
-
 1. Checkout the source code repository by following below steps:
 
-```git clone https://github.com/xxxxx``` （wait for transferring to pravega repo)
+```git clone https://github.com/xxxxx``` （wait for transferring to enterprise repo)
 
 2. After cloning the repository, the project can be built by running the below command in the project root directory
 
