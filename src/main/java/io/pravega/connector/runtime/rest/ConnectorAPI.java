@@ -111,7 +111,7 @@ public class ConnectorAPI {
     }
 
     /**
-     * update the connector
+     * update the config of the connector
      *
      * @param connectorName
      * @param connectorProps the new configuration of connector

@@ -19,7 +19,7 @@ import java.util.concurrent.Executors;
 
 public class ConnectStandalone {
     private static final Logger logger = LoggerFactory.getLogger(ConnectStandalone.class);
-    public static String PRAVEGA_OPTION_CONFIG = "pravega";
+    public static String WORKER_OPTION_CONFIG = "worker";
     public static String CONNECTOR_OPTION_CONFIG = "connector";
 
     public static void main(String[] args) {
@@ -27,13 +27,13 @@ public class ConnectStandalone {
         CommandLineParser commandParser = new DefaultParser();
         Options options = new Options();
 
-        options.addOption(PRAVEGA_OPTION_CONFIG, true, "properties of pravega");
+        options.addOption(WORKER_OPTION_CONFIG, true, "properties of pravega");
         options.addOption(CONNECTOR_OPTION_CONFIG, true, "properties of connector");
         ExecutorService connectorsThreadPool = Executors.newCachedThreadPool();
 
         try {
             CommandLine cli = commandParser.parse(options, args);
-            String pravegaPath = cli.getOptionValue(PRAVEGA_OPTION_CONFIG);
+            String pravegaPath = cli.getOptionValue(WORKER_OPTION_CONFIG);
             Properties pravegaProps = Utils.loadProps(pravegaPath);
             String connectorPath = cli.getOptionValue(CONNECTOR_OPTION_CONFIG);
             Properties connectorProps = Utils.loadProps(connectorPath);

@@ -49,7 +49,7 @@ public interface Source {
 
 1. implements config()
 
-This method is used to parse and validate the configuration for the task. You can create a Config instance and add the expected configuration parameter to the instance. The methed should return the instance for the framework to validate. For example
+This method can parse and validate the configuration for the task. You can create a Config instance and add the expected configuration parameter to the instance. The methed should return the instance for the framework to validate. For example
 ```java
 private static final Config config = new Config().add(SERVER_SERVERS_CONFIG, Config.Type.STRING, "localhost:9092", new Config.NonEmptyStringValidator())
         .add(KEY_DESERIALIZER_CONFIG, Config.Type.STRING, "org.apache.kafka.common.serialization.StringDeserializer", new Config.NonEmptyStringValidator())
@@ -82,7 +82,7 @@ After you implements the Source class, you need to set the ```class``` in your c
 
 ### Sink
 
-You can implements the Sink interface to develop the sink connector
+You can implement the Sink interface to develop the sink connector
 
 ```java
 public interface Sink {
