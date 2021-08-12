@@ -12,11 +12,20 @@ To complete this guide, you need:
 
 ## Start Pravega Connect 
 The following command line can start the worker and connector tasks
+```
+bin\pravega-connectors -worker worker.properties -connector connector.properties
+```
 
 The first parameter is the worker's configuration which contains the pravega and RESTful server configuration. Note that the parameter is a file path. You can use any valid file path for the configuration. You can see the details [here](#worker-configuration)
 
 
 The second parameter is the connector task's configuration. You can see the details [here](#source-configuration)
+
+## Develop Guide
+click [here](https://github.com/tkx666/pravega-connectors/blob/main/documentations/develop-guide.md) to see how to develop a connector
+
+## RESTful API
+click [here]((https://github.com/tkx666/pravega-connectors/blob/main/documentations/restful-api.md)) to see the RESTful API to manage the worker and tasks.
 
 ## Worker Configuration
 For the example of worker configuration, you can see
