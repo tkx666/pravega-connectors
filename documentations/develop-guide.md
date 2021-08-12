@@ -9,8 +9,11 @@ This guide helps you to learn how to develop a Pravega connector to move data be
 
 ## Develop
 
-You can develop the Sink connector and Source connector
+You can develop the Sink connector and Source connector. 
 
+We provide the [Kafka Connector](https://github.com/tkx666/pravega-connectors/tree/main/src/main/java/io/pravega/connector/kafka) with its source [configurations](https://github.com/tkx666/pravega-connectors/blob/main/kafkaSource.properties) and sink [configuration](https://github.com/tkx666/pravega-connectors/blob/main/kafkaSink.properties).
+
+There is also a simple [File Connector](https://github.com/tkx666/pravega-connectors/tree/main/src/main/java/io/pravega/connector/file) with its source [configuration](https://github.com/tkx666/pravega-connectors/blob/main/fileSource.properties) and sink [configuration](https://github.com/tkx666/pravega-connectors/blob/main/kafkaSink.properties)
 ### Source
 
 You can implements the Source interface to develop the source connector
