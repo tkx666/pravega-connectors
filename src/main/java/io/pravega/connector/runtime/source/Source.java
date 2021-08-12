@@ -23,7 +23,7 @@ public interface Source {
     /**
      * read the SourceRecord from other system
      *
-     * @return
+     * @return a list of SourceRecord
      */
     List<SourceRecord> read();
 
