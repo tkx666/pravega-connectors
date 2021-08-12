@@ -25,7 +25,7 @@ The second parameter is the connector task's configuration. You can see the deta
 click [here](https://github.com/tkx666/pravega-connectors/blob/main/documentations/develop-guide.md) to see how to develop a connector
 
 ## RESTful API
-click [here]((https://github.com/tkx666/pravega-connectors/blob/main/documentations/restful-api.md)) to see the RESTful API to manage the worker and tasks.
+click [here](https://github.com/tkx666/pravega-connectors/blob/main/documentations/restful-api.md) to see the RESTful API to manage the worker and tasks.
 
 ## Worker Configuration
 For the example of worker configuration, you can see
