@@ -1,7 +1,9 @@
 package io.pravega.connector.runtime;
 
 /**
- * Record contains the value that transfer among different systems
+ * Record encapsulates the value that transfer among different systems
+ *
+ * The value is a Object instance.
  */
 public class Record {
     protected Object value;

@@ -5,6 +5,9 @@ import io.pravega.connector.runtime.Config;
 import java.util.List;
 import java.util.Map;
 
+/**
+ * Source interface read records from the external system and write the SourceRecord to Pravega.
+ */
 public interface Source {
     /**
      * define the configuration for parse and validation

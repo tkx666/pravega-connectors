@@ -12,6 +12,8 @@ import java.util.Map;
 
 /**
  * SinkTask that uses PravegaReader to read data from Pravega and uses Sink to write data to other system.
+ *
+ * It can stop and resume by wait() and notifyAll()
  */
 public class SinkTask extends Task {
     private static final Logger logger = LoggerFactory.getLogger(SinkTask.class);

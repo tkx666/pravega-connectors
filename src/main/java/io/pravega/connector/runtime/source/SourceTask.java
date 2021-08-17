@@ -12,6 +12,8 @@ import java.util.Map;
 
 /**
  * SourceTask is a Task that use Source to write data to Pravega
+ * <p>
+ * It can stop and resume by wait() and notifyAll()
  */
 public class SourceTask extends Task {
     private static final Logger logger = LoggerFactory.getLogger(SourceTask.class);
@@ -95,6 +97,7 @@ public class SourceTask extends Task {
         }
 
     }
+
     @Override
     public void setState(ConnectorState state) {
         synchronized (this) {
@@ -104,7 +107,6 @@ public class SourceTask extends Task {
             this.notifyAll();
         }
     }
-
 
 
     public boolean isStopped() {

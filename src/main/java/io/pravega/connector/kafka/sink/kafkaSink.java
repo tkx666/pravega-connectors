@@ -10,7 +10,9 @@ import org.slf4j.LoggerFactory;
 import java.util.List;
 import java.util.Map;
 import java.util.Properties;
-
+/**
+ * kafkaSink implements the Sink interface. This class initializes the kafka producer and write the SinkRecord to kafka
+ */
 public class kafkaSink implements Sink {
     private static final Logger logger = LoggerFactory.getLogger(kafkaSink.class);
     private Producer<String, String> producer;

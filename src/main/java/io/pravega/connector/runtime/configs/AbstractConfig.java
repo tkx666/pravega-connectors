@@ -6,7 +6,9 @@ import io.pravega.connector.runtime.exception.ConfigException;
 import java.util.Map;
 
 /**
- * AbstractConfig is a basic config class that contains both original configuration and parsed configuration
+ * AbstractConfig is a basic config class that contains both original configuration and parsed configuration.
+ *
+ * In the constructor, it uses the Config's parse method to parse the config and get the parsed config.
  */
 public class AbstractConfig {
     Map<String, String> stringConfig;
@@ -27,7 +29,7 @@ public class AbstractConfig {
 
     public Object get(String key) {
         if (!parsedConfig.containsKey(key)) {
-            throw new ConfigException("unkonw key");
+            throw new ConfigException("unknown key");
         }
         return parsedConfig.get(key);
     }

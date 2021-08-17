@@ -12,6 +12,9 @@ import java.io.IOException;
 import java.util.List;
 import java.util.Map;
 
+/**
+ * FileSink implements the Sink interface. This class initializes the BufferWriter and write SinkRecord to file
+ */
 public class FileSink implements Sink {
     private static final Logger logger = LoggerFactory.getLogger(FileSink.class);
     public static String WRITE_PATH_CONFIG = "writePath";

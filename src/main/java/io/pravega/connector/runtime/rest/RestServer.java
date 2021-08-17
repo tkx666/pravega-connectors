@@ -29,7 +29,7 @@ public class RestServer {
 
 
     /**
-     * create a REST server
+     * create a RESTful server
      * @throws Exception
      */
     public void initializeServer() throws Exception {

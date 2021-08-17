@@ -24,6 +24,9 @@ import java.util.List;
 import java.util.Map;
 import java.util.concurrent.*;
 
+/**
+ * Worker has a set of Task (thread). It also manages the connectors' tasks
+ */
 public class Worker {
     private static final Logger logger = LoggerFactory.getLogger(Worker.class);
     private final ExecutorService executor;
@@ -47,10 +50,9 @@ public class Worker {
     }
 
     /**
-     *
+     * start the connectors. If it is sink connector, worker start generating the check point
      * @param connectorProps
      */
-
     public void startConnector(Map<String, String> connectorProps) {
         try {
             startTasks(connectorProps);
@@ -63,6 +65,10 @@ public class Worker {
 
     }
 
+    /**
+     * Initialize the Source/Sink Task and run the Task.
+     * @param connectorProps
+     */
     public void startTasks(Map<String, String> connectorProps) {
         try {
             if (connectorProps.get(ConnectorConfig.TYPE_CONFIG).equals("source")) {
@@ -117,6 +123,9 @@ public class Worker {
 
     }
 
+    /**
+     * create scope and stream for Pravega according to the worker configuration
+     */
     private void createScopeAndStream() {
         String scope = workerConfig.getString(WorkerConfig.SCOPE_CONFIG);
         String streamName = workerConfig.getString(WorkerConfig.STREAM_NAME_CONFIG);
@@ -129,7 +138,9 @@ public class Worker {
         streamManager.createStream(scope, streamName, streamConfig);
         streamManager.close();
     }
-
+    /**
+     * create reader group for Pravega according to the worker configuration
+     */
     private void createReaderGroup() {
         String scope = workerConfig.getString(WorkerConfig.SCOPE_CONFIG);
         String streamName = workerConfig.getString(WorkerConfig.STREAM_NAME_CONFIG);
@@ -208,6 +219,9 @@ public class Worker {
         return connectors.get(connectorName);
     }
 
+    /**
+     * stop the process by ctrl c
+     */
     public void addShutDownHook() {
         Runtime.getRuntime().addShutdownHook(new Thread(() -> {
             logger.info("shutdown connector");

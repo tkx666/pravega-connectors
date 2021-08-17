@@ -5,6 +5,9 @@ import io.pravega.connector.runtime.Config;
 import java.util.List;
 import java.util.Map;
 
+/**
+ * Sink interface get records from the Pravega and write the SinkRecord to external system.
+ */
 public interface Sink {
     /**
      * define the configuration for parse and validation
@@ -14,7 +17,7 @@ public interface Sink {
 
     /**
      * initialize the sink
-     * @param sinkProps sink properties
+     * @param sinkProps connector properties from the command line
      */
     void open(Map<String, String> sinkProps);
 

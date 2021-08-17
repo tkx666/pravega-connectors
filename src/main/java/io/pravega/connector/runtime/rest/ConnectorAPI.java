@@ -42,6 +42,8 @@ public class ConnectorAPI {
 
     /**
      * set the state of connector to pause
+     * <p>
+     * It uses wait() and notifyAll() to pause the tasks
      *
      * @param connectorName
      * @return
@@ -70,6 +72,8 @@ public class ConnectorAPI {
 
     /**
      * set the state of connector to stopped
+     * <p>
+     * It stops the connector and delete the configuration
      *
      * @param connectorName
      * @return
@@ -84,6 +88,8 @@ public class ConnectorAPI {
 
     /**
      * delete the connector
+     * <p>
+     * It stops the connector and delete the configurationÒ
      *
      * @param connectorName
      * @return
@@ -106,6 +112,7 @@ public class ConnectorAPI {
     @Path("{connector}/restart")
     public Response restartConnector(@PathParam("connector") String connectorName) {
         Map<String, String> connectorProps = worker.getConnectorConfig(connectorName);
+        worker.stopConnector(connectorName);
         threadPool.submit(() -> worker.startConnector(connectorProps));
         return Response.ok().build();
     }

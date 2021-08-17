@@ -74,36 +74,6 @@ public class Config {
 
     }
 
-    //    public Map<String, String> validate(Map<String, String> props) {
-//        for (String name : configInfoMap.keySet()) {
-//            parse(name, props);
-//        }
-//        return props;
-//    }
-
-//    public Map<String, Object> parse(String name, Map<String, String> props) {
-//        if (!configInfoMap.containsKey(name)) return;
-//        ConfigInfo configInfo = configInfoMap.get(name);
-//        Object value;
-//        //support string only
-//        if (props.containsKey(name)) {
-//            value = parseValue(name, configInfo.type, props.get(name));
-//        } else {
-//            if (configInfo.defaultValue == null) {
-//                throw new ConfigException("the default value of " + name + " is null. Provide the value in properties file");
-//            }
-//            value = configInfo.defaultValue;
-//        }
-//        props.put(name, (String) value);
-//        Validator validator = configInfoMap.get(name).validator;
-//        if (validator != null) {
-//            if (!validator.checkValid(value)) {
-//                throw new ConfigException("key " + name + " has invalid value " + value);
-//            }
-//        }
-//
-//    }
-
     public static class ConfigInfo {
         public final String name;
         public final Type type;
@@ -116,8 +86,6 @@ public class Config {
             this.defaultValue = defaultValue;
             this.validator = validator;
         }
-
-
     }
 
     public enum Type {

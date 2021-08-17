@@ -11,6 +11,9 @@ import org.slf4j.LoggerFactory;
 
 import java.util.*;
 
+/**
+ * kafkaSource implements Source interface. This class initialize the kafka consumer and read data from kafka.
+ */
 public class kafkaSource implements Source {
     private static final Logger logger = LoggerFactory.getLogger(kafkaSource.class);
     private KafkaConsumer<String, String> consumer;

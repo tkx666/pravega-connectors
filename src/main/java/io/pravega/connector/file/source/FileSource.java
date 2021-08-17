@@ -13,7 +13,9 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
-
+/**
+ * FileSource implements the Source interface. This class initializes the BufferReader and read data from file
+ */
 public class FileSource implements Source {
     private static final Logger logger = LoggerFactory.getLogger(FileSource.class);
     public static String READ_PATH_CONFIG = "readPath";
